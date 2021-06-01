@@ -1,32 +1,39 @@
 {
-  "expo": {
-    "name": "Fios",
-    "slug": "Fios",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    }
-  }
+	"expo": {
+		"name": "Fios",
+		"slug": "Fios",
+		"version": "1.0.0",
+		"orientation": "portrait",
+		"icon": "./assets/icon.png",
+		"splash": {
+			"image": "./assets/splash.png",
+			"resizeMode": "contain",
+			"backgroundColor": "#ffffff"
+		},
+		"updates": {
+			"fallbackToCacheTimeout": 0
+		},
+		"assetBundlePatterns": ["**/*"],
+		"ios": {
+			"supportsTablet": true
+		},
+		"extra": {
+			"apiKey": "AIzaSyC1Yw3ZIVOAWIEp9acQXZhesx_ZKYW53pg",
+			"authDomain": "fiosrewards.firebaseapp.com",
+			"databaseURL": "https://fiosrewards.firebaseio.com",
+			"projectId": "fiosrewards",
+			"storageBucket": "fiosrewards.appspot.com",
+			"messagingSenderId": "188462078951",
+			"appId": "1:188462078951:web:0b59e22c794940dcaafb42"
+		},
+		"android": {
+			"adaptiveIcon": {
+				"foregroundImage": "./assets/adaptive-icon.png",
+				"backgroundColor": "#FFFFFF"
+			}
+		},
+		"web": {
+			"favicon": "./assets/favicon.png"
+		}
+	}
 }

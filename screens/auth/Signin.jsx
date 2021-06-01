@@ -1,0 +1,60 @@
+import React, { useState } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+import ScreenView from '../ScreenView'
+
+import { Input, Button, Image } from 'react-native-elements'
+import { KeyboardAvoidingView } from 'react-native'
+import { Platform } from 'react-native'
+import { COLORS, SIZES } from '../../constants/contantts'
+import { Feather } from '@expo/vector-icons'
+import { auth } from '../../database'
+
+const Signin = () => {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [error, setError] = useState(null)
+
+    const singinHandler = async () => {
+        try {
+            if (email === '' || password === '') {
+                alert('Both fields are required')
+                return
+            } else if (!/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)) {
+                alert('Invalid Email')
+                return
+            }
+            await auth.signInWithEmailAndPassword(email, password)
+        } catch (error) {
+            console.log(error)
+            setError(error.message)
+        }
+    }
+    return (
+        <ScreenView>
+            <KeyboardAvoidingView style={styles.view} behavior={Platform.OS === 'ios' ? 'padding' : null}>
+                <View style={{ width: '100%', height: 100, alignItems: 'center', justifyContent: 'center' }}>
+                    <Image source={require('../../assets/verizon-logo.png')} style={{ width: SIZES.width / 3, height: 100, resizeMode: 'cover' }} />
+                </View>
+                <View style={{ width: '100%' }}>
+                    <Input placeholder='Email Address' value={email} onChangeText={text => setEmail(text.trim().toLowerCase())} />
+                    <Input rightIcon={<Feather name="eye" size={24} color="black" />} placeholder='Password' secureTextEntry={true} value={password} onChangeText={text => setPassword(text.trim())} />
+                </View>
+                <View style={{ marginTop: 30 }}>
+                    <Button type='outline' buttonStyle={{ borderColor: COLORS.secondary, backgroundColor: COLORS.primary }} style={{ width: SIZES.width / 3, }} titleStyle={{ color: COLORS.secondary }} raised title='Sign In' onPress={singinHandler} />
+                </View>
+
+            </KeyboardAvoidingView>
+        </ScreenView>
+    )
+}
+
+export default Signin
+
+const styles = StyleSheet.create({
+    view: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex: 1,
+        marginHorizontal: SIZES.padding * 0.5
+    }
+})
