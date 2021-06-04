@@ -1,42 +1,50 @@
-import React from 'react'
-import { TouchableOpacity } from 'react-native'
-import { StyleSheet, Text, View } from 'react-native'
+import React, { useContext, useLayoutEffect } from 'react'
+import { StyleSheet, Text, View, Alert, TouchableOpacity } from 'react-native'
 import ScreenView from '../ScreenView'
-import { AntDesign } from '@expo/vector-icons';
-import { SIZES } from '../../constants/contantts';
+import { COLORS, FONTS, SIZES } from '../../constants/contantts';
 
-const Profile = () => {
+import authContext from '../../context/auth/authContext';
+import ProfileListItem from '../../components/ProfileListItem';
 
-    const logout = async () => {
+
+const Profile = ({ navigation }) => {
+    const { logout, user } = useContext(authContext)
+
+    const logoutHandler = async () => {
         try {
-            await auth.signOut()
+            Alert.alert('Log Out', 'Are you sure you want ot log out?', [{ text: 'Yes', onPress: async () => logout() }, { text: 'No', style: 'cancel' }])
+
             return true
         } catch (error) {
             console.log(error)
         }
     }
-    return (
-        <ScreenView>
-            <View style={styles.topView}>
-                <TouchableOpacity>
 
-                    <AntDesign name="left" size={30} color="black" />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={logout} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text>Log Out</Text>
-                    <AntDesign style={{ marginLeft: 10 }} name="logout" size={30} color="black" />
-                </TouchableOpacity>
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerRight: () => (<TouchableOpacity onPress={logoutHandler} style={{ marginRight: 15, }}>
+                <Text style={{ ...FONTS.h4, color: COLORS.lightGray }}>Log Out</Text>
+            </TouchableOpacity>)
+        })
+    }, [navigation])
+    return (
+        <View style={styles.view}>
+            <View>
+                {/* Profile picture section */}
             </View>
-        </ScreenView>
+            <ScreenView>
+                <ProfileListItem tittle='Manage Managers' onPress={() => navigation.navigate('Managers', { subject: 'manager' })} />
+                <ProfileListItem tittle='Manage Coach' onPress={() => navigation.navigate('Managers', { subject: 'coach' })} />
+                <ProfileListItem tittle='Manage Referees' onPress={() => navigation.navigate('Managers', { subject: 'referee' })} />
+            </ScreenView>
+        </View>
     )
 }
 
 export default Profile
 
 const styles = StyleSheet.create({
-    topView: {
-        flexDirection: 'row',
-        alignItems: 'center', justifyContent: 'space-between',
-        marginHorizontal: SIZES.padding
+    view: {
+        flex: 1,
     }
 })

@@ -2,12 +2,13 @@ import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import { StyleSheet, Text, View } from 'react-native'
 import { COLORS, FONTS, SIZES } from '../constants/contantts'
+import AnimatedNumbers from 'react-native-animated-numbers';
 
 const MiniInfoCard = ({ title, subtitle, onPress, style }) => {
     return (
         <TouchableOpacity style={[styles.view, style]} onPress={onPress}>
             <Text style={{ ...FONTS.body4 }}>{title}</Text>
-            <Text style={{ ...FONTS.h2 }}>{subtitle}</Text>
+            <AnimatedNumbers animateToNumber={subtitle} fontStyle={{ ...FONTS.h2 }} />
         </TouchableOpacity>
     )
 }

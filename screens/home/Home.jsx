@@ -24,10 +24,6 @@ const Home = () => {
 
     }
 
-
-
-    console.log(quote)
-
     useEffect(() => {
         getTodayQuote()
     }, [])
@@ -37,8 +33,8 @@ const Home = () => {
                 <Text style={{ ...FONTS.h3 }}>{ddayjs().format('dddd, MMM D YYYY')}</Text>
             </View>
             <View style={styles.mini}>
-                <MiniInfoCard title="Today's Units" subtitle={0} />
-                <MiniInfoCard title="Today's Units" subtitle={0} />
+                <MiniInfoCard title="Today's Units" subtitle={5} />
+                <MiniInfoCard title="Today's Units" subtitle={26} />
                 <MiniInfoCard title="Today's Units" subtitle={0} />
             </View>
             {quote !== '' && (

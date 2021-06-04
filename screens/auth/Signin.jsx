@@ -1,18 +1,25 @@
-import React, { useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
+import { StyleSheet, Text, View, KeyboardAvoidingView, TouchableOpacity } from 'react-native'
 import ScreenView from '../ScreenView'
 
 import { Input, Button, Image } from 'react-native-elements'
-import { KeyboardAvoidingView } from 'react-native'
 import { Platform } from 'react-native'
-import { COLORS, SIZES } from '../../constants/contantts'
+import { COLORS, FONTS, SIZES } from '../../constants/contantts'
 import { Feather } from '@expo/vector-icons'
 import { auth } from '../../database'
+import { useNavigation } from '@react-navigation/native'
+import authContext from '../../context/auth/authContext'
+import Loader from '../../components/Loader'
 
-const Signin = () => {
+
+const Signin = ({ route }) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [error, setError] = useState(null)
+    const { error, setUser, loading } = useContext(authContext)
+
+    const preview = route.params?.previewEmail
+
+    const navigation = useNavigation()
 
     const singinHandler = async () => {
         try {
@@ -23,12 +30,33 @@ const Signin = () => {
                 alert('Invalid Email')
                 return
             }
-            await auth.signInWithEmailAndPassword(email, password)
+
+            const { user } = await auth.signInWithEmailAndPassword(email, password)
+
+            if (!user.emailVerified) {
+                alert('You must verify your email first')
+
+                return
+            } else if (user.emailVerified) {
+
+                setUser(user.uid)
+            }
         } catch (error) {
-            console.log(error)
-            setError(error.message)
+            console.log(error.message)
+            alert(error.message)
+
+
         }
     }
+
+
+    useEffect(() => {
+        if (preview) {
+            setEmail(preview)
+        }
+    }, [route.params])
+
+    if (loading) return <Loader />
     return (
         <ScreenView>
             <KeyboardAvoidingView style={styles.view} behavior={Platform.OS === 'ios' ? 'padding' : null}>
@@ -36,14 +64,22 @@ const Signin = () => {
                     <Image source={require('../../assets/verizon-logo.png')} style={{ width: SIZES.width / 3, height: 100, resizeMode: 'cover' }} />
                 </View>
                 <View style={{ width: '100%' }}>
-                    <Input placeholder='Email Address' value={email} onChangeText={text => setEmail(text.trim().toLowerCase())} />
+                    <Input placeholder='Email Address' keyboardType='email-address' autoCapitalize='none' value={email} onChangeText={text => setEmail(text.trim().toLowerCase())} />
                     <Input rightIcon={<Feather name="eye" size={24} color="black" />} placeholder='Password' secureTextEntry={true} value={password} onChangeText={text => setPassword(text.trim())} />
                 </View>
                 <View style={{ marginTop: 30 }}>
                     <Button type='outline' buttonStyle={{ borderColor: COLORS.secondary, backgroundColor: COLORS.primary }} style={{ width: SIZES.width / 3, }} titleStyle={{ color: COLORS.secondary }} raised title='Sign In' onPress={singinHandler} />
                 </View>
 
+                <View style={{ position: 'absolute', bottom: 100, left: 0, right: 0, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
+                    <Text style={{ ...FONTS.body4 }}>Do not have an account?</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+                        <Text style={{ ...FONTS.h3, color: COLORS.secondary }}>Sign Up!</Text>
+                    </TouchableOpacity>
+                </View>
+
             </KeyboardAvoidingView>
+
         </ScreenView>
     )
 }
@@ -54,7 +90,7 @@ const styles = StyleSheet.create({
     view: {
         justifyContent: 'center',
         alignItems: 'center',
-        flex: 1,
+        height: '100%',
         marginHorizontal: SIZES.padding * 0.5
     }
 })
