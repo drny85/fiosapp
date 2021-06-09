@@ -1,30 +1,47 @@
 import React, { useContext, useEffect, useLayoutEffect } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Loader from '../../components/Loader';
 import referralsContext from '../../context/referrals/referralContext';
 import { COLORS, FONTS, SIZES } from '../../constants/contantts';
 import moment from 'moment/moment'
 
-import Communications from 'react-native-communications';
 import PhoneCall from '../../components/PhoneCall';
-import { ref } from 'yup';
+import AddReferralModal from '../modals/AddReferralModal';
+import { useState } from 'react';
 
 
 const ReferralDetails = ({ route, navigation }) => {
-    const { referral } = route.params;
-    console.log(referral)
-    const makePhoneCall = async phone => {
-        try {
-            Communications.phonecall(phone.replace(/-/g, ""), true)
-        } catch (error) {
-            console.log(error)
-        }
-    }
+    const [visible, setVisible]= useState(false)
+    const {referrals} = useContext(referralsContext)
+   
+   const referral = referrals.find(r => r.id === route.params.id)
+
+   const inititalValues = {
+    name: referral.name,
+    address: referral.address,
+    apt: referral.apt,
+    city: referral.city,
+    state: referral.state,
+    zipcode: referral.zipcode,
+    referee: referral.referee,
+    manager: referral.manager,
+    moveIn: referral.moveIn,
+    email: referral.email,
+    phone: referral.phone,
+    comment: referral.comment,
+    status: referral.status,
+    mon: referral.mon,
+    due_date: referral.due_date,
+    order_date: referral.order_date,
+    id: referral.id,
+    package: referral.package,
+
+}
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            headerRight: () => (<TouchableOpacity style={{ marginRight: SIZES.padding * 0.8 }} onPress={() => navigation.navigate('EditReferral', { referral })} >
+            headerRight: () => (<TouchableOpacity style={{ marginRight: SIZES.padding * 0.8 }} onPress={() => setVisible(true)} >
                 <MaterialCommunityIcons name="square-edit-outline" size={24} color="black" />
             </TouchableOpacity>)
         })
@@ -33,7 +50,7 @@ const ReferralDetails = ({ route, navigation }) => {
     if (!referral) return <Loader />
 
     return (
-        <View style={styles.view}>
+        <ScrollView style={styles.view}>
             <View style={styles.customer}>
                 <Text style={[styles.name, { marginBottom: 15, }]}>{referral.name} </Text>
                 <Text style={styles.text}>{referral.address} {referral.apt && referral.apt} </Text>
@@ -58,7 +75,7 @@ const ReferralDetails = ({ route, navigation }) => {
                 <View style={styles.customer}>
                     <Text style={styles.text}>Mon: {referral.mon}</Text>
                     <Text style={styles.text}>Due Date: {moment(referral.due_date).format('ll')}</Text>
-                    <Text style={styles.text}>Package: {referral.package && referral.package.internet && referral.package.internet.name}  {referral.package && referral.package.tv && referral.package.tv.name}  {referral.package && referral.package.home && referral.package.home.name}</Text>
+                    <Text style={styles.text}>Package: {referral.package && referral.package.internet && referral.package.internet.name + ', '}  {referral.package && referral.package.tv && referral.package.tv.name + ', '}  {referral.package && referral.package.home && referral.package.home.name}</Text>
                     <Text style={styles.text}>Order Date: {moment(referral.order_date).format('ll')}</Text>
 
                 </View>
@@ -73,7 +90,9 @@ const ReferralDetails = ({ route, navigation }) => {
 
             </View>
 
-        </View>
+            <AddReferralModal visible={visible} initialValues={inititalValues} setVisible={setVisible} edit={true} />
+
+        </ScrollView>
     )
 }
 

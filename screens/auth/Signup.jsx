@@ -104,7 +104,7 @@ const Signup = ({ navigation }) => {
                     <Button type='outline' buttonStyle={{ borderColor: COLORS.secondary, backgroundColor: COLORS.primary }} style={{ width: SIZES.width / 3, }} titleStyle={{ color: COLORS.secondary }} raised title='Sign Up' onPress={signupHandler} />
                 </View>
 
-                <View style={{ position: 'absolute', bottom: 100, left: 0, right: 0, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
+                <View style={{ position: 'absolute', bottom: 30, left: 0, right: 0, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
                     <Text style={{ ...FONTS.body4 }}>Have an account?</Text>
                     <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                         <Text style={{ ...FONTS.h3, color: COLORS.secondary }}>Sign In!</Text>
@@ -123,6 +123,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         height: '100%',
-        marginHorizontal: SIZES.padding * 0.5
+        marginHorizontal: SIZES.padding * 0.5,
+        
     }
 })

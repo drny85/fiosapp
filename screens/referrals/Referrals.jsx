@@ -13,7 +13,7 @@ import AddReferralModal from '../modals/AddReferralModal'
 import ScreenView from '../ScreenView'
 
 const Referrals = ({ navigation }) => {
-    const { referrals, getReferrals, loading } = useContext(referralsContext)
+    const { referrals,loading } = useContext(referralsContext)
     const [visible, setVisible] = useState(false)
     const [show, setShow] = useState(false)
     const { user } = useContext(authContext)
@@ -42,7 +42,7 @@ const Referrals = ({ navigation }) => {
     const items = ({ item }) => {
 
         return (
-            <ReferralCard referral={item} onPress={() => navigation.navigate('ReferralDetails', { referral: item })} />
+            <ReferralCard referral={item} onPress={() => navigation.navigate('ReferralDetails', { id: item.id })} />
         )
     }
 

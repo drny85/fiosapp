@@ -29,7 +29,7 @@ const Picker = ({ data, onPress, showPicker, title }) => {
 							onPress={() => onPress(item)}
 						>
 							<View style={styles.icon}>
-								<Text style={{ ...FONTS }}> {item.id.length === 2 ? (item.id) : (item.name.split(' ')[0][0])}</Text>
+								<Text style={{ ...FONTS.h3 }}> {item.id.length === 2 ? (item.id) : (item.name.split(' ')[0][0])}</Text>
 							</View>
 							<View>
 								<Text style={{ ...FONTS.body3 }}>

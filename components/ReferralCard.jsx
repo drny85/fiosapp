@@ -35,8 +35,9 @@ export default ReferralCard
 const styles = StyleSheet.create({
     view: {
         width: '95%',
-        height: SIZES.height / 8,
-
+        height: SIZES.height / 5,
+        
+        minHeight: 100,
         padding: SIZES.padding * 0.6,
         shadowColor: COLORS.lightGray,
         shadowOffset: {

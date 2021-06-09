@@ -19,6 +19,8 @@ import refereesContext from '../../context/referee/refereesContext'
 import { statuses } from '../../statuses';
 import { services } from '../../services';
 import { TouchableHighlight } from 'react-native';
+import Loader from '../../components/Loader';
+
 
 
 
@@ -36,14 +38,14 @@ const referralSchema = Yup.object().shape({
     phone: Yup.string().min(10).required().label('Phone'),
     email: Yup.string().email().label('Email'),
     property: Yup.string(),
-    // manager: Yup.string().required().label('AM'),
-    // movein: Yup.string().required().label('Move In Date'),
-    // referee: Yup.string().required().label('A referee')
+
 })
 
 
 const AddReferralModal = ({ visible, setVisible, onPress, edit = false, initialValues = null }) => {
+   
     const [comment, setComment] = useState('')
+    const [loading, setLoading] = useState(false)
     const [showPicker, setShowPicker] = useState(false)
     const [showAMs, setShowAms] = useState(false)
     const [showRE, setShowReferee] = useState(false)
@@ -51,7 +53,7 @@ const AddReferralModal = ({ visible, setVisible, onPress, edit = false, initialV
     const { addReferral, updateReferral } = useContext(referralsContext)
     const { managers, getManagers } = useContext(managersContext)
     const { referees, getReferees } = useContext(refereesContext)
-    const [state, setState] = useState('')
+    const [state, setState] = useState({id:'NY', name:'New York'})
     const [manager, setManager] = useState('')
     const [referee, setReferee] = useState('')
     const [mon, setMon] = useState('')
@@ -90,7 +92,7 @@ const AddReferralModal = ({ visible, setVisible, onPress, edit = false, initialV
 
     const referralHandler = async (values) => {
         try {
-            console.log('WEEPA')
+            
             if (state === '' || manager === '' || referee === '') {
                 alert('Please check all fields')
                 return;
@@ -106,8 +108,8 @@ const AddReferralModal = ({ visible, setVisible, onPress, edit = false, initialV
                 }
             }
             values.date_entered = new Date().toISOString()
-            values.due_date = edit ? dueDate : null;
-            values.order_date = edit ? orderDate : null;
+            values.due_date = edit ? new Date(dueDate).toISOString() : null;
+            values.order_date = edit ? new Date(orderDate).toISOString() : null;
             values.status = status;
             values.package = edit && status.name.toLowerCase() === 'closed' ? { internet, tv, home } : null;
             values.updated = edit ? new Date().toISOString() : null;
@@ -115,32 +117,39 @@ const AddReferralModal = ({ visible, setVisible, onPress, edit = false, initialV
             values.collateral_sent = false;
             values.collateral_sent_on = null;
             values.property = values.property ? values.property : null;
-            values.state = state;
+            values.state = state
 
             values.comment = comment !== '' ? comment : null;
             values.userId = user.id;
             values.referee = referee;
-            values.state = state.id;
             values.manager = manager;
             values.moveIn = new Date(moveIn).toISOString()
-            console.log('VALUES', values)
-
+           
+            setLoading(true)
             if (initialValues && edit) {
+
                 const updated = await updateReferral(values)
                 if (updated) {
                     setVisible(false)
+                    setLoading(false)
+                  
                 }
             } else if (!edit) {
+              
                 const added = await addReferral(values)
                 if (added) {
                     setVisible(false)
+                    setLoading(false)
+                  
                 }
             } else {
+                setLoading(false)
                 return;
             }
 
         } catch (error) {
             console.log(error)
+            setLoading(false)
         }
     }
 
@@ -149,21 +158,27 @@ const AddReferralModal = ({ visible, setVisible, onPress, edit = false, initialV
         getReferees(user?.userId)
 
         if (initialValues) {
+           
             setManager(initialValues.manager)
             setReferee(initialValues.referee)
             setMoveIn(new Date(new Date().getTime()))
             setState(initialValues.state)
             setStatus(initialValues.status)
             setComment(initialValues?.comment)
+            setMon(initialValues.mon)
             setDueDate(new Date(new Date().getTime()))
-            setOrderDate(new Date(new Date(initialValues.order_date)))
+            setOrderDate(new Date(new Date(initialValues.order_date).getTime()))
+            setInternet(initialValues.package.internet)
+            setTv(initialValues.package.tv)
+            setHome(initialValues.package.home)
         }
 
         return () => {
 
-            setState('')
         }
     }, [user])
+
+    if (loading) return <Loader />
 
     return (
 

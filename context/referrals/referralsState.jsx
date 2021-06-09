@@ -79,7 +79,7 @@ const ReferralsState = ({ children }) => {
     const clearCurrent = () => dispatch({ type: CLEAR_CURRENT })
 
     const setReferralLoading = () => {
-        console.log('LOADING')
+        
         dispatch({ type: LOADING_REFERRAL })
     }
 

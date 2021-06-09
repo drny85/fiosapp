@@ -1,12 +1,11 @@
 
-import React, { useState, useEffect, useContext } from 'react';
+import React, {useEffect, useContext } from 'react';
 
 
 import { NavigationContainer } from "@react-navigation/native";
 import { AuthNavigator, TabNavigation } from './navigation';
 import { auth } from './database';
 import { useFonts } from '@expo-google-fonts/montserrat';
-import AppLoading from 'expo-app-loading';
 import ReferralsState from './context/referrals/referralsState';
 import referralsContext from './context/referrals/referralContext';
 import AuthState from './context/auth/authState';

@@ -21,7 +21,7 @@ export default (state, { type, payload }) => {
                 loading: false
             };
         case LOADING_REFERRAL:
-
+            console.log('LLLLL')
             return {
                 ...state,
                 loading: true,

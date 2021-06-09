@@ -71,7 +71,7 @@ const Signin = ({ route }) => {
                     <Button type='outline' buttonStyle={{ borderColor: COLORS.secondary, backgroundColor: COLORS.primary }} style={{ width: SIZES.width / 3, }} titleStyle={{ color: COLORS.secondary }} raised title='Sign In' onPress={singinHandler} />
                 </View>
 
-                <View style={{ position: 'absolute', bottom: 100, left: 0, right: 0, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
+                <View style={{ position: 'absolute', bottom: 30, left: 0, right: 0, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
                     <Text style={{ ...FONTS.body4 }}>Do not have an account?</Text>
                     <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
                         <Text style={{ ...FONTS.h3, color: COLORS.secondary }}>Sign Up!</Text>
