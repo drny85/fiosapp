@@ -78,10 +78,17 @@ const AuthState = ({ children }) => {
     const setUser = async (userId) => {
         try {
             dispatch({ type: USER_LOADING })
-            const user = await db.collection('users').doc(userId).get()
-            if (user.exists) {
-                dispatch({ type: SIGN_IN, payload: { id: user.id, ...user.data() } })
-            }
+            await db.collection('users').doc(userId).onSnapshot((doc) => {
+
+                dispatch({ type: SIGN_IN, payload: { id: doc.id, ...doc.data() } })
+
+            })
+
+
+
+            // if (user.exists) {
+            //     
+            // }
 
         } catch (error) {
             console.log('Error @setUser', error.message)

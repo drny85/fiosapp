@@ -10,7 +10,7 @@ import AppSubmitButton from '../../components/AppSubmitButton'
 import ButtonsTop from '../../components/ButtonsTop'
 import { SIZES, COLORS, FONTS } from '../../constants/contantts'
 import authContext from '../../context/auth/authContext'
-import coachContext from '../../context/manager/managersContext'
+import coachContext from '../../context/coach/coachContext'
 import managersContext from '../../context/manager/managersContext'
 import refereesContext from '../../context/referee/refereesContext'
 
@@ -24,13 +24,12 @@ const formSchema = Yup.object().shape({
 const AppPersonModal = ({ visible, setVisible, selected }) => {
     const { addManager } = useContext(managersContext)
     const { addReferee } = useContext(refereesContext)
-    const { addCoach, coach } = useContext(coachContext)
+    const { addCoach, coachs } = useContext(coachContext)
     const { user } = useContext(authContext)
     const [manager, setManager] = useState(false)
     const [coach, setCoach] = useState(false)
     const [referee, setReferee] = useState(false)
 
-    console.log(coach, selected)
     const handleSubmit = async (values) => {
         try {
             values.property = values.property === '' ? null : values.property;

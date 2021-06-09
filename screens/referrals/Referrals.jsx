@@ -40,21 +40,21 @@ const Referrals = ({ navigation }) => {
     }
 
     const items = ({ item }) => {
+
         return (
-            <ReferralCard referral={item} onPress={() => console.log(item.id)} />
+            <ReferralCard referral={item} onPress={() => navigation.navigate('ReferralDetails', { referral: item })} />
         )
     }
 
     useEffect(() => {
         checkIfUserHasCoach()
-        const sub = referrals.length === 0 && (async () => await getReferrals(user.id))
+
 
         return () => {
-            sub && sub()
+
         }
     }, [user])
 
-    console.log('Referral @referrals', referrals)
 
     if (loading) return <Loader />
     return (

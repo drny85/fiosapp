@@ -29,7 +29,7 @@ export const SIZES = {
 	statusBarHeight: Constants.statusBarHeight,
 
 	// font sizes
-	navTitle: 25,
+
 	h1: 30,
 	h2: 22,
 	h3: 16,
@@ -59,7 +59,6 @@ export const WEEKDAYS = {
 export const STATES = ['New York', 'New Jersey', 'Connecticut', 'Philadelphia'];
 
 export const FONTS = {
-	navTitle: { fontFamily: 'monserrat-thin', fontSize: SIZES.navTitle },
 	italic: { fontFamily: 'montserrat-bold-italic', fontSize: SIZES.body2 },
 	h1: { fontFamily: 'montserrat-bold', fontSize: SIZES.h1, lineHeight: 36 },
 	h2: { fontFamily: 'montserrat-bold', fontSize: SIZES.h2, lineHeight: 30 },

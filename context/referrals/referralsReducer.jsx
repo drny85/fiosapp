@@ -1,8 +1,13 @@
-import { GET_REFERRAL, GET_REFERRALS, LOADING_REFERRAL, REFERRAL_ERROR } from "./referralsTypes";
+import { ADD_REFERRAL, CLEAR_CURRENT, GET_REFERRAL, GET_REFERRALS, LOADING_REFERRAL, REFERRAL_ERROR, UPDATE_REFERRAL } from "./referralsTypes";
 
 
 export default (state, { type, payload }) => {
     switch (type) {
+        case ADD_REFERRAL:
+            return {
+                ...state,
+                loading: false,
+            }
         case GET_REFERRALS:
             return {
                 ...state,
@@ -16,6 +21,7 @@ export default (state, { type, payload }) => {
                 loading: false
             };
         case LOADING_REFERRAL:
+
             return {
                 ...state,
                 loading: true,
@@ -25,6 +31,18 @@ export default (state, { type, payload }) => {
                 ...state,
                 error: payload,
                 loading: false,
+            };
+        case UPDATE_REFERRAL:
+            return {
+                ...state,
+                loading: false,
+                error: null,
+            }
+        case CLEAR_CURRENT:
+            return {
+                ...state,
+                loading: false,
+                referral: null,
             }
 
 

@@ -18,11 +18,16 @@ const CoachsState = ({ children }) => {
     const addCoach = async (coachInfo) => {
         try {
             const partners = coachInfo.partners;
+            const found = await (await db.collection('coachs').doc(coachInfo.userId).collection('coachs').get()).size
+            if (found > 0) {
+                dispatch({ type: COACH_ERROR, payload: 'Only one coach allowed' })
+                return
+            }
             delete coachInfo.partners
             const res = await db.collection('coachs').doc(coachInfo.userId).collection('coachs').add(coachInfo)
-            if (!partners.manager) {
+            if (!partners.coach) {
                 await db.collection('users').doc(coachInfo.userId).update({
-                    coach: true
+                    coach: coachInfo
                 })
             }
 

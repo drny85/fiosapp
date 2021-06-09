@@ -1,5 +1,5 @@
 import { createContext } from 'react'
 
-const coachContext = createContext()
+const managersContext = createContext()
 
-export default coachContext
+export default managersContext

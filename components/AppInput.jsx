@@ -5,14 +5,14 @@ import { COLORS } from "../constants/contantts";
 
 
 
-const AppInput = ({ iconName, e = null, focus = false, onPressRightIcon, style, ...otherProps }) => {
+const AppInput = ({ iconName, e = null, focus = false, onPressRightIcon, containerStyle, style, ...otherProps }) => {
     const inputRef = useRef()
 
     return (
         <TouchableWithoutFeedback onPress={() => {
             inputRef.current.focus()
         }}>
-            <View style={styles.container}>
+            <View style={[styles.container, containerStyle]}>
                 {iconName && (
                     <MaterialIcons
                         style={styles.icon}
@@ -48,7 +48,7 @@ const AppInput = ({ iconName, e = null, focus = false, onPressRightIcon, style, 
 
 const styles = StyleSheet.create({
     container: {
-        width: "100%",
+
         height: 50,
         marginVertical: 12,
         padding: 8,
