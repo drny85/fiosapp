@@ -10,7 +10,7 @@ const CoachsState = ({ children }) => {
         coachs: [],
         coach: null,
         error: null,
-        loading: null
+        loading: false
     }
 
     const [state, dispatch] = useReducer(coachReducer, initialState)
@@ -41,6 +41,7 @@ const CoachsState = ({ children }) => {
 
     const getCoachs = async (userId) => {
         try {
+            console.log('Getting Coachs')
             if (!userId) return;
             const data = []
             await db.collection('coachs').doc(userId).collection('coachs').onSnapshot(doc => {

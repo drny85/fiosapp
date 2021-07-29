@@ -21,6 +21,7 @@ const ReferralsState = ({ children }) => {
     const addReferral = async (referral) => {
         try {
             dispatch({ type: LOADING_REFERRAL })
+            console.log(referral)
 
             const res = await db.collection('referrals').doc(referral.userId).collection('referrals').add(referral)
             if (res.id) dispatch({ type: ADD_REFERRAL })
@@ -79,12 +80,13 @@ const ReferralsState = ({ children }) => {
     const clearCurrent = () => dispatch({ type: CLEAR_CURRENT })
 
     const setReferralLoading = () => {
-        
+
         dispatch({ type: LOADING_REFERRAL })
     }
 
     const updateReferral = async referral => {
         try {
+
             setReferralLoading()
             await db.collection('referrals').doc(referral.userId).collection('referrals').doc(referral.id).update(referral)
             dispatch({ type: UPDATE_REFERRAL })

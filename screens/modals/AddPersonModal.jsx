@@ -13,10 +13,10 @@ import authContext from '../../context/auth/authContext'
 import coachContext from '../../context/coach/coachContext'
 import managersContext from '../../context/manager/managersContext'
 import refereesContext from '../../context/referee/refereesContext'
+import { formatPhone } from '../../utils/formatPhone'
 
 const formSchema = Yup.object().shape({
     name: Yup.string().required().label('Full name'),
-    phone: Yup.string().required().label('Phone'),
     email: Yup.string().email().required().label('Email')
 })
 
@@ -27,6 +27,7 @@ const AppPersonModal = ({ visible, setVisible, selected }) => {
     const { addCoach, coachs } = useContext(coachContext)
     const { user } = useContext(authContext)
     const [manager, setManager] = useState(false)
+    const [phone, setPhone] = useState('')
     const [coach, setCoach] = useState(false)
     const [referee, setReferee] = useState(false)
 
@@ -34,6 +35,7 @@ const AppPersonModal = ({ visible, setVisible, selected }) => {
         try {
             values.property = values.property === '' ? null : values.property;
             values.userId = user.userId;
+            values.phone = phone
             values.addedOn = new Date().toISOString()
             if (selected === 'manager' || manager) {
                 values.partners = { manager: user.manager, coach: user.coach };
@@ -93,16 +95,16 @@ const AppPersonModal = ({ visible, setVisible, selected }) => {
                 <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : null} style={styles.form}>
                     <AppForm validationSchema={formSchema} initialValues={{ name: '', phone: '', email: '', property: '' }} onSubmit={handleSubmit}>
                         <AppFormField name='name' placeholder='Full Name' autoCapitalize='words' />
-                        <AppFormField name='phone' placeholder='Phone' />
+                        <AppFormField name='phone' value={phone} placeholder='Phone' maxLength={14} onChangeText={text => setPhone(formatPhone(text))} />
                         <AppFormField name='email' placeholder='Email Address' textContentType="emailAddress" autoCapitalize="none" autoCorrect={false} />
 
                         <View style={styles.checkbox}>
-                            <CheckBox containerStyle={{ width: '36%', backgroundColor: 'transparent' }} checkedColor={COLORS.secondary} title='Manager' checked={manager} textStyle={{ ...FONTS.body3 }} onPress={() => { setManager(true); setCoach(false); setReferee(false) }} checkedIcon='dot-circle-o'
+                            <CheckBox containerStyle={{ paddingHorizontal: 10, backgroundColor: 'transparent' }} checkedColor={COLORS.secondary} title='Manager' checked={manager} textStyle={{ ...FONTS.body3 }} onPress={() => { setManager(true); setCoach(false); setReferee(false) }} checkedIcon='dot-circle-o'
                                 uncheckedIcon='circle-o' />
 
-                            <CheckBox containerStyle={{ width: '32%', backgroundColor: 'transparent' }} checkedColor={COLORS.secondary} title='Referee' checked={referee} textStyle={{ ...FONTS.body3 }} onPress={() => { setManager(false); setCoach(false); setReferee(true) }} checkedIcon='dot-circle-o'
+                            <CheckBox containerStyle={{ backgroundColor: 'transparent' }} checkedColor={COLORS.secondary} title='Referee' checked={referee} textStyle={{ ...FONTS.body3 }} onPress={() => { setManager(false); setCoach(false); setReferee(true) }} checkedIcon='dot-circle-o'
                                 uncheckedIcon='circle-o' />
-                            <CheckBox containerStyle={{ width: '32%', backgroundColor: 'transparent', paddingHorizontal: 10 }} checkedColor={COLORS.secondary} title='Coach' checked={coach} textStyle={{ ...FONTS.body3 }} onPress={() => { setManager(false); setCoach(true); setReferee(false) }} checkedIcon='dot-circle-o'
+                            <CheckBox containerStyle={{ backgroundColor: 'transparent', paddingHorizontal: 10 }} checkedColor={COLORS.secondary} title='Coach' checked={coach} textStyle={{ ...FONTS.body3 }} onPress={() => { setManager(false); setCoach(true); setReferee(false) }} checkedIcon='dot-circle-o'
                                 uncheckedIcon='circle-o' />
                         </View>
                         {referee && (<AppFormField name="property" placeholder="Property's Name - (optional)" />)}
@@ -130,6 +132,12 @@ const styles = StyleSheet.create({
     },
     checkbox: {
         flexDirection: 'row',
-        width: '90%'
+
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        marginHorizontal: 4,
+
+
     }
 })

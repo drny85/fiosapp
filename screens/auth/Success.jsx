@@ -8,7 +8,7 @@ const Success = ({ route, navigation }) => {
     return (
         <View style={styles.view}>
             <Text style={{ ...FONTS.h2, marginBottom: 20 }}>Congratulations!</Text>
-            <Text style={{ ...FONTS.body3, marginBottom: 10 }}>Your account has been created but we need to vefify your email</Text>
+            <Text style={{ ...FONTS.body3, marginBottom: 10 }}>Your account has been created but we need to verify your email</Text>
             <Text style={{ ...FONTS.body3 }}>An email has been to {email}</Text>
             <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Login', { previewEmail: email })}>
                 <Text style={{ ...FONTS.body2 }}>Got it!</Text>

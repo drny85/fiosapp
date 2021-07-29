@@ -67,6 +67,7 @@ const AuthState = ({ children }) => {
             const user = await db.collection('users').doc(userInfo.userId).set(userInfo)
 
             const res = await db.collection('users').doc(userInfo.userId).get();
+            await db.collection('referees').doc(userInfo.userId).collection('referees').add(userInfo)
 
             return true
         } catch (error) {

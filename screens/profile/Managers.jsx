@@ -13,6 +13,11 @@ import AddPersonModal from '../modals/AddPersonModal'
 
 import referralsContext from '../../context/referrals/referralContext';
 import refereesContext from '../../context/referee/refereesContext';
+import { FlatList } from 'react-native';
+import authContext from '../../context/auth/authContext';
+import managersContext from '../../context/manager/managersContext';
+import Loader from '../../components/Loader';
+import PeopleCard from '../../components/PeopleCard';
 
 
 
@@ -29,13 +34,28 @@ const Managers = ({ navigation, route }) => {
     const [visible, setVisible] = useState(false)
     const [coach, setCoach] = useState(false)
     const [referee, setReferee] = useState(false)
+    const { user } = useContext(authContext)
+    const { referees, getReferees } = useContext(refereesContext)
+    const { managers, getManagers, loading } = useContext(managersContext)
+    const { coachs, getCoachs } = useContext(managersContext)
+    const [data, setData] = useState([])
 
-    const { referees } = useContext(refereesContext)
-    const { referrals } = useContext(referralsContext)
-
+    const title = () => {
+        switch (subject) {
+            case 'manager':
+                return 'Managers'
+            case 'referee':
+                return 'Referees'
+            case 'coach':
+                return 'Coach'
+            default:
+                return subject
+        }
+    }
 
     useLayoutEffect(() => {
         navigation.setOptions({
+            title: title(),
             headerRight: () => (
                 <TouchableOpacity style={{ marginRight: SIZES.padding * 0.5 }} onPress={() => setVisible(true)}>
                     <AntDesign name="plus" size={28} color={COLORS.secondary} />
@@ -44,13 +64,43 @@ const Managers = ({ navigation, route }) => {
         })
     }, [navigation])
 
+    useEffect(() => {
+        switch (subject) {
+            case 'manager':
+                getManagers(user?.id)
+                if (managers.length > 0) {
+                    setData([...managers])
+                }
+
+                break;
+            case 'referee':
+                getReferees(user?.id)
+                if (referees.length > 0) {
+                    setData([...referees])
+                }
+                break;
+
+            default:
+                break;
+        }
+    }, [subject])
+
+
+    if (loading) return <Loader />
     return (
         <View style={styles.view}>
-            <Text>My Partners</Text>
 
-            <View style={{ height: '100%' }}>
+            {data?.length > 0 ? (
 
-            </View>
+                <FlatList data={data} keyExtractor={item => item.id} renderItem={({ item }) => <PeopleCard item={item} onPress={() => console.log(item.name)} />} />
+
+
+
+            ) : (
+                    <View>
+                        <Text>No Data</Text>
+                    </View>
+                )}
             <AddPersonModal visible={visible} setVisible={() => setVisible(false)} selected={subject} />
         </View>
     )
@@ -61,7 +111,6 @@ export default Managers
 const styles = StyleSheet.create({
     view: {
         flex: 1,
-        alignItems: 'center'
 
     },
     form: {

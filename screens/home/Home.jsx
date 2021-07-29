@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import { Button } from 'react-native-elements/dist/buttons/Button'
 import { COLORS, FONTS, SIZES } from '../../constants/contantts'
 import ScreenView from '../ScreenView'
-import ddayjs from 'dayjs'
+import moment from 'moment'
 
 import MiniInfoCard from '../../components/MiniInfoCard'
 
@@ -30,7 +30,7 @@ const Home = () => {
     return (
         <ScreenView style={styles.container}>
             <View style={styles.dateView}>
-                <Text style={{ ...FONTS.h3 }}>{ddayjs().format('dddd, MMM D YYYY')}</Text>
+                <Text style={{ ...FONTS.h4 }}>{moment().format('dddd, MMMM Do YYYY')}</Text>
             </View>
             <View style={styles.mini}>
                 <MiniInfoCard title="Today's Units" subtitle={5} />

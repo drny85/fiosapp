@@ -3,14 +3,14 @@ import { db } from '../../database'
 
 import ManagersContext from './managersContext'
 import managersReducer from './managersReducer'
-import { GET_MANAGERS, MANAGER_ERROR } from './managersTypes'
+import { GET_MANAGERS, MANAGER_ERROR, MANAGER_LOADING } from './managersTypes'
 
 const ManagersState = ({ children }) => {
     const initialState = {
         managers: [],
         manager: null,
         error: null,
-        loading: null
+        loading: false
     }
 
     const [state, dispatch] = useReducer(managersReducer, initialState)
@@ -36,7 +36,9 @@ const ManagersState = ({ children }) => {
 
     const getManagers = async (userId) => {
         try {
+            console.log('Gettings AMs')
             if (!userId) return;
+            setManagersLoading()
             const data = []
             await db.collection('managers').doc(userId).collection('managers').onSnapshot(doc => {
                 return doc.forEach(ref => {
@@ -52,6 +54,8 @@ const ManagersState = ({ children }) => {
             dispatch({ type: MANAGER_ERROR, payload: error.message })
         }
     }
+
+    const setManagersLoading = () => dispatch({ type: MANAGER_LOADING })
 
     return (
         <ManagersContext.Provider value={{

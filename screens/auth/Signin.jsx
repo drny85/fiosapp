@@ -11,11 +11,14 @@ import { useNavigation } from '@react-navigation/native'
 import authContext from '../../context/auth/authContext'
 import Loader from '../../components/Loader'
 
+import LottieView from 'lottie-react-native';
+
 
 const Signin = ({ route }) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const { error, setUser, loading } = useContext(authContext)
+    const [processing, setProcessing] = useState(false)
 
     const preview = route.params?.previewEmail
 
@@ -38,8 +41,8 @@ const Signin = ({ route }) => {
 
                 return
             } else if (user.emailVerified) {
+                setProcessing(true)
 
-                setUser(user.uid)
             }
         } catch (error) {
             console.log(error.message)
@@ -57,28 +60,40 @@ const Signin = ({ route }) => {
     }, [route.params])
 
     if (loading) return <Loader />
+
     return (
         <ScreenView>
-            <KeyboardAvoidingView style={styles.view} behavior={Platform.OS === 'ios' ? 'padding' : null}>
-                <View style={{ width: '100%', height: 100, alignItems: 'center', justifyContent: 'center' }}>
-                    <Image source={require('../../assets/verizon-logo.png')} style={{ width: SIZES.width / 3, height: 100, resizeMode: 'cover' }} />
+            {processing ? (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <LottieView loop={false} source={require('../../assets/animations/welcome.json')} onAnimationFinish={() => {
+                        setProcessing(false)
+                        setUser(user.uid)
+                    }} />
                 </View>
-                <View style={{ width: '100%' }}>
-                    <Input placeholder='Email Address' keyboardType='email-address' autoCapitalize='none' value={email} onChangeText={text => setEmail(text.trim().toLowerCase())} />
-                    <Input rightIcon={<Feather name="eye" size={24} color="black" />} placeholder='Password' secureTextEntry={true} value={password} onChangeText={text => setPassword(text.trim())} />
-                </View>
-                <View style={{ marginTop: 30 }}>
-                    <Button type='outline' buttonStyle={{ borderColor: COLORS.secondary, backgroundColor: COLORS.primary }} style={{ width: SIZES.width / 3, }} titleStyle={{ color: COLORS.secondary }} raised title='Sign In' onPress={singinHandler} />
-                </View>
+            ) : (
+                    <KeyboardAvoidingView style={styles.view} behavior={Platform.OS === 'ios' ? 'padding' : null}>
+                        <View style={{ width: '100%', height: 100, alignItems: 'center', justifyContent: 'center' }}>
+                            <Image source={require('../../assets/verizon-logo.png')} style={{ width: SIZES.width / 3, height: 100, resizeMode: 'cover' }} />
+                        </View>
+                        <View style={{ width: '100%' }}>
+                            <Input placeholder='Email Address' keyboardType='email-address' autoCapitalize='none' value={email} onChangeText={text => setEmail(text.trim().toLowerCase())} />
+                            <Input rightIcon={<Feather name="eye" size={24} color="black" />} placeholder='Password' secureTextEntry={true} value={password} onChangeText={text => setPassword(text.trim())} />
+                        </View>
+                        <View style={{ marginTop: 30 }}>
+                            <Button type='outline' buttonStyle={{ borderColor: COLORS.secondary, backgroundColor: COLORS.primary }} style={{ width: SIZES.width / 3, }} titleStyle={{ color: COLORS.secondary }} raised title='Sign In' onPress={singinHandler} />
+                        </View>
 
-                <View style={{ position: 'absolute', bottom: 30, left: 0, right: 0, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
-                    <Text style={{ ...FONTS.body4 }}>Do not have an account?</Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-                        <Text style={{ ...FONTS.h3, color: COLORS.secondary }}>Sign Up!</Text>
-                    </TouchableOpacity>
-                </View>
+                        <View style={{ position: 'absolute', bottom: 30, left: 0, right: 0, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
+                            <Text style={{ ...FONTS.body4 }}>Do not have an account??</Text>
 
-            </KeyboardAvoidingView>
+                            <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+                                <Text style={{ ...FONTS.h3, color: COLORS.secondary }}>Sign Up!</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                    </KeyboardAvoidingView>
+                )}
+
 
         </ScreenView>
     )

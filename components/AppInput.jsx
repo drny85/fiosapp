@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { View, StyleSheet, TextInput, TouchableWithoutFeedback } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { COLORS } from "../constants/contantts";
+import { COLORS, SIZES } from "../constants/contantts";
 
 
 
@@ -12,7 +12,7 @@ const AppInput = ({ iconName, e = null, focus = false, onPressRightIcon, contain
         <TouchableWithoutFeedback onPress={() => {
             inputRef.current.focus()
         }}>
-            <View style={[styles.container, containerStyle]}>
+            <View style={[containerStyle]}>
                 {iconName && (
                     <MaterialIcons
                         style={styles.icon}
@@ -26,7 +26,6 @@ const AppInput = ({ iconName, e = null, focus = false, onPressRightIcon, contain
                     ref={inputRef}
                     autoFocus={focus}
                     autoCapitalize={e}
-
                     placeholderTextColor={COLORS.lightGray}
                     style={[styles.input, style]}
                     {...otherProps}
@@ -47,27 +46,16 @@ const AppInput = ({ iconName, e = null, focus = false, onPressRightIcon, contain
 };
 
 const styles = StyleSheet.create({
-    container: {
 
-        height: 50,
-        marginVertical: 12,
-        padding: 8,
-        borderRadius: 25,
-        alignItems: "center",
-        backgroundColor: COLORS.tile,
-        flexDirection: "row",
-        borderBottomWidth: 1,
-        borderBottomColor: COLORS.lightGray,
-    },
     icon: {
         marginRight: 10,
     },
     input: {
-        color: COLORS.black,
-        fontSize: 18,
-        paddingHorizontal: 10,
-
-        height: "100%",
+        borderBottomColor: COLORS.light,
+        borderBottomWidth: 0.6,
+        paddingVertical: SIZES.padding * 0.3,
+        paddingHorizontal: SIZES.padding * 0.5,
+        marginVertical: SIZES.padding * 0.5,
     },
 });
 

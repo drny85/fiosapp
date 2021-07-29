@@ -43,7 +43,7 @@ const referralSchema = Yup.object().shape({
 
 
 const AddReferralModal = ({ visible, setVisible, onPress, edit = false, initialValues = null }) => {
-   
+
     const [comment, setComment] = useState('')
     const [loading, setLoading] = useState(false)
     const [showPicker, setShowPicker] = useState(false)
@@ -53,7 +53,7 @@ const AddReferralModal = ({ visible, setVisible, onPress, edit = false, initialV
     const { addReferral, updateReferral } = useContext(referralsContext)
     const { managers, getManagers } = useContext(managersContext)
     const { referees, getReferees } = useContext(refereesContext)
-    const [state, setState] = useState({id:'NY', name:'New York'})
+    const [state, setState] = useState({ id: 'NY', name: 'New York' })
     const [manager, setManager] = useState('')
     const [referee, setReferee] = useState('')
     const [mon, setMon] = useState('')
@@ -92,7 +92,7 @@ const AddReferralModal = ({ visible, setVisible, onPress, edit = false, initialV
 
     const referralHandler = async (values) => {
         try {
-            
+
             if (state === '' || manager === '' || referee === '') {
                 alert('Please check all fields')
                 return;
@@ -124,7 +124,7 @@ const AddReferralModal = ({ visible, setVisible, onPress, edit = false, initialV
             values.referee = referee;
             values.manager = manager;
             values.moveIn = new Date(moveIn).toISOString()
-           
+
             setLoading(true)
             if (initialValues && edit) {
 
@@ -132,15 +132,15 @@ const AddReferralModal = ({ visible, setVisible, onPress, edit = false, initialV
                 if (updated) {
                     setVisible(false)
                     setLoading(false)
-                  
+
                 }
             } else if (!edit) {
-              
+
                 const added = await addReferral(values)
                 if (added) {
                     setVisible(false)
                     setLoading(false)
-                  
+
                 }
             } else {
                 setLoading(false)
@@ -158,7 +158,7 @@ const AddReferralModal = ({ visible, setVisible, onPress, edit = false, initialV
         getReferees(user?.userId)
 
         if (initialValues) {
-           
+
             setManager(initialValues.manager)
             setReferee(initialValues.referee)
             setMoveIn(new Date(new Date().getTime()))

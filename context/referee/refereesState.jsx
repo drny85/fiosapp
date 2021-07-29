@@ -10,7 +10,7 @@ const RefereesState = ({ children }) => {
         referees: [],
         referee: null,
         error: null,
-        loading: null
+        loading: false
     }
 
     const [state, dispatch] = useReducer(refereesReducer, initialState)
@@ -31,6 +31,7 @@ const RefereesState = ({ children }) => {
 
     const getReferees = async (userId) => {
         try {
+            console.log('Getting Referees')
             if (!userId) return;
             const data = []
             await db.collection('referees').doc(userId).collection('referees').onSnapshot(doc => {

@@ -12,36 +12,36 @@ import { useState } from 'react';
 
 
 const ReferralDetails = ({ route, navigation }) => {
-    const [visible, setVisible]= useState(false)
-    const {referrals} = useContext(referralsContext)
-   
-   const referral = referrals.find(r => r.id === route.params.id)
+    const [visible, setVisible] = useState(false)
+    const { referrals } = useContext(referralsContext)
 
-   const inititalValues = {
-    name: referral.name,
-    address: referral.address,
-    apt: referral.apt,
-    city: referral.city,
-    state: referral.state,
-    zipcode: referral.zipcode,
-    referee: referral.referee,
-    manager: referral.manager,
-    moveIn: referral.moveIn,
-    email: referral.email,
-    phone: referral.phone,
-    comment: referral.comment,
-    status: referral.status,
-    mon: referral.mon,
-    due_date: referral.due_date,
-    order_date: referral.order_date,
-    id: referral.id,
-    package: referral.package,
+    const referral = referrals.find(r => r.id === route.params.id)
 
-}
+    const inititalValues = {
+        name: referral.name,
+        address: referral.address,
+        apt: referral.apt,
+        city: referral.city,
+        state: referral.state,
+        zipcode: referral.zipcode,
+        referee: referral.referee,
+        manager: referral.manager,
+        moveIn: referral.moveIn,
+        email: referral.email,
+        phone: referral.phone,
+        comment: referral.comment,
+        status: referral.status,
+        mon: referral.mon,
+        due_date: referral.due_date,
+        order_date: referral.order_date,
+        id: referral.id,
+        package: referral.package,
+
+    }
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            headerRight: () => (<TouchableOpacity style={{ marginRight: SIZES.padding * 0.8 }} onPress={() => setVisible(true)} >
+            headerRight: () => (<TouchableOpacity style={{ marginRight: SIZES.padding * 0.8 }} onPress={() => navigation.navigate('AddReferralScreen', { edit: true, referral: inititalValues })} >
                 <MaterialCommunityIcons name="square-edit-outline" size={24} color="black" />
             </TouchableOpacity>)
         })
@@ -89,8 +89,8 @@ const ReferralDetails = ({ route, navigation }) => {
                 </View>
 
             </View>
+            {visible && (<AddReferralModal visible={visible} initialValues={inititalValues} setVisible={setVisible} edit={true} />)}
 
-            <AddReferralModal visible={visible} initialValues={inititalValues} setVisible={setVisible} edit={true} />
 
         </ScrollView>
     )
