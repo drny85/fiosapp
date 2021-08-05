@@ -21,12 +21,6 @@
 			"buildNumber": "1.0.0"
 		},
 		"extra": {
-			"apiKey": "AIzaSyC1Yw3ZIVOAWIEp9acQXZhesx_ZKYW53pg",
-			"authDomain": "fiosrewards.firebaseapp.com",
-			"databaseURL": "https://fiosrewards.firebaseio.com",
-			"projectId": "fiosrewards",
-			"storageBucket": "fiosrewards.appspot.com",
-			"messagingSenderId": "188462078951",
 			"appId": "1:188462078951:web:0b59e22c794940dcaafb42"
 		},
 		"android": {

@@ -10,19 +10,32 @@ import { COLORS, FONTS, SIZES } from '../constants/contantts'
 
 const ReferralCard = ({ referral, onPress, style }) => {
 
+
+    const line = referral.address.split(',')
+    const line1 = line[0] + ` ${referral.apt ? ', ' + referral.apt : ''}`;
+    const line2 = line[1].trim() + ', ' + line[2]
+
+
     return (
         <TouchableOpacity onPress={onPress} style={[styles.view, style]}>
-            <Text style={{ ...FONTS.h3 }}>{referral.name}</Text>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Text style={{ ...FONTS.h3, textAlign: 'center', marginBottom: 4 }}>{referral.name}</Text>
+            <View style={{ alignItems: 'flex-start' }}>
                 <View>
-                    <Text>{referral.address} {referral.apt && referral.apt}</Text>
-                    <Text>{referral.city}, {referral.state.id} {referral.zipcode}</Text>
-                    <Text>{referral.phone}</Text>
+                    <Text style={{ ...FONTS.h4 }}>Address: <Text style={{ ...FONTS.body4 }}>{line1} {line2}</Text></Text>
+                    <Text style={{ ...FONTS.h4 }}>Phone: <Text style={{ ...FONTS.body4 }}>{referral.phone}</Text></Text>
+                    {referral.email && (<Text style={{ ...FONTS.h4 }}>Email: <Text style={{ ...FONTS.body4 }}>{referral.email}</Text></Text>)}
+
                 </View>
-                <View>
-                    <Text style={{ ...FONTS.h4 }}>Move In</Text>
-                    <Text style={{ ...FONTS.body4 }}>{moment(referral.moveIn).format('ll')}</Text>
+                <View style={{ justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row', width: '100%' }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', }}>
+                        <Text style={{ ...FONTS.h4, marginRight: 10, }}>Move In:</Text>
+
+                        <Text style={{ ...FONTS.body4 }}>{moment(referral.moveIn).format('ll')}</Text>
+                    </View>
+
                     <Text style={{ ...FONTS.body4 }}>{moment(referral.moveIn).fromNow()}</Text>
+
+
                 </View>
             </View>
 
@@ -36,19 +49,18 @@ const styles = StyleSheet.create({
     view: {
         width: '95%',
         maxHeight: 200,
-
         minHeight: 100,
         padding: SIZES.padding * 0.6,
-        shadowColor: COLORS.lightGray,
+        shadowColor: COLORS.card,
         shadowOffset: {
             width: 8,
-            height: 10,
+            height: 8,
 
         },
         elevation: 10,
         shadowOpacity: 0.6,
         shadowRadius: 10,
-        backgroundColor: COLORS.primary,
+        backgroundColor: COLORS.white,
         marginVertical: 5,
         borderRadius: SIZES.radius,
         alignSelf: 'center'

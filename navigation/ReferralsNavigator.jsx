@@ -12,7 +12,7 @@ const Stack = createSharedElementStackNavigator()
 const ReferralsNavigation = () => {
     return (
         <Stack.Navigator mode='modal'>
-            <Stack.Screen name='Referrals' options={{ headerShown: null }} component={Referrals} />
+            <Stack.Screen name='Referrals' component={Referrals} />
             <Stack.Screen name='ReferralDetails' component={ReferralDetails} options={{ title: 'Details' }} />
             <Stack.Screen name='AddReferralScreen' component={MultiForm} options={{ headerShown: null }} />
 

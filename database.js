@@ -3,28 +3,25 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/storage';
-import Constants from 'expo-constants';
 
-const {
-	apiKey,
-	authDomain,
-	databaseURL,
-	projectId,
-	storageBucket,
-	messagingSenderId,
-	appId,
-	measurementId,
-} = Constants.manifest.extra;
+import {
+	FIREBASE_APPID,
+	FIREBASE_APIKEY,
+	FIREBASE_AUTHDOMAIN,
+	FIREBASE_STORAGE_BUCKET,
+	FIREBASE_MESSAGING_SENDERID,
+	FIREBASE_PROJECT_ID,
+	FIREBASE_DATABASE_URL,
+} from '@env';
 
 const firebaseConfig = {
-	apiKey: apiKey,
-	authDomain: authDomain,
-	databaseURL: databaseURL,
-	projectId: projectId,
-	messagingSenderId: messagingSenderId,
-	storageBucket: storageBucket,
-	appId: appId,
-	measurementId: measurementId,
+	apiKey: FIREBASE_APIKEY,
+	authDomain: FIREBASE_AUTHDOMAIN,
+	databaseURL: FIREBASE_DATABASE_URL,
+	projectId: FIREBASE_PROJECT_ID,
+	messagingSenderId: FIREBASE_MESSAGING_SENDERID,
+	storageBucket: FIREBASE_STORAGE_BUCKET,
+	appId: FIREBASE_APPID,
 };
 // Ini
 

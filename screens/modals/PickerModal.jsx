@@ -12,14 +12,19 @@ import {
 import { COLORS, FONTS, SIZES } from '../../constants/contantts';
 
 
-const Picker = ({ data, onPress, showPicker, title }) => {
+const Picker = ({ data, onPress, showPicker, title, actionRigthButton }) => {
 
 	return (
 		<Modal animationType='slide' visible={showPicker}>
 			<View style={styles.view}>
-				<Text style={{ textAlign: 'center', ...FONTS.h3, marginBottom: 10 }}>
-					Pick {title}
-				</Text>
+				<View style={{ justifyContent: 'space-evenly', alignItems: 'center', width: '100%', flexDirection: 'row', marginBottom: 15 }}>
+					<Text></Text>
+					<Text style={{ textAlign: 'center', ...FONTS.h3, }}>
+						Pick {title}
+					</Text>
+					{actionRigthButton && (actionRigthButton)}
+				</View>
+
 				<FlatList
 					data={data}
 					renderItem={({ item }) => (

@@ -13,6 +13,7 @@ const ReferralsState = ({ children }) => {
         referral: null,
         error: null,
         loading: false,
+        coors: null,
         filtered: null
     }
 
@@ -21,7 +22,6 @@ const ReferralsState = ({ children }) => {
     const addReferral = async (referral) => {
         try {
             dispatch({ type: LOADING_REFERRAL })
-            console.log(referral)
 
             const res = await db.collection('referrals').doc(referral.userId).collection('referrals').add(referral)
             if (res.id) dispatch({ type: ADD_REFERRAL })
@@ -111,6 +111,7 @@ const ReferralsState = ({ children }) => {
             getReferralById,
             clearCurrent,
             updateReferral,
+
         }} >
             {children}
         </ReferralsContext.Provider>

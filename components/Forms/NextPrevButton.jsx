@@ -14,9 +14,9 @@ const NextPrevButton = ({ onPress, title, containerStyle, iconPosition, iconName
                 containerStyle,
                 {
                     backgroundColor: disabled ? '#ebeff5' : '#FFFFFF',
-                    shadowColor: '#dedede',
-                    shadowOffset: { width: 3, height: 7 },
-                    shadowOpacity: 0.7,
+                    shadowColor: COLORS.ascent,
+                    shadowOffset: { width: 3, height: 5 },
+                    shadowOpacity: 0.6,
                     shadowRadius: 5,
                     elevation: 8,
                     borderRadius: 20,

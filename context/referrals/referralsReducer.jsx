@@ -14,6 +14,7 @@ export default (state, { type, payload }) => {
                 referrals: payload,
                 loading: false
             };
+
         case GET_REFERRAL:
             return {
                 ...state,

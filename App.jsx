@@ -1,7 +1,7 @@
 
 import React, { useEffect, useContext } from 'react';
-
-
+import moment from 'moment'
+import * as Notifications from 'expo-notifications';
 import { NavigationContainer } from "@react-navigation/native";
 import { AuthNavigator, TabNavigation } from './navigation';
 import { auth } from './database';
@@ -14,9 +14,21 @@ import Loader from './components/Loader';
 import ManagersState from './context/manager/managersState';
 import RefereesState from './context/referee/refereesState';
 import CoachsState from './context/coach/coachState';
+import { useNotification } from './hooks/useNotification';
+
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
+
 
 
 const App = () => {
+
 
   const [fontsLoaded, error] = useFonts({
     montserrat: require("./assets/fonts/Montserrat-Regular.ttf"),
@@ -29,8 +41,12 @@ const App = () => {
   const { getReferrals } = useContext(referralsContext)
   const { setUser, user, logout, loading } = useContext(authContext)
 
+  useNotification()
 
   useEffect(() => {
+    const subscription = Notifications.addNotificationReceivedListener(notification => {
+      console.log(notification.request.content);
+    });
     const listener = auth.onAuthStateChanged(u => {
 
       if (u) {
@@ -43,8 +59,13 @@ const App = () => {
       }
     })
 
+
+
+    //scheduleMotification('Hola', 'Welcome to yuor app', triger)
+
     return () => {
       listener && listener()
+      subscription && subscription.remove();
     }
   }, [])
 

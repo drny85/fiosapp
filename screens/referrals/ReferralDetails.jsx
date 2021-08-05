@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useLayoutEffect } from 'react'
+import React, { useContext, useState, useLayoutEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Loader from '../../components/Loader';
@@ -8,7 +8,7 @@ import moment from 'moment/moment'
 
 import PhoneCall from '../../components/PhoneCall';
 import AddReferralModal from '../modals/AddReferralModal';
-import { useState } from 'react';
+
 
 
 const ReferralDetails = ({ route, navigation }) => {
@@ -21,9 +21,6 @@ const ReferralDetails = ({ route, navigation }) => {
         name: referral.name,
         address: referral.address,
         apt: referral.apt,
-        city: referral.city,
-        state: referral.state,
-        zipcode: referral.zipcode,
         referee: referral.referee,
         manager: referral.manager,
         moveIn: referral.moveIn,
@@ -39,6 +36,11 @@ const ReferralDetails = ({ route, navigation }) => {
 
     }
 
+    const line = referral.address.split(',')
+    const line1 = line[0] + ` ${referral.apt ? ', ' + referral.apt : ''}`;
+    const line2 = line[1].trim() + ', ' + line[2]
+    const line3 = line[2]
+
     useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => (<TouchableOpacity style={{ marginRight: SIZES.padding * 0.8 }} onPress={() => navigation.navigate('AddReferralScreen', { edit: true, referral: inititalValues })} >
@@ -47,14 +49,17 @@ const ReferralDetails = ({ route, navigation }) => {
         })
     }, [navigation])
 
+    console.log('R', referral)
+
     if (!referral) return <Loader />
 
     return (
         <ScrollView style={styles.view}>
             <View style={styles.customer}>
                 <Text style={[styles.name, { marginBottom: 15, }]}>{referral.name} </Text>
-                <Text style={styles.text}>{referral.address} {referral.apt && referral.apt} </Text>
-                <Text style={styles.text}>{referral.city}, {referral.state.id} {referral.zipcode} </Text>
+                <Text style={styles.text}>{line1} </Text>
+                <Text style={styles.text}>{line2} </Text>
+
                 <PhoneCall phone={referral.phone} />
                 <Text style={styles.text}>{referral.email && referral.email}</Text>
             </View>
@@ -73,14 +78,23 @@ const ReferralDetails = ({ route, navigation }) => {
             </View>
             {referral?.status.name.toLowerCase() === 'closed' && (
                 <View style={styles.customer}>
-                    <Text style={styles.text}>Mon: {referral.mon}</Text>
-                    <Text style={styles.text}>Due Date: {moment(referral.due_date).format('ll')}</Text>
+                    <Text style={[styles.text, { ...FONTS.h3 }]}>Mon: {referral.mon}</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Text style={[styles.text, { ...FONTS.h3 }]}>Due Date: {moment(referral.due_date).format('ll')}</Text>
+                        <Text style={{ color: COLORS.lightGray }}>{moment(referral.due_date).fromNow()}</Text>
+                    </View>
+
                     <Text style={styles.text}>Package: {referral.package && referral.package.internet && referral.package.internet.name + ', '}  {referral.package && referral.package.tv && referral.package.tv.name + ', '}  {referral.package && referral.package.home && referral.package.home.name}</Text>
-                    <Text style={styles.text}>Order Date: {moment(referral.order_date).format('ll')}</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Text style={[styles.text, { ...FONTS.h3 }]}>Order Date: {moment(referral.order_date).format('ll')}</Text>
+                        <Text style={{ color: COLORS.lightGray }}>{moment(referral.order_date).fromNow()}</Text>
+                    </View>
+
 
                 </View>
             )}
             <View style={styles.customer}>
+                {referral.updated && (<Text style={{ ...FONTS.body4, marginBottom: 8 }}>Last Update: <Text>{moment(referral.updated).format('lll')}</Text></Text>)}
                 <Text style={{ ...FONTS.h4 }}>Notes or Comments</Text>
                 <View style={{ padding: 5, backgroundColor: 'rgba(0,0,0,0.07)', borderRadius: 8, minHeight: SIZES.height * 0.08 }}>
                     <Text adjustsFontSizeToFit={true} style={{ ...FONTS.body5 }}>

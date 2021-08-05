@@ -33,16 +33,20 @@ const RefereesState = ({ children }) => {
         try {
             console.log('Getting Referees')
             if (!userId) return;
-            const data = []
+
             await db.collection('referees').doc(userId).collection('referees').onSnapshot(doc => {
+                const data = []
                 return doc.forEach(ref => {
                     if (ref.exists) {
                         data.push({ id: ref.id, ...ref.data() })
                     }
+                    dispatch({ type: GET_REFEREES, payload: data })
                 })
+
+
             })
 
-            dispatch({ type: GET_REFEREES, payload: data })
+
         } catch (error) {
             console.log('Error @getReferees', error)
             dispatch({ type: MANAGER_ERROR, payload: error.message })

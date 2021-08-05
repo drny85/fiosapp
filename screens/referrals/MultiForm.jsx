@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useRef, useState, useContext, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useContext, useEffect } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
     StyleSheet,
@@ -9,34 +9,34 @@ import {
     useWindowDimensions,
     Animated,
     Platform,
-    TouchableNativeFeedback,
     Keyboard,
     SafeAreaView,
     TouchableHighlight,
     ScrollView,
     TouchableOpacity,
+    KeyboardAvoidingView,
+    TouchableWithoutFeedback
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { COLORS, FONTS, SIZES } from '../../constants/contantts';
 import referralsContext from '../../context/referrals/referralContext';
 import managersContext from '../../context/manager/managersContext';
 import refereesContext from '../../context/referee/refereesContext';
-import * as Yup from 'yup'
 import authContext from '../../context/auth/authContext';
 import InputTextField from '../../components/InputTextField';
-import { TouchableWithoutFeedback } from 'react-native';
-import AppFormField from '../../components/AppFormField';
-import AppForm from '../../components/AppForm';
+
 import PickerModal from '../modals/PickerModal'
 
 import NextPrevButton from '../../components/Forms/NextPrevButton';
+
 import { isEmailValid } from '../../utils/isEmailValide';
 import { formatPhone } from '../../utils/formatPhone';
-import { states } from '../../states';
-import { KeyboardAvoidingView } from 'react-native';
-import ScreenView from '../ScreenView';
 import { statuses } from '../../statuses';
 import { services } from '../../services';
+import AddressSearch from '../../components/AddressSearch';
+import AddPersonModal from '../modals/AddPersonModal';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { GOOGLE_MAPS_KEY } from '@env'
 
 
 const data = [
@@ -51,10 +51,6 @@ const data = [
     },
 
 ];
-
-let REFERRAL = null;
-
-
 
 
 
@@ -96,63 +92,39 @@ const Paginator = ({ data, scrollX }) => {
 
 const Step = ({ children }) => {
     return (
-        <ScrollView style={{ flex: 1, width: '100%', height: '100%', padding: 10 }} con>
-            {children}
-        </ScrollView>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={60} style={{ flex: 1, width: '100%', height: '100%', padding: 10 }}>
+            <ScrollView contentContainerStyle={{ flex: 1 }}>
+                {children}
+            </ScrollView>
+        </KeyboardAvoidingView>
     );
 };
 
-const Page = ({ index, moveIn, internet, setInternet, mon, setMon, home, setHome, tv, setTv, setMoveIn, referralData, setReferralData, orderDate, setOrderDate, dueDate, setDueDate }) => {
+const Page = ({ index, inputRef, moveIn, status, setStatus, internet, setInternet, mon, setMon, home, setHome, tv, setTv, setMoveIn, referralData, setReferralData, orderDate, setOrderDate, dueDate, setDueDate }) => {
 
     const { width, height } = useWindowDimensions();
     const [loading, setLoading] = useState(false)
+    const [visible, setVisible] = useState(false)
     const [showPicker, setShowPicker] = useState(false)
     const [showAMs, setShowAms] = useState(false)
     const [showRE, setShowReferee] = useState(false)
     const { user } = useContext(authContext)
-    const { addReferral, updateReferral } = useContext(referralsContext)
     const { managers, getManagers } = useContext(managersContext)
     const { referees, getReferees } = useContext(refereesContext)
-    const [state, setState] = useState({ id: 'NY', name: 'New York' })
-
-
     const [pickStatus, setPickStatus] = useState(false);
-
-    ///packages
+    const [show, setShow] = useState(false);
 
     const [showInternetPicker, setShowInternetPicker] = useState(false)
     const [showTvPicker, setShowTvPicker] = useState(false)
     const [showHomePicker, setShowHomePicker] = useState(false)
 
-    //const [moveIn, setMoveIn] = useState(new Date(new Date().getTime()))
-
-
-    const populateCity = ({ nativeEvent }) => {
-        let { text } = nativeEvent;
-        switch (true) {
-            case text.includes('107'):
-                setReferralData({ ...referralData, city: 'Yonkers' })
-                break;
-            case text.includes('104'):
-                setReferralData({ ...referralData, city: 'Bronx' })
-                break;
-
-            case text.includes('106'):
-                setReferralData({ ...referralData, city: 'White Plains' })
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    const onChange = (event, selectedDate) => {
+    const onChange = (_, selectedDate) => {
         const currentDate = selectedDate || date;
         setShow(Platform.OS === 'ios');
         setMoveIn(currentDate);
 
     };
-    const onChangeDueDate = (event, selectedDate) => {
+    const onChangeDueDate = (_, selectedDate) => {
         const currentDate = selectedDate || date;
         setShow(Platform.OS === 'ios');
         setDueDate(currentDate);
@@ -163,46 +135,32 @@ const Page = ({ index, moveIn, internet, setInternet, mon, setMon, home, setHome
         setOrderDate(currentDate);
     };
 
+    const getAddress = (_, { formatted_address, geometry }) => {
 
+        setReferralData({ ...referralData, address: formatted_address })
+
+    }
 
 
     useEffect(() => {
         managers.length === 0 && getManagers(user?.userId)
         referees.length === 0 && getReferees(user?.userId)
+        inputRef.current.setAddressText(referralData.address)
+
+
         if (managers.length === 1) {
             setReferralData({ ...referralData, manager: managers[0] })
         }
 
-        // if (initialValues) {
-
-        //     setManager(initialValues.manager)
-        //     setReferee(initialValues.referee)
-        //     setMoveIn(new Date(new Date().getTime()))
-        //     setState(initialValues.state)
-        //     setStatus(initialValues.status)
-        //     setComment(initialValues?.comment)
-        //     setMon(initialValues.mon)
-        //     setDueDate(new Date(new Date().getTime()))
-        //     setOrderDate(new Date(new Date(initialValues.order_date).getTime()))
-        //     setInternet(initialValues.package.internet)
-        //     setTv(initialValues.package.tv)
-        //     setHome(initialValues.package.home)
-        // }
-
         return () => {
 
         }
-    }, [user])
-
-
-
+    }, [user, referees.length])
 
     if (loading) return <Loader />
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-            <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                keyboardVerticalOffset={50}
+            <View
                 style={{
                     justifyContent: 'center',
                     alignContent: 'center',
@@ -231,6 +189,7 @@ const Page = ({ index, moveIn, internet, setInternet, mon, setMon, home, setHome
                                 <View style={{ flex: 1, flexDirection: 'row', width: '100%', alignItems: 'center' }}>
                                     <Text style={{ ...FONTS.body3, marginHorizontal: SIZES.padding * 0.5 }}>Move In Date:</Text>
                                     <View style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+
                                         <DateTimePicker
                                             style={{ width: '90%', marginRight: SIZES.padding * 0.5, }}
                                             testID="dateTimePicker"
@@ -240,6 +199,8 @@ const Page = ({ index, moveIn, internet, setInternet, mon, setMon, home, setHome
                                             display="default"
                                             onChange={onChange}
                                         />
+
+
                                     </View>
                                 </View>
                             </View>
@@ -247,15 +208,23 @@ const Page = ({ index, moveIn, internet, setInternet, mon, setMon, home, setHome
                     </Step>
                 )}
                 {index === 1 && (
-                    <Step>
-                        <Text style={styles.title}>Property's Info</Text>
-                        <InputTextField placeholder='Address, Ex 123 Main St' autoCompleteType='street-address' autoCapitalize='words' value={referralData.address} onChangeText={text => setReferralData({ ...referralData, address: text })} />
-                        <InputTextField placeholder='Apt, Unit, Suite' autoCapitalize='words' value={referralData.apt} onChangeText={text => setReferralData({ ...referralData, apt: text.toUpperCase() })} />
-                        <InputTextField placeholder='Zip Code' maxLength={5} keyboardType='numeric' value={referralData.zipcode} onBlur={populateCity} onChangeText={text => setReferralData({ ...referralData, zipcode: text })} />
-                        <InputTextField placeholder='City' value={referralData.city} autoCapitalize='words' onChangeText={text => setReferralData({ ...referralData, city: text })} />
-                        <InputTextField placeholder='State' value={state.id} autoCapitalize='words' onFocus={() => setShowPicker(true)} />
+                    <View style={{ flex: 1 }}>
+                        <View style={{ padding: SIZES.padding * 0.5 }}>
+                            <Text style={styles.title}>Property's Info</Text>
 
-                    </Step>
+                            <GooglePlacesAutocomplete nearbyPlacesAPI='GooglePlacesSearch' fetchDetails={true} ref={inputRef} query={{ key: GOOGLE_MAPS_KEY, language: 'en', components: 'country:us' }} enablePoweredByContainer={false} onPress={getAddress} placeholder='Type Address' styles={{ container: { flex: 0 }, textInput: { ...FONTS.body4, borderBottomWidth: 0.5, borderBottomColor: COLORS.light } }} />
+                            {referralData.address.length > 5 && (
+                                <InputTextField
+                                    style={{ marginTop: 50, }}
+                                    placeholder="Apt, Unit, Suit, Floor" value={referralData.apt}
+                                    onChangeText={text => setReferralData({ ...referralData, apt: text.toUpperCase() })} />
+                            )}
+
+                        </View>
+
+                    </View>
+
+
                 )}
                 {index === 2 && (
                     <Step>
@@ -266,10 +235,11 @@ const Page = ({ index, moveIn, internet, setInternet, mon, setMon, home, setHome
                         {/* IF REFERRAL CHANGED TO CLOSED */}
                         {referralData.status.name === 'Closed' && (
                             <View>
-                                <InputTextField placeholder='Master Order Number - MON' maxLength={13} value={mon} onChangeText={text => setMon(text.toUpperCase())} />
+                                <InputTextField placeholder='Master Order Number - MON' maxLength={13} value={mon} style={{ ...FONTS.h3, letterSpacing: 1 }} onChangeText={text => setMon(text.toUpperCase())} />
                                 <View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'space-evenly', marginBottom: 10 }}>
                                     <View style={{ flex: 1 }}>
                                         <Text style={{ ...FONTS.body3, marginHorizontal: SIZES.padding * 0.5 }}>Order Date:</Text>
+
                                         <DateTimePicker
                                             style={{ width: '90%', marginRight: SIZES.padding * 0.5 }}
                                             testID="dateTimePicker"
@@ -330,12 +300,17 @@ const Page = ({ index, moveIn, internet, setInternet, mon, setMon, home, setHome
                     </Step>
                 )}
 
-                <PickerModal data={states} showPicker={showPicker} title='State' onPress={(st) => {
-                    setShowPicker(false)
-                    // setState(st)
-                    setReferralData({ ...referralData, state: st })
-                }} />
-                <PickerModal data={referees} showPicker={showRE} title='Referee' onPress={(referee) => {
+
+                <AddPersonModal visible={visible} selected='referee' setVisible={setVisible} />
+
+                <PickerModal data={referees} showPicker={showRE} actionRigthButton={
+                    <TouchableOpacity onPress={() => {
+                        setShowReferee(false)
+                        setVisible(true)
+                    }}>
+                        <AntDesign name='plus' color={COLORS.black} size={24} />
+                    </TouchableOpacity>
+                } title='Referee' onPress={(referee) => {
                     setShowReferee(false)
                     //setReferee(referee)
                     setReferralData({ ...referralData, referee: referee })
@@ -365,7 +340,7 @@ const Page = ({ index, moveIn, internet, setInternet, mon, setMon, home, setHome
                     setShowHomePicker(false)
                     setHome(home_serv)
                 }} />
-            </KeyboardAvoidingView>
+            </View>
 
         </TouchableWithoutFeedback>
     );
@@ -380,6 +355,7 @@ export default function MultiForm({ navigation, route }) {
     const scrollX = useRef(new Animated.Value(0)).current;
     const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 75 }).current;
     const slideRef = useRef();
+    const inputRef = useRef();
     const [canContinue, setCanContinue] = useState(false)
     const { addReferral, updateReferral } = useContext(referralsContext)
     const [moveIn, setMoveIn] = useState(new Date())
@@ -392,8 +368,6 @@ export default function MultiForm({ navigation, route }) {
     const [status, setStatus] = useState({ id: 'new', name: 'New' })
 
 
-
-
     const [referralData, setReferralData] = useState({
         name: '',
         email: '',
@@ -401,13 +375,10 @@ export default function MultiForm({ navigation, route }) {
         moveIn: new Date(moveIn).toISOString(),
         address: '',
         apt: '',
-        zipcode: '',
-        city: '',
-        state: { id: 'NY', name: 'New York' },
         referee: { name: '' },
         manager: { name: '' },
         status: { id: 'new', name: 'New' },
-        comment: '',
+        comment: null,
         order_date: null,
         date_entered: new Date().toISOString(),
         due_date: null,
@@ -415,12 +386,12 @@ export default function MultiForm({ navigation, route }) {
         updated: null,
         userId: user.id,
         mon: null,
+        email_sent: false,
         collateral_sent: false,
         collateral_sent_on: null,
         property: null,
 
     })
-
 
     const viewableItemsChanged = useRef(({ viewableItems }) => {
         if (viewableItems.length > 0) {
@@ -443,18 +414,18 @@ export default function MultiForm({ navigation, route }) {
 
     const handleSubmit = async () => {
         try {
+            referralData.moveIn = new Date(moveIn).toISOString()
             if (referralData.name.split(' ').length === 1) {
                 alert("Please enter customer's full name")
                 slideRef.current.scrollToIndex({ index: 0 })
                 return
             }
             setReferralData({ ...referralData, moveIn: new Date(referralData.moveIn).toISOString() })
-            if (referralData.comment.trimEnd().length === 0) {
-                setReferralData({ ...referralData, comment: null })
-            }
+
             if (edit && referral) {
                 const referralCopy = { ...referralData }
                 referralCopy.userId = user.id
+                referralCopy.updated = new Date().toISOString()
                 referralCopy.package = edit && referral && referralData.status.name.toLowerCase() === 'closed' ? { internet, tv, home } : null;
                 referralCopy.order_date = edit && referral && referralData.status.name.toLowerCase() === 'closed' ? new Date(orderDate).toISOString() : null
                 referralCopy.due_date = edit && referral && referralData.status.name.toLowerCase() === 'closed' ? new Date(dueDate).toISOString() : null
@@ -468,12 +439,14 @@ export default function MultiForm({ navigation, route }) {
                         return;
                     }
                 }
+
                 const updated = await updateReferral(referralCopy)
                 if (updated) {
                     navigation.pop()
                 }
 
             } else {
+
                 const added = await addReferral(referralData)
                 if (added) {
 
@@ -500,7 +473,7 @@ export default function MultiForm({ navigation, route }) {
 
         if (currentX === 1) {
 
-            if (referralData.address.length > 5 && referralData.zipcode.length === 5 && referralData.city.length > 3 && referralData.state.name.length > 1) {
+            if (referralData.address.length > 5) {
                 setCanContinue(true)
             } else {
                 setCanContinue(false)
@@ -526,6 +499,9 @@ export default function MultiForm({ navigation, route }) {
         if (edit && referral) {
             setReferralData(referral)
             setMoveIn(new Date(new Date(referral.moveIn).getTime()))
+            if (referral.address) {
+                inputRef.current?.setAddressText(referral.address)
+            }
 
             if (referral.status.name.toLowerCase() === 'closed') {
                 setDueDate(new Date(new Date(referral.due_date).getTime()))
@@ -540,24 +516,27 @@ export default function MultiForm({ navigation, route }) {
         }
 
     }, [edit, referral])
-    console.log(referral.status)
 
 
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar style='auto' />
+
+            <TouchableOpacity onPress={() => navigation.goBack()} style={{ position: 'absolute', zIndex: 99, top: 15, left: 20, height: 40, width: 40, borderRadius: 20, backgroundColor: COLORS.white, elevation: 8, shadowColor: COLORS.card, shadowOffset: { width: 3, height: 5 }, shadowOpacity: 0.7, shadowRadius: 6, justifyContent: 'center', alignItems: 'center' }}>
+                <Ionicons name="close" size={24} color="black" />
+            </TouchableOpacity>
+
+
             <View style={{ marginTop: 20, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', width: '100%' }}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={{ height: 40, width: 40, borderRadius: 20, backgroundColor: COLORS.white, elevation: 8, shadowColor: COLORS.card, shadowOffset: { width: 3, height: 5 }, shadowOpacity: 0.7, shadowRadius: 6, justifyContent: 'center', alignItems: 'center' }}>
-                    <Ionicons name="close" size={24} color="black" />
-                </TouchableOpacity>
                 <Paginator data={data} scrollX={scrollX} />
-                <Text></Text>
             </View>
             <View style={{ flex: 3 }}>
                 <FlatList
                     ref={slideRef}
+                    keyboardShouldPersistTaps={'handled'}
                     showsHorizontalScrollIndicator={false}
                     pagingEnabled
+                    scrollEnabled={canContinue}
                     horizontal
                     viewabilityConfig={viewConfig}
                     onViewableItemsChanged={viewableItemsChanged}
@@ -569,7 +548,7 @@ export default function MultiForm({ navigation, route }) {
                     )}
                     data={data}
                     keyExtractor={(item) => item.id.toString()}
-                    renderItem={({ _, index }) => <Page index={index} mon={mon} status={status} setStatus={setStatus} setMon={setMon} tv={tv} setTv={setTv} internet={internet} setInternet={setInternet} home={home} setHome={setHome} dueDate={dueDate} setDueDate={setDueDate} orderDate={orderDate} setOrderDate={setOrderDate} canContinue={canContinue} moveIn={moveIn} setMoveIn={setMoveIn} setCanContinue={setCanContinue} referralData={referralData} setReferralData={setReferralData} />}
+                    renderItem={({ _, index }) => <Page index={index} inputRef={inputRef} mon={mon} status={status} setStatus={setStatus} setMon={setMon} tv={tv} setTv={setTv} internet={internet} setInternet={setInternet} home={home} setHome={setHome} dueDate={dueDate} setDueDate={setDueDate} orderDate={orderDate} setOrderDate={setOrderDate} canContinue={canContinue} moveIn={moveIn} setMoveIn={setMoveIn} setCanContinue={setCanContinue} referralData={referralData} setReferralData={setReferralData} />}
                 />
             </View>
             <View
@@ -616,6 +595,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
+        marginTop: SIZES.statusBarHeight
     },
 
     title: { ...FONTS.h4, textAlign: 'center', marginBottom: 10, },

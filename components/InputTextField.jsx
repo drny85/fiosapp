@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
         paddingVertical: SIZES.padding * 0.3,
         paddingHorizontal: SIZES.padding * 0.5,
         marginVertical: SIZES.padding * 0.5,
+
         ...FONTS.body3
     }
 })
