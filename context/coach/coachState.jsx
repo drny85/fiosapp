@@ -3,14 +3,14 @@ import { db } from '../../database'
 
 import CoachContext from './coachContext'
 import coachReducer from './coachReducer'
-import { ADD_COACH, GET_COACHS, COACH_ERROR } from './coachTypes'
+import { ADD_COACH, GET_COACHS, COACH_ERROR, COACH_LOADING } from './coachTypes'
 
 const CoachsState = ({ children }) => {
     const initialState = {
         coachs: [],
         coach: null,
         error: null,
-        loading: false
+        loadingCoach: false
     }
 
     const [state, dispatch] = useReducer(coachReducer, initialState)
@@ -20,9 +20,14 @@ const CoachsState = ({ children }) => {
             const partners = coachInfo.partners;
             const found = await (await db.collection('coachs').doc(coachInfo.userId).collection('coachs').get()).size
             if (found > 0) {
+                console.log('No tmore')
                 dispatch({ type: COACH_ERROR, payload: 'Only one coach allowed' })
-                return
+                setTimeout(() => {
+                    dispatch({ type: "CLEAR" })
+                }, 2000)
+                return false
             }
+
             delete coachInfo.partners
             const res = await db.collection('coachs').doc(coachInfo.userId).collection('coachs').add(coachInfo)
             if (!partners.coach) {
@@ -41,8 +46,9 @@ const CoachsState = ({ children }) => {
 
     const getCoachs = async (userId) => {
         try {
-            console.log('Getting Coachs')
+
             if (!userId) return;
+            setLoadingCoach()
             const data = []
             await db.collection('coachs').doc(userId).collection('coachs').onSnapshot(doc => {
                 return doc.forEach(ref => {
@@ -59,12 +65,14 @@ const CoachsState = ({ children }) => {
         }
     }
 
+    const setLoadingCoach = () => dispatch({ type: COACH_LOADING })
+
     return (
         <CoachContext.Provider value={{
             coachs: state.coachs,
             coach: state.coach,
             error: state.error,
-            loading: state.loading,
+            loadingCoach: state.loadingCoach,
             addCoach,
             getCoachs,
         }}>

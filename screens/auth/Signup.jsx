@@ -124,6 +124,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: '100%',
         marginHorizontal: SIZES.padding * 0.5,
-        
+
     }
 })

@@ -1,5 +1,5 @@
-import React, { useContext, useState, useLayoutEffect } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native'
+import React, { useContext, useState, useLayoutEffect, useEffect } from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, TouchableWithoutFeedback, Modal, Keyboard } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Loader from '../../components/Loader';
 import referralsContext from '../../context/referrals/referralContext';
@@ -7,12 +7,19 @@ import { COLORS, FONTS, SIZES } from '../../constants/contantts';
 import moment from 'moment/moment'
 
 import PhoneCall from '../../components/PhoneCall';
-import AddReferralModal from '../modals/AddReferralModal';
+import { Button } from 'react-native-elements/dist/buttons/Button';
+import InputTextField from '../../components/InputTextField';
+import authContext from '../../context/auth/authContext';
 
 
 
 const ReferralDetails = ({ route, navigation }) => {
-    const [visible, setVisible] = useState(false)
+
+    const [showCommentModal, setShowCommentModal] = useState(false)
+    const { updateReferral } = useContext(referralsContext)
+    const { user } = useContext(authContext)
+    const [keyH, setKeyH] = useState(0)
+    const [updatedComment, setUpdateComment] = useState('')
     const { referrals } = useContext(referralsContext)
 
     const referral = referrals.find(r => r.id === route.params.id)
@@ -41,6 +48,35 @@ const ReferralDetails = ({ route, navigation }) => {
     const line2 = line[1].trim() + ', ' + line[2]
     const line3 = line[2]
 
+    const onKeyBoardShow = e => {
+
+        setKeyH(e.endCoordinates.height)
+    }
+
+    const onKeyHide = () => {
+        setKeyH(0)
+    }
+
+    const handleUpdate = async () => {
+        try {
+
+            if (inititalValues.comment !== updatedComment) {
+                inititalValues.comment = updatedComment
+                inititalValues.userId = user.id;
+                const res = await updateReferral(inititalValues)
+                if (res) {
+                    setShowCommentModal(false)
+                }
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+
+
     useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => (<TouchableOpacity style={{ marginRight: SIZES.padding * 0.8 }} onPress={() => navigation.navigate('AddReferralScreen', { edit: true, referral: inititalValues })} >
@@ -49,38 +85,47 @@ const ReferralDetails = ({ route, navigation }) => {
         })
     }, [navigation])
 
-    console.log('R', referral)
+    useEffect(() => {
+        setUpdateComment(inititalValues.comment)
+        Keyboard.addListener('keyboardDidShow', onKeyBoardShow)
+        Keyboard.addListener('keyboardDidHide', onKeyHide)
+        return () => {
+            Keyboard.removeAllListeners('keyboardDidShow')
+            Keyboard.removeAllListeners('keyboardDidHide')
+        }
+    }, [])
+
 
     if (!referral) return <Loader />
 
     return (
-        <ScrollView style={styles.view}>
+        <ScrollView style={[styles.view, { backgroundColor: referral.status.id === 'closed' ? COLORS.green : referral.status.id === 'not_sold' ? COLORS.red : COLORS.white }]}>
             <View style={styles.customer}>
                 <Text style={[styles.name, { marginBottom: 15, }]}>{referral.name} </Text>
-                <Text style={styles.text}>{line1} </Text>
-                <Text style={styles.text}>{line2} </Text>
+                <Text style={styles.subText}>{line1} </Text>
+                <Text style={styles.subText}>{line2} </Text>
 
                 <PhoneCall phone={referral.phone} />
-                <Text style={styles.text}>{referral.email && referral.email}</Text>
+                <Text style={styles.subText}>{referral.email && referral.email}</Text>
             </View>
             <View style={styles.customer}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: 'rgba(0,0,0,0.08)', padding: 4 }}>
                     <Text style={styles.text}>
-                        Move In: {moment(referral.moveIn).format('ll')}
+                        Move In: <Text style={{ ...FONTS.body4 }}>{moment(referral.moveIn).format('ll')}</Text>
 
                     </Text>
                     <Text style={{ color: COLORS.lightGray }}>{moment(referral.moveIn).fromNow()}</Text>
                 </View>
-                <Text style={styles.text}>Status: {referral.status?.name}</Text>
-                <Text style={styles.text}>Referred By: {referral.referee.name}</Text>
-                {referral.manager && (<Text style={styles.text}>AM: {referral.manager.name}</Text>)}
+                <Text style={styles.text}>Status: <Text style={styles.subText}>{referral.status?.name}</Text></Text>
+                <Text style={styles.text}>Referred By: <Text style={styles.subText}>{referral.referee.name}</Text> </Text>
+                {referral.manager && (<Text style={styles.text}>AM: <Text style={styles.subText}>{referral.manager.name}</Text> </Text>)}
 
             </View>
             {referral?.status.name.toLowerCase() === 'closed' && (
                 <View style={styles.customer}>
-                    <Text style={[styles.text, { ...FONTS.h3 }]}>Mon: {referral.mon}</Text>
+                    <Text style={[styles.text]}>Mon: <Text style={styles.subText}>{referral.mon}</Text></Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Text style={[styles.text, { ...FONTS.h3 }]}>Due Date: {moment(referral.due_date).format('ll')}</Text>
+                        <Text style={[styles.Text]}>Due Date: <Text style={styles.subText}>{moment(referral.due_date).format('ll')}</Text> </Text>
                         <Text style={{ color: COLORS.lightGray }}>{moment(referral.due_date).fromNow()}</Text>
                     </View>
 
@@ -94,16 +139,32 @@ const ReferralDetails = ({ route, navigation }) => {
                 </View>
             )}
             <View style={styles.customer}>
-                {referral.updated && (<Text style={{ ...FONTS.body4, marginBottom: 8 }}>Last Update: <Text>{moment(referral.updated).format('lll')}</Text></Text>)}
-                <Text style={{ ...FONTS.h4 }}>Notes or Comments</Text>
-                <View style={{ padding: 5, backgroundColor: 'rgba(0,0,0,0.07)', borderRadius: 8, minHeight: SIZES.height * 0.08 }}>
-                    <Text adjustsFontSizeToFit={true} style={{ ...FONTS.body5 }}>
-                        {referral.comment ? referral.comment : 'No notes'}
-                    </Text>
-                </View>
+                {referral.updated && (<Text style={{ ...FONTS.h4, marginBottom: 8 }}>Last Update: <Text style={styles.subText}>{moment(referral.updated).format('lll')}</Text></Text>)}
+                <Text style={styles.text}>Notes or Comments</Text>
+                <TouchableWithoutFeedback onLongPress={() => setShowCommentModal(true)}>
+                    <View style={{ padding: 5, backgroundColor: 'rgba(0,0,0,0.07)', borderRadius: 8, minHeight: SIZES.height * 0.08 }}>
+                        <Text adjustsFontSizeToFit={true} style={{ ...FONTS.body5 }}>
+                            {referral.comment ? referral.comment : 'No notes'}
+                        </Text>
+                    </View>
+                </TouchableWithoutFeedback>
 
             </View>
-            {visible && (<AddReferralModal visible={visible} initialValues={inititalValues} setVisible={setVisible} edit={true} />)}
+            <Modal visible={showCommentModal} transparent>
+                <View style={{ height: SIZES.height / 3, position: 'absolute', left: 0, right: 0, top: SIZES.statusBarHeight + 20, backgroundColor: COLORS.card, borderRadius: SIZES.radius, marginHorizontal: SIZES.padding * 0.5 }}>
+
+                    <InputTextField multiline={true} placeholder='Comments or Notes' value={updatedComment} onChangeText={text => setUpdateComment(text)} style={{ height: '75%', backgroundColor: COLORS.white, marginHorizontal: 10, }} />
+                    <View style={{ alignItems: 'center', justifyContent: 'space-evenly', marginBottom: 30, flexDirection: 'row', }}>
+                        <TouchableOpacity onPress={() => setShowCommentModal(false)} style={styles.btn}>
+                            <Text style={{ ...FONTS.h4 }}>Cancel</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={handleUpdate} style={styles.btn}>
+                            <Text style={{ ...FONTS.h4 }}>Update</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
+
 
 
         </ScrollView>
@@ -141,7 +202,17 @@ const styles = StyleSheet.create({
 
     },
     text: {
-        ...FONTS.body3,
+        ...FONTS.h4,
         paddingVertical: 2
+    },
+    subText: {
+        ...FONTS.body4
+    },
+    btn: {
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderRadius: SIZES.radius,
+        backgroundColor: COLORS.white
+
     }
 })

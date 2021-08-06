@@ -24,12 +24,13 @@ const formSchema = Yup.object().shape({
 const AppPersonModal = ({ visible, setVisible, selected }) => {
     const { addManager } = useContext(managersContext)
     const { addReferee } = useContext(refereesContext)
-    const { addCoach, coachs } = useContext(coachContext)
+    const { addCoach, coachs, error } = useContext(coachContext)
     const { user } = useContext(authContext)
     const [manager, setManager] = useState(false)
     const [phone, setPhone] = useState('')
     const [coach, setCoach] = useState(false)
     const [referee, setReferee] = useState(false)
+    const [alertError, setAlertError] = useState(null)
 
     const handleSubmit = async (values) => {
         try {
@@ -52,9 +53,17 @@ const AppPersonModal = ({ visible, setVisible, selected }) => {
                 }
             } else if (selected === 'coach' || coach) {
                 values.partners = { manager: user.manager, coach: user.coach };
-                const res = addCoach(values)
+
+                const res = await addCoach(values)
+
+                if (error) {
+                    alert(error)
+                    setVisible(false)
+                    return
+                }
+
                 if (res) {
-                    console.log(res)
+
                     setVisible(false)
                 }
             }

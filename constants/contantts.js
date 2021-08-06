@@ -15,8 +15,10 @@ export const COLORS = {
 	background: '#FFF',
 	ascent: '#607d8b',
 	card: '#bdc3c7',
+	green: '#16ab3e',
 	tile: '#ecf0f1',
 	white: '#f7f7f7',
+	red: '#e62f17',
 	text: '#555B5D',
 };
 

@@ -10,7 +10,7 @@ const ManagersState = ({ children }) => {
         managers: [],
         manager: null,
         error: null,
-        loading: false
+        loadingManagers: false
     }
 
     const [state, dispatch] = useReducer(managersReducer, initialState)
@@ -62,7 +62,7 @@ const ManagersState = ({ children }) => {
             managers: state.managers,
             manager: state.manager,
             error: state.error,
-            loading: state.loading,
+            loadingManagers: state.loadingManagers,
             addManager,
             getManagers,
         }}>

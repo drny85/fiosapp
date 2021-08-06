@@ -18,6 +18,7 @@ import authContext from '../../context/auth/authContext';
 import managersContext from '../../context/manager/managersContext';
 import Loader from '../../components/Loader';
 import PeopleCard from '../../components/PeopleCard';
+import coachContext from '../../context/coach/coachContext';
 
 
 
@@ -35,9 +36,9 @@ const Managers = ({ navigation, route }) => {
     const [coach, setCoach] = useState(false)
     const [referee, setReferee] = useState(false)
     const { user } = useContext(authContext)
-    const { referees, getReferees } = useContext(refereesContext)
-    const { managers, getManagers, loading } = useContext(managersContext)
-    const { coachs, getCoachs } = useContext(managersContext)
+    const { referees, getReferees, loadingReferees } = useContext(refereesContext)
+    const { managers, getManagers, loadingManagers } = useContext(managersContext)
+    const { coachs, getCoachs, loadingCoach } = useContext(coachContext)
     const [data, setData] = useState([])
 
     const title = () => {
@@ -68,37 +69,50 @@ const Managers = ({ navigation, route }) => {
         switch (subject) {
             case 'manager':
                 getManagers(user?.id)
-                if (managers.length > 0) {
-                    setData([...managers])
-                }
-
                 break;
             case 'referee':
                 getReferees(user?.id)
-                if (referees.length > 0) {
-                    setData([...referees])
-                }
+                break;
+            case 'coach':
+                getCoachs(user?.id)
                 break;
 
             default:
                 break;
         }
+    }, [subject, user])
+
+    useEffect(() => {
+        switch (subject) {
+            case 'manager':
+                setData([...managers])
+                break;
+            case 'coach':
+                setData([...coachs])
+                break;
+            case 'referee':
+                setData([...referees])
+            default:
+                break;
+        }
+
+
     }, [subject])
 
-
-    if (loading) return <Loader />
+    console.log(managers.length, referees.length, coachs.length)
+    if (loadingReferees || loadingCoach || loadingManagers) return <Loader />
     return (
         <View style={styles.view}>
 
-            {data?.length > 0 ? (
+            {data.length > 0 ? (
 
                 <FlatList data={data} keyExtractor={item => item.id} renderItem={({ item }) => <PeopleCard item={item} onPress={() => console.log(item.name)} />} />
 
 
 
             ) : (
-                    <View>
-                        <Text>No Data</Text>
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ ...FONTS.h4 }}>No Data</Text>
                     </View>
                 )}
             <AddPersonModal visible={visible} setVisible={() => setVisible(false)} selected={subject} />
@@ -111,6 +125,7 @@ export default Managers
 const styles = StyleSheet.create({
     view: {
         flex: 1,
+        backgroundColor: COLORS.background
 
     },
     form: {

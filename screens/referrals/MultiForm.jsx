@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useRef, useState, useContext, useEffect } from 'react';
+import React, { useRef, useState, useContext, useEffect, createRef } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
     StyleSheet,
@@ -56,6 +56,7 @@ const data = [
 
 const Paginator = ({ data, scrollX }) => {
     const { width } = useWindowDimensions();
+    const emailRef = useRef()
 
     return (
         <View style={{ flexDirection: 'row', height: 20 }}>
@@ -183,7 +184,10 @@ const Page = ({ index, inputRef, moveIn, status, setStatus, internet, setInterne
                         <View style={{ flex: 1, }}>
                             <Text style={styles.title}>Customer's Info</Text>
                             <InputTextField name='name' autoCapitalize='words' placeholder="Customer's Full Name" onChangeText={text => setReferralData({ ...referralData, name: text })} value={referralData.name} />
-                            <InputTextField name='phone' maxLength={14} placeholder="Phone Number" keyboardType='phone-pad' value={referralData.phone} onChangeText={text => setReferralData({ ...referralData, phone: formatPhone(text) })} />
+                            <InputTextField name='phone' maxLength={14} placeholder="Phone Number" keyboardType='phone-pad' value={referralData.phone} onChangeText={text => {
+                                setReferralData({ ...referralData, phone: formatPhone(text) })
+
+                            }} />
                             <InputTextField name='email' placeholder="Email Address" autoCapitalize='none' keyboardType='email-address' onChangeText={text => setReferralData({ ...referralData, email: text.trim().toLowerCase() })} value={referralData.email} />
                             <View style={{ width: '98%', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
                                 <View style={{ flex: 1, flexDirection: 'row', width: '100%', alignItems: 'center' }}>
@@ -235,7 +239,7 @@ const Page = ({ index, inputRef, moveIn, status, setStatus, internet, setInterne
                         {/* IF REFERRAL CHANGED TO CLOSED */}
                         {referralData.status.name === 'Closed' && (
                             <View>
-                                <InputTextField placeholder='Master Order Number - MON' maxLength={13} value={mon} style={{ ...FONTS.h3, letterSpacing: 1 }} onChangeText={text => setMon(text.toUpperCase())} />
+                                <InputTextField placeholder='Master Order Number - MON' maxLength={13} keyboardType={mon.length > 1 ? 'numeric' : 'default'} value={mon} style={{ ...FONTS.h3, letterSpacing: 1 }} onChangeText={text => setMon(text.toUpperCase())} />
                                 <View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'space-evenly', marginBottom: 10 }}>
                                     <View style={{ flex: 1 }}>
                                         <Text style={{ ...FONTS.body3, marginHorizontal: SIZES.padding * 0.5 }}>Order Date:</Text>
@@ -414,6 +418,10 @@ export default function MultiForm({ navigation, route }) {
 
     const handleSubmit = async () => {
         try {
+            if (referralData.email === '') {
+                setReferralData({ ...referralData, email: null })
+            }
+
             referralData.moveIn = new Date(moveIn).toISOString()
             if (referralData.name.split(' ').length === 1) {
                 alert("Please enter customer's full name")
@@ -462,7 +470,7 @@ export default function MultiForm({ navigation, route }) {
     useEffect(() => {
 
         if (currentX === 0) {
-            if ((referralData.name.length > 5 && referralData.phone.length >= 14 && isEmailValid(referralData.email)) || (referralData.name.length > 5 && referralData.phone.length >= 14 && referralData.email.length === 0)) {
+            if ((referralData.name.length > 5 && referralData.phone.length >= 14 && isEmailValid(referralData.email)) || (referralData.name.length > 5 && referralData.phone.length >= 14)) {
 
                 setCanContinue(true)
 

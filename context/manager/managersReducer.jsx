@@ -7,24 +7,24 @@ export default (state, { type, payload }) => {
             return {
                 ...state,
                 managers: payload,
-                loading: false
+                loadingManagers: false
             };
         case GET_MANAGER:
             return {
                 ...state,
                 manager: payload,
-                loading: false
+                loadingManagers: false
             };
         case MANAGER_LOADING:
             return {
                 ...state,
-                loading: true,
+                loadingManagers: true,
             }
         case MANAGER_ERROR:
             return {
                 ...state,
                 error: payload,
-                loading: false,
+                loadingManagers: false,
             }
 
         default:

@@ -1,9 +1,5 @@
 import React from 'react'
 import moment from 'moment'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import localized from 'dayjs/plugin/localizedFormat'
-
-
 
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { COLORS, FONTS, SIZES } from '../constants/contantts'
@@ -23,7 +19,7 @@ const ReferralCard = ({ referral, onPress, style }) => {
                 <View>
                     <Text style={{ ...FONTS.h4 }}>Address: <Text style={{ ...FONTS.body4 }}>{line1} {line2}</Text></Text>
                     <Text style={{ ...FONTS.h4 }}>Phone: <Text style={{ ...FONTS.body4 }}>{referral.phone}</Text></Text>
-                    {referral.email && (<Text style={{ ...FONTS.h4 }}>Email: <Text style={{ ...FONTS.body4 }}>{referral.email}</Text></Text>)}
+                    {(referral.email) && (<Text style={{ ...FONTS.h4 }}>Email: <Text style={{ ...FONTS.body4 }}>{referral.email}</Text></Text>)}
 
                 </View>
                 <View style={{ justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row', width: '100%' }}>

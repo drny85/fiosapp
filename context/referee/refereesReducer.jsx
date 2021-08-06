@@ -7,24 +7,24 @@ export default (state, { type, payload }) => {
             return {
                 ...state,
                 referees: payload,
-                loading: false
+                loadingReferees: false
             };
         case GET_REFEREE:
             return {
                 ...state,
                 referee: payload,
-                loading: false
+                loadingReferees: false
             };
         case REFEREE_LOADING:
             return {
                 ...state,
-                loading: true,
+                loadingReferees: true,
             }
         case REFEREE_ERROR:
             return {
                 ...state,
                 error: payload,
-                loading: false,
+                loadingReferees: false,
             }
 
         default:

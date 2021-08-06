@@ -4,19 +4,58 @@ import ReferralCard from '../../components/ReferralCard'
 import { COLORS, FONTS, SIZES } from '../../constants/contantts'
 import authContext from '../../context/auth/authContext'
 import referralsContext from '../../context/referrals/referralContext'
-import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
-import { GOOGLE_MAPS_KEY } from '@env'
+import { Switch } from 'react-native-elements'
+
+const defaltFilter = {
+    new: false,
+    in_progress: false,
+    pending: false,
+    not_sold: false,
+    closed: false
+}
+
+const FilterSwitcher = ({ title, value, onValueChange }) => {
+    return (
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: SIZES.width / 2, marginVertical: 10 }}>
+            <Text style={{ ...FONTS.h3, marginRight: 10 }}>{title}</Text>
+            <Switch value={value} onValueChange={onValueChange} thumbColor={COLORS.white} trackColor={COLORS.black} />
+        </View>
+    )
+}
 
 
 const Referrals = ({ navigation }) => {
     const { referrals } = useContext(referralsContext)
     const { user } = useContext(authContext)
-    const [disposition, setDisposition] = useState('new')
+
     const [searchResult, setSearchResult] = useState('')
+    const [title, setTitle] = useState('New')
+    const [filterParam, setFilterParam] = useState('new')
     const [showFilter, setShowFilter] = useState(false)
+    const [filtered, setFiltered] = useState(false)
     const [referralCopy, setReferralCopy] = useState([])
+    const [filter, setFilter] = useState({
+        new: true,
+        in_progress: false,
+        pending: false,
+        not_sold: false,
+        closed: false
+    })
+    const [disposition, setDisposition] = useState('New')
+
+    const handleFilter = () => {
+
+        setTitle(disposition)
+        const c = [...referralCopy]
+        const nc = c.filter(r => r.status.name === disposition)
+
+        setReferralCopy([...nc])
+        setFiltered(true)
+        setShowFilter(false)
+    }
 
     const handleSearch = e => {
         const newSearch = referralCopy.filter(r => {
@@ -64,18 +103,17 @@ const Referrals = ({ navigation }) => {
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            title: referrals.length > 0 && <Text style={{ ...FONTS.h3, textTransform: 'capitalize' }}>{disposition}</Text>,
+            title: referrals.length > 0 && <Text style={{ ...FONTS.h3, textTransform: 'capitalize' }}>{title}</Text>,
             headerRight: () => <TouchableOpacity style={{ marginRight: 20 }} onPress={goToAddReferralScreen}>
                 <AntDesign name='plus' color={COLORS.black} size={24} />
-            </TouchableOpacity>,
-            headerLeft: () => referrals.length > 0 && <TouchableOpacity onPress={() => setShowFilter(true)} style={{ marginLeft: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
-                <Text style={{ ...FONTS.body3, marginRight: 8, }}>Filter</Text>
-                <Ionicons name="ios-filter" size={24} color="black" />
             </TouchableOpacity>
+
         })
-    }, [navigation])
+    }, [navigation, title])
 
     useEffect(() => {
+
+        setFilter({ ...defaltFilter, new: true })
 
         checkIfUserHasCoach()
 
@@ -94,21 +132,38 @@ const Referrals = ({ navigation }) => {
 
     return (
         <View style={styles.view}>
-            <View style={{ width: '90%', borderRadius: 30, justifyContent: 'center', alignItems: 'center', height: 45, shadowOffset: { width: 3, height: 3 }, shadowOpacity: 0.4, shadowRadius: 2, backgroundColor: COLORS.white, marginBottom: 10, }}>
-                <TextInput numberOfLines={1} value={searchResult} onChangeText={text => setSearchResult(text)} onKeyPress={handleSearch}
-                    placeholder='Search By Name, MON, Address, Apt, Phone' style={{ width: '100%', paddingHorizontal: 20, ...FONTS.body4 }} enablesReturnKeyAutomatically returnKeyType='search' />
-                {searchResult.length > 1 && (<TouchableOpacity onPress={() => {
-                    setSearchResult('');
-                    setReferralCopy([...referrals])
-                }} style={{ position: 'absolute', alignItems: 'center', right: 10, }}>
-                    <Ionicons name="close" size={24} color="black" />
-                </TouchableOpacity>)}
+            <View style={{ width: '100%', flexDirection: 'row', marginHorizontal: 15, justifyContent: 'space-around', alignItems: 'center' }}>
+                <TouchableOpacity onPress={() => {
+                    if (filtered) {
+                        setFiltered(false)
+                        setTitle('New')
+                        setFilter({ ...defaltFilter, new: true })
+                        setReferralCopy([...referrals])
+                    } else {
+                        setShowFilter(true)
+                    }
+                }} style={{ alignItems: 'center', justifyContent: 'center' }}>
+
+                    {filtered ? <MaterialCommunityIcons name="filter-variant-remove" size={24} color="black" /> : <Ionicons name="ios-filter" size={24} color="black" />}
+                </TouchableOpacity>
+
+                <View style={{ width: '85%', borderRadius: 30, justifyContent: 'center', alignItems: 'center', height: 45, shadowOffset: { width: -1, height: 3 }, shadowOpacity: 0.4, shadowRadius: 2, backgroundColor: COLORS.white, marginBottom: 10, }}>
+
+                    <TextInput numberOfLines={1} value={searchResult} onChangeText={text => setSearchResult(text)} onKeyPress={handleSearch}
+                        placeholder='Search By Name, MON, Address, Etc.' style={{ width: '100%', paddingHorizontal: 20, ...FONTS.body4 }} enablesReturnKeyAutomatically returnKeyType='search' />
+                    {searchResult.length > 1 && (<TouchableOpacity onPress={() => {
+                        setSearchResult('');
+                        setReferralCopy([...referrals])
+                    }} style={{ position: 'absolute', alignItems: 'center', right: 10, }}>
+                        <Ionicons name="close" size={24} color="black" />
+                    </TouchableOpacity>)}
+                </View>
             </View>
 
             {
                 referrals.length > 0 ? (
 
-                    <FlatList contentContainerStyle={{ width: SIZES.width }} data={searchResult.length > 1 ? referralCopy : referrals} keyExtractor={item => item.id} renderItem={items} />
+                    <FlatList contentContainerStyle={{ width: SIZES.width }} data={(searchResult.length > 1 || filtered) ? referralCopy : referrals} keyExtractor={item => item.id} renderItem={items} />
 
                 ) : (
                         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -118,13 +173,52 @@ const Referrals = ({ navigation }) => {
             }
 
             <Modal transparent visible={showFilter} animationType='slide' style={{ height: 300, }}>
-                <View style={{ backgroundColor: COLORS.gray, position: 'absolute', left: 0, right: 0, height: '70%', bottom: 0, borderTopEndRadius: 35, borderTopLeftRadius: 35, }}>
+                <View style={{ backgroundColor: COLORS.card, position: 'absolute', left: 0, right: 0, height: '70%', bottom: 0, borderTopEndRadius: 35, borderTopLeftRadius: 35, }}>
                     <TouchableOpacity style={{ position: 'absolute', top: 20, left: 30 }} onPress={() => setShowFilter(false)}>
                         <Ionicons name="close" size={24} color="black" />
                     </TouchableOpacity>
                     <View style={{ flex: 1, marginTop: 50, padding: SIZES.padding }}>
 
-                        <Text>Apply </Text>
+                        <FilterSwitcher title='New' value={filter.new} onValueChange={() => {
+                            setFilter({ ...defaltFilter, new: true })
+                            setDisposition('New')
+
+                        }} />
+
+
+                        <FilterSwitcher title='Pending' value={filter.pending} onValueChange={() => {
+                            setFilter({ ...defaltFilter, pending: true })
+                            setDisposition("Pending")
+
+                        }
+                        } />
+                        <FilterSwitcher title='In Progress' value={filter.in_progress} onValueChange={() => {
+                            setFilter({ ...defaltFilter, in_progress: true })
+                            setDisposition('In Progress')
+
+                        }
+                        } />
+                        <FilterSwitcher title='Closed' value={filter.closed} onValueChange={() => {
+                            setFilter({ ...defaltFilter, closed: true })
+                            setDisposition('Closed')
+
+                        }
+
+                        } />
+                        <FilterSwitcher title='Not Sold' value={filter.not_sold} onValueChange={() => {
+                            setFilter({ ...defaltFilter, not_sold: true })
+                            setDisposition('Not Sold')
+
+                        }
+
+                        } />
+
+                        <View>
+                            <TouchableOpacity onPress={handleFilter} style={{ paddingVertical: 15, paddingHorizontal: 20, backgroundColor: COLORS.white, borderRadius: SIZES.radius * 3, justifyContent: 'center', alignItems: 'center', width: SIZES.width / 2, alignSelf: 'center', marginTop: 30 }}>
+                                <Text style={{ ...FONTS.h3 }}>Apply Filter</Text>
+                            </TouchableOpacity>
+                        </View>
+
                     </View>
 
                 </View>

@@ -10,6 +10,8 @@ import ProfileListItem from '../../components/ProfileListItem';
 const Profile = ({ navigation }) => {
     const { logout, user } = useContext(authContext)
 
+    console.log(user)
+
     const logoutHandler = async () => {
         try {
             Alert.alert('Log Out', 'Are you sure you want ot log out?', [{ text: 'Yes', onPress: async () => logout() }, { text: 'No', style: 'cancel' }])

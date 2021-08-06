@@ -7,24 +7,30 @@ export default (state, { type, payload }) => {
             return {
                 ...state,
                 coachs: payload,
-                loading: false
+                loadingCoach: false
             };
         case GET_COACH:
             return {
                 ...state,
                 coach: ayload,
-                loading: false
+                loadingCoach: false
             };
         case COACH_LOADING:
             return {
                 ...state,
-                loading: true,
+                loadingCoach: true,
+            }
+        case 'CLEAR':
+            return {
+                ...state,
+                error: null,
+                loadingCoach: false
             }
         case COACH_ERROR:
             return {
                 ...state,
                 error: payload,
-                loading: false,
+                loadingCoach: false,
             }
 
         default:
