@@ -1,4 +1,8 @@
-import { ADD_REFERRAL, CLEAR_CURRENT, GET_REFERRAL, GET_REFERRALS, LOADING_REFERRAL, REFERRAL_ERROR, UPDATE_REFERRAL } from "./referralsTypes";
+import {
+    ADD_REFERRAL, CLEAR_CURRENT, GET_REFERRAL, GET_REFERRALS, LOADING_REFERRAL, REFERRAL_ERROR,
+    TODAY_UNIT, UPDATE_REFERRAL, WTD_UNIT, MTD_UNIT, MOVING_TODAY, MOVING_THIS_WEEK,
+    INSTALLING_TOMORROW, INSTALLING_TODAY, MOVING_TOMORROW, INSTALLING_THIS_WEEK
+} from "./referralsTypes";
 
 
 export default (state, { type, payload }) => {
@@ -22,7 +26,7 @@ export default (state, { type, payload }) => {
                 loading: false
             };
         case LOADING_REFERRAL:
-            console.log('LLLLL')
+
             return {
                 ...state,
                 loading: true,
@@ -33,6 +37,24 @@ export default (state, { type, payload }) => {
                 error: payload,
                 loading: false,
             };
+        case TODAY_UNIT:
+            return {
+                ...state,
+                loading: false,
+                todayUnits: payload
+            };
+        case WTD_UNIT:
+            return {
+                ...state,
+                loading: false,
+                wtdUnits: payload
+            };
+        case MTD_UNIT:
+            return {
+                ...state,
+                loading: false,
+                mtdUnits: payload
+            }
         case UPDATE_REFERRAL:
             return {
                 ...state,
@@ -44,6 +66,39 @@ export default (state, { type, payload }) => {
                 ...state,
                 loading: false,
                 referral: null,
+            };
+        case MOVING_TODAY:
+            return {
+                ...state,
+                loading: false,
+                movingToday: payload
+            };
+        case MOVING_TOMORROW:
+            return {
+                ...state,
+                loading: false,
+                movingTomorrow: payload
+            };
+        case MOVING_THIS_WEEK:
+            return {
+                ...state,
+                movingThisWeek: payload
+            };
+        case INSTALLING_TODAY:
+            return {
+                ...state,
+                gettingInstalledToday: payload
+            };
+        case INSTALLING_THIS_WEEK:
+            return {
+                ...state,
+                installedYesterday: payload,
+                loading: false
+            }
+        case INSTALLING_TOMORROW:
+            return {
+                ...state,
+                gettingInstalledTomorrow: payload
             }
 
 

@@ -52,8 +52,6 @@ const data = [
 
 ];
 
-
-
 const Paginator = ({ data, scrollX }) => {
     const { width } = useWindowDimensions();
     const emailRef = useRef()

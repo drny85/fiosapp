@@ -105,7 +105,7 @@ const Referrals = ({ navigation }) => {
         navigation.setOptions({
             title: referrals.length > 0 && <Text style={{ ...FONTS.h3, textTransform: 'capitalize' }}>{title}</Text>,
             headerRight: () => <TouchableOpacity style={{ marginRight: 20 }} onPress={goToAddReferralScreen}>
-                <AntDesign name='plus' color={COLORS.black} size={24} />
+                <AntDesign name='plus' color={COLORS.black} size={28} />
             </TouchableOpacity>
 
         })
@@ -144,7 +144,7 @@ const Referrals = ({ navigation }) => {
                     }
                 }} style={{ alignItems: 'center', justifyContent: 'center' }}>
 
-                    {filtered ? <MaterialCommunityIcons name="filter-variant-remove" size={24} color="black" /> : <Ionicons name="ios-filter" size={24} color="black" />}
+                    {filtered ? <MaterialCommunityIcons name="filter-variant-remove" size={28} color="black" /> : <Ionicons name="ios-filter" size={28} color="black" />}
                 </TouchableOpacity>
 
                 <View style={{ width: '85%', borderRadius: 30, justifyContent: 'center', alignItems: 'center', height: 45, shadowOffset: { width: -1, height: 3 }, shadowOpacity: 0.4, shadowRadius: 2, backgroundColor: COLORS.white, marginBottom: 10, }}>

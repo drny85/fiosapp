@@ -104,8 +104,8 @@ const AppPersonModal = ({ visible, setVisible, selected }) => {
                 <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : null} style={styles.form}>
                     <AppForm validationSchema={formSchema} initialValues={{ name: '', phone: '', email: '', property: '' }} onSubmit={handleSubmit}>
                         <AppFormField name='name' placeholder='Full Name' autoCapitalize='words' />
-                        <AppFormField name='phone' value={phone} placeholder='Phone' maxLength={14} onChangeText={text => setPhone(formatPhone(text))} />
-                        <AppFormField name='email' placeholder='Email Address' textContentType="emailAddress" autoCapitalize="none" autoCorrect={false} />
+                        <AppFormField name='phone' value={phone} placeholder='Phone' keyboardType="numeric" maxLength={14} onChangeText={text => setPhone(formatPhone(text))} />
+                        <AppFormField name='email' placeholder='Email Address' textContentType="emailAddress" keyboardType='email-address' autoCapitalize="none" autoCorrect={false} />
 
                         <View style={styles.checkbox}>
                             <CheckBox containerStyle={{ paddingHorizontal: 10, backgroundColor: 'transparent' }} checkedColor={COLORS.secondary} title='Manager' checked={manager} textStyle={{ ...FONTS.body3 }} onPress={() => { setManager(true); setCoach(false); setReferee(false) }} checkedIcon='dot-circle-o'

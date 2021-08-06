@@ -2,9 +2,11 @@ import React, { useReducer } from 'react'
 import referralsReducer from './referralsReducer'
 import ReferralsContext from './referralContext'
 import { db } from '../../database'
-import { ADD_REFERRAL, CLEAR_CURRENT, GET_REFERRAL, GET_REFERRALS, LOADING_REFERRAL, REFERRAL_ERROR, UPDATE_REFERRAL } from './referralsTypes'
-import referralsContext from './referralContext'
-import { states } from '../../states'
+import {
+    ADD_REFERRAL, CLEAR_CURRENT, GET_REFERRAL, GET_REFERRALS, LOADING_REFERRAL, REFERRAL_ERROR,
+    UPDATE_REFERRAL, TODAY_UNIT, WTD_UNIT, MTD_UNIT, MOVING_THIS_WEEK, MOVING_TODAY, INSTALLING_THIS_WEEK, MOVING_TOMORROW, INSTALLING_TODAY, INSTALLING_TOMORROW
+} from './referralsTypes'
+import moment from 'moment'
 
 
 const ReferralsState = ({ children }) => {
@@ -14,7 +16,16 @@ const ReferralsState = ({ children }) => {
         error: null,
         loading: false,
         coors: null,
-        filtered: null
+        filtered: null,
+        todayUnits: { units: 0, data: [] },
+        wtdUnits: { units: 0, data: [] },
+        mtdUnits: { units: 0, data: [] },
+        movingThisWeek: { units: 0, data: [] },
+        movingToday: { units: 0, data: [] },
+        movingTomorrow: { units: 0, data: [] },
+        gettingInstalledToday: { units: 0, data: [] },
+        gettingInstalledThisWeek: { units: 0, data: [] },
+        gettingInstalledTomorrow: { units: 0, data: [] },
     }
 
     const [state, dispatch] = useReducer(referralsReducer, initialState)
@@ -50,6 +61,10 @@ const ReferralsState = ({ children }) => {
                 })
 
                 dispatch({ type: GET_REFERRALS, payload: data })
+                calculateReferralUnits(data)
+                calculateUpcomingInstallations(data)
+                calculateMovingReferrals(data)
+
             })
 
 
@@ -75,6 +90,62 @@ const ReferralsState = ({ children }) => {
             dispatch({ type: REFERRAL_ERROR, payload: error.message })
             return false
         }
+    }
+
+
+    const calculateReferralUnits = data => {
+        const todayU = data.filter(r => r.status.name === 'Closed' && moment(r.order_date).isAfter(moment().startOf('day')) && moment(r.order_date).isBefore(moment().endOf('day')))
+        const wtdU = data.filter(r => r.status.name === 'Closed' && moment(r.order_date).isAfter(moment().startOf('W').add(1, 'day')) && moment(r.order_date).isBefore(moment().endOf('day').add(1, 'day')))
+        const mtdU = data.filter(r => r.status.name === 'Closed' && moment(r.order_date).isAfter(moment().startOf('month')) && moment(r.order_date).isBefore(moment().endOf('month')))
+
+        let todayUnit = 0;
+        let wtdUnit = 0;
+        let mtdUnit = 0;
+
+        todayU.forEach(u => {
+            if (u.package.internet || u.package.tv) {
+
+                todayUnit += 1;
+
+            }
+        })
+        wtdU.forEach(u => {
+            if (u.package.internet || u.package.tv) {
+                wtdUnit += 1;
+            }
+        })
+        mtdU.forEach(u => {
+            if (u.package.internet || u.package.tv) {
+                mtdUnit += 1;
+            }
+        })
+
+        dispatch({ type: TODAY_UNIT, payload: { units: todayUnit, data: [...todayU] } })
+        dispatch({ type: WTD_UNIT, payload: { units: wtdUnit, data: [...wtdU] } })
+        dispatch({ type: MTD_UNIT, payload: { units: mtdUnit, data: [...mtdU] } })
+    }
+
+    const calculateMovingReferrals = data => {
+
+        const thisWeek = data.filter(r => r.status.name !== 'Closed' && moment(r.moveIn).isAfter(moment().startOf('week')) && moment(r.moveIn).isBefore(moment().endOf('week')))
+        const today = data.filter(r => r.status.name !== 'Closed' && moment(r.moveIn).isAfter(moment().startOf('day')) && moment(r.moveIn).isBefore(moment().endOf('day')))
+        const tomorrow = data.filter(r => r.status.name !== 'Closed' && moment(r.moveIn).isAfter(moment().startOf('day').add(1, 'day')) && moment(r.moveIn).isBefore(moment().endOf('day').add(1, 'day')))
+        dispatch({ type: MOVING_THIS_WEEK, payload: { units: thisWeek.length, data: [...thisWeek] } })
+        dispatch({ type: MOVING_TODAY, payload: { units: today.length, data: [...today] } })
+        dispatch({ type: MOVING_TOMORROW, payload: { units: tomorrow.length, data: [...tomorrow] } })
+        //dispatch({ type: MOVING_THIS_WEEK, payload: w })
+
+    }
+    const calculateUpcomingInstallations = data => {
+
+        const thisWeek = data.filter(r => r.status.name === 'Closed' && moment(r.due_date).isAfter(moment().startOf('week')) && moment(r.due_date).isBefore(moment().endOf('week')))
+        const today = data.filter(r => r.status.name === 'Closed' && moment(r.due_date).isAfter(moment().startOf('day')) && moment(r.due_date).isBefore(moment().endOf('day')))
+        const tomorrow = data.filter(r => r.status.name === 'Closed' && moment(r.due_date).isAfter(moment().startOf('day').add(1, 'day')) && moment(r.due_date).isBefore(moment().endOf('day').add(1, 'day')))
+        dispatch({ type: INSTALLING_THIS_WEEK, payload: { units: thisWeek.length, data: [...thisWeek] } })
+        dispatch({ type: INSTALLING_TODAY, payload: { units: today.length, data: [...today] } })
+        dispatch({ type: INSTALLING_TOMORROW, payload: { units: tomorrow.length, data: [...tomorrow] } })
+        //dispatch({ type: MOVING_THIS_WEEK, payload: w })
+
     }
 
     const clearCurrent = () => dispatch({ type: CLEAR_CURRENT })
@@ -106,11 +177,24 @@ const ReferralsState = ({ children }) => {
             loading: state.loading,
             error: state.error,
             filtered: state.filtered,
+            todayUnits: state.todayUnits,
+            mtdUnits: state.mtdUnits,
+            wtdUnits: state.wtdUnits,
+            mtdUnits: state.mtdUnits,
+            movingThisWeek: state.movingThisWeek,
+            movingToday: state.movingToday,
+            movingTomorrow: state.movingTomorrow,
+            gettingInstalledThisWeek: state.gettingInstalledThisWeek,
+            gettingInstalledToday: state.gettingInstalledToday,
+            gettingInstalledTomorrow: state.gettingInstalledTomorrow,
             addReferral,
             getReferrals,
             getReferralById,
             clearCurrent,
             updateReferral,
+            calculateReferralUnits,
+            calculateMovingReferrals,
+            calculateUpcomingInstallations
 
         }} >
             {children}

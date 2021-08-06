@@ -8,7 +8,7 @@ const MiniInfoCard = ({ title, subtitle, onPress, style }) => {
     return (
         <TouchableOpacity style={[styles.view, style]} onPress={onPress}>
             <Text style={{ ...FONTS.body4 }}>{title}</Text>
-            <AnimatedNumbers animateToNumber={subtitle} fontStyle={{ ...FONTS.h2 }} />
+            <AnimatedNumbers animationDuration={600} animateToNumber={subtitle} fontStyle={{ ...FONTS.h2 }} />
         </TouchableOpacity>
     )
 }
@@ -19,19 +19,22 @@ const styles = StyleSheet.create({
     view: {
         maxWidth: SIZES.width / 3,
         height: 80,
-        padding: SIZES.padding * 0.6,
-        shadowColor: COLORS.light,
+        padding: SIZES.padding * 0.5,
+        shadowColor: COLORS.card,
         shadowOffset: {
-            height: 5, width: 8
+            height: 3, width: 6
         },
         shadowOpacity: 0.7,
+        flex: 1,
         shadowRadius: SIZES.radius * 0.5,
-        elevation: 10,
+        //elevation: 6,
         backgroundColor: COLORS.light,
         borderRadius: SIZES.radius,
         justifyContent: 'center',
         alignItems: 'center',
-        marginVertical: 10,
+
+        marginVertical: 8,
+        marginHorizontal: 5
 
 
     }
