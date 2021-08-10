@@ -21,7 +21,14 @@ const TabNavigation = () => {
         activeBackgroundColor: COLORS.light
 
     }}>
-        <Tabs.Screen name='HomeStack' options={{ title: 'Home', tabBarIcon: ({ color, size }) => <MaterialIcons name="home" size={size} color={color} /> }} component={HomeNavigator} />
+        <Tabs.Screen name='HomeStack' options={({ route }) => {
+            const routeName = getFocusedRouteNameFromRoute(route)
+            return {
+
+                tabBarIcon: ({ color, size }) => <MaterialIcons name="home" size={size} color={color} />,
+                tabBarVisible: routeName !== 'Details'
+            }
+        }} component={HomeNavigator} />
         <Tabs.Screen name='ReferralStack' options={({ route }) => {
             const routeName = getFocusedRouteNameFromRoute(route)
             return {

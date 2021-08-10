@@ -12,6 +12,7 @@ import {
 	FIREBASE_MESSAGING_SENDERID,
 	FIREBASE_PROJECT_ID,
 	FIREBASE_DATABASE_URL,
+	GOOGLE_MAPS_KEY,
 } from '@env';
 
 const firebaseConfig = {

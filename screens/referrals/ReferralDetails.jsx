@@ -5,13 +5,12 @@ import Loader from '../../components/Loader';
 import referralsContext from '../../context/referrals/referralContext';
 import { COLORS, FONTS, SIZES } from '../../constants/contantts';
 import moment from 'moment/moment'
+import { Ionicons } from '@expo/vector-icons';
 
 import PhoneCall from '../../components/PhoneCall';
 import { Button } from 'react-native-elements/dist/buttons/Button';
 import InputTextField from '../../components/InputTextField';
 import authContext from '../../context/auth/authContext';
-
-
 
 const ReferralDetails = ({ route, navigation }) => {
 
@@ -19,6 +18,7 @@ const ReferralDetails = ({ route, navigation }) => {
     const { updateReferral } = useContext(referralsContext)
     const { user } = useContext(authContext)
     const [keyH, setKeyH] = useState(0)
+    const [success, setSuccess] = useState(true)
     const [updatedComment, setUpdateComment] = useState('')
     const { referrals } = useContext(referralsContext)
 
@@ -81,7 +81,8 @@ const ReferralDetails = ({ route, navigation }) => {
         navigation.setOptions({
             headerRight: () => (<TouchableOpacity style={{ marginRight: SIZES.padding * 0.8 }} onPress={() => navigation.navigate('AddReferralScreen', { edit: true, referral: inititalValues })} >
                 <MaterialCommunityIcons name="square-edit-outline" size={24} color="black" />
-            </TouchableOpacity>)
+            </TouchableOpacity>),
+            // headerLeft: 
         })
     }, [navigation])
 
@@ -98,10 +99,17 @@ const ReferralDetails = ({ route, navigation }) => {
 
     if (!referral) return <Loader />
 
+
+
     return (
         <ScrollView style={[styles.view, { backgroundColor: referral.status.id === 'closed' ? COLORS.green : referral.status.id === 'not_sold' ? COLORS.red : COLORS.white }]}>
             <View style={styles.customer}>
-                <Text style={[styles.name, { marginBottom: 15, }]}>{referral.name} </Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', marginBottom: 15 }}>
+                    <Text style={[styles.name]}>{referral.name} </Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('Spark')}>
+                        <Ionicons name='mail-outline' size={26} color={COLORS.black} />
+                    </TouchableOpacity>
+                </View>
                 <Text style={styles.subText}>{line1} </Text>
                 <Text style={styles.subText}>{line2} </Text>
 

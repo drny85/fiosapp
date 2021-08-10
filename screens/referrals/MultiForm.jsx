@@ -24,6 +24,8 @@ import managersContext from '../../context/manager/managersContext';
 import refereesContext from '../../context/referee/refereesContext';
 import authContext from '../../context/auth/authContext';
 import InputTextField from '../../components/InputTextField';
+import LottieView from 'lottie-react-native'
+import * as Animatable from 'react-native-animatable';
 
 import PickerModal from '../modals/PickerModal'
 
@@ -99,7 +101,7 @@ const Step = ({ children }) => {
     );
 };
 
-const Page = ({ index, inputRef, moveIn, status, setStatus, internet, setInternet, mon, setMon, home, setHome, tv, setTv, setMoveIn, referralData, setReferralData, orderDate, setOrderDate, dueDate, setDueDate }) => {
+const Page = ({ index, inputRef, moveIn, status, setStatus, internet, setInternet, mon, setMon, wireless, setWireless, home, setHome, tv, setTv, setMoveIn, referralData, setReferralData, orderDate, setOrderDate, dueDate, setDueDate }) => {
 
     const { width, height } = useWindowDimensions();
     const [loading, setLoading] = useState(false)
@@ -113,8 +115,10 @@ const Page = ({ index, inputRef, moveIn, status, setStatus, internet, setInterne
     const [pickStatus, setPickStatus] = useState(false);
     const [show, setShow] = useState(false);
 
+
     const [showInternetPicker, setShowInternetPicker] = useState(false)
     const [showTvPicker, setShowTvPicker] = useState(false)
+    const [showWirelessPicker, setShowWirelessPicker] = useState(false)
     const [showHomePicker, setShowHomePicker] = useState(false)
 
     const onChange = (_, selectedDate) => {
@@ -157,6 +161,7 @@ const Page = ({ index, inputRef, moveIn, status, setStatus, internet, setInterne
     }, [user, referees.length])
 
     if (loading) return <Loader />
+
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <View
@@ -267,30 +272,44 @@ const Page = ({ index, inputRef, moveIn, status, setStatus, internet, setInterne
 
 
                                 </View>
-                                <View style={{ width: SIZES.width, justifyContent: 'center', alignItems: 'center' }}>
+                                <View style={{ width: '100%', alignItems: 'center' }}>
                                     <Text style={{ ...FONTS.h4 }}>Select Services Ordered:</Text>
-                                    <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                                        <TouchableOpacity onPress={() => setShowInternetPicker(true)} style={[styles.pick, { backgroundColor: !showInternetPicker ? COLORS.background : COLORS.lightGray }]}>
-                                            <Text style={{ ...FONTS.h5 }}>{internet ? internet.name : 'Internet'}</Text>
-                                            {internet && (<TouchableHighlight style={styles.pickIcon} onPress={() => setInternet(null)}>
-                                                <Text>x</Text>
-                                            </TouchableHighlight>)}
+                                    <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', alignSelf: 'center' }}>
+                                        <View style={{ width: '50%', }}>
+                                            <TouchableOpacity onPress={() => setShowInternetPicker(true)} style={[styles.pick, { backgroundColor: !showInternetPicker ? COLORS.background : COLORS.lightGray }]}>
+                                                <Text style={{ ...FONTS.h5 }}>{internet ? internet.name : 'Internet'}</Text>
+                                                {internet && (<TouchableHighlight style={styles.pickIcon} onPress={() => setInternet(null)}>
+                                                    <Text>x</Text>
+                                                </TouchableHighlight>)}
 
-                                        </TouchableOpacity>
-                                        <TouchableOpacity onPress={() => setShowTvPicker(true)} style={[styles.pick, { backgroundColor: showTvPicker ? COLORS.lightGray : COLORS.background }]}>
-                                            <Text style={{ ...FONTS.h5 }}>{tv ? tv.name : 'TV'}</Text>
-                                            {tv && (<TouchableHighlight style={styles.pickIcon} onPress={() => setTv(null)}>
-                                                <Text>x</Text>
-                                            </TouchableHighlight>)}
+                                            </TouchableOpacity>
+                                            <TouchableOpacity onPress={() => setShowTvPicker(true)} style={[styles.pick, { backgroundColor: showTvPicker ? COLORS.lightGray : COLORS.background }]}>
+                                                <Text style={{ ...FONTS.h5 }}>{tv ? tv.name : 'TV'}</Text>
+                                                {tv && (<TouchableHighlight style={styles.pickIcon} onPress={() => setTv(null)}>
+                                                    <Text>x</Text>
+                                                </TouchableHighlight>)}
 
-                                        </TouchableOpacity>
-                                        <TouchableOpacity onPress={() => setShowHomePicker(true)} style={[styles.pick, { backgroundColor: showHomePicker ? COLORS.lightGray : COLORS.background }]}>
-                                            <Text style={{ ...FONTS.h5 }}>{home ? home.name : 'Home'}</Text>
-                                            {home && (<TouchableHighlight style={styles.pickIcon} onPress={() => setHome(null)}>
-                                                <Text>x</Text>
-                                            </TouchableHighlight>)}
+                                            </TouchableOpacity>
 
-                                        </TouchableOpacity>
+                                        </View>
+                                        <View style={{ width: '50%', }}>
+                                            <TouchableOpacity onPress={() => setShowHomePicker(true)} style={[styles.pick, { backgroundColor: showHomePicker ? COLORS.lightGray : COLORS.background }]}>
+                                                <Text style={{ ...FONTS.h5 }}>{home ? home.name : 'Home'}</Text>
+                                                {home && (<TouchableHighlight style={styles.pickIcon} onPress={() => setHome(null)}>
+                                                    <Text>x</Text>
+                                                </TouchableHighlight>)}
+
+                                            </TouchableOpacity>
+                                            <TouchableOpacity onPress={() => setShowWirelessPicker(true)} style={[styles.pick, { backgroundColor: showTvPicker ? COLORS.lightGray : COLORS.background }]}>
+                                                <Text style={{ ...FONTS.h5 }}>{wireless ? wireless.name : 'Wireless'}</Text>
+                                                {wireless && (<TouchableHighlight style={styles.pickIcon} onPress={() => setWireless(null)}>
+                                                    <Text>x</Text>
+                                                </TouchableHighlight>)}
+
+                                            </TouchableOpacity>
+
+                                        </View>
+
                                     </View>
                                 </View>
                             </View>
@@ -338,9 +357,13 @@ const Page = ({ index, inputRef, moveIn, status, setStatus, internet, setInterne
                     setShowTvPicker(false)
                     setTv(tv_serv)
                 }} />
-                <PickerModal data={services[2].phone} showPicker={showHomePicker} title='Phone / Wiresss' onPress={(home_serv) => {
+                <PickerModal data={services[2].phone} showPicker={showHomePicker} title='Home Phone' onPress={(home_serv) => {
                     setShowHomePicker(false)
                     setHome(home_serv)
+                }} />
+                <PickerModal data={services[3].wireless} showPicker={showWirelessPicker} title='Wireless' onPress={(wireless_serv) => {
+                    setShowWirelessPicker(false)
+                    setWireless(wireless_serv)
                 }} />
             </View>
 
@@ -366,8 +389,11 @@ export default function MultiForm({ navigation, route }) {
     const [internet, setInternet] = useState(null)
     const [tv, setTv] = useState(null)
     const [home, setHome] = useState(null)
+    const [wireless, setWireless] = useState(null)
+    const [success, setSuccess] = useState(false);
     const [mon, setMon] = useState('')
     const [status, setStatus] = useState({ id: 'new', name: 'New' })
+
 
 
     const [referralData, setReferralData] = useState({
@@ -432,12 +458,12 @@ export default function MultiForm({ navigation, route }) {
                 const referralCopy = { ...referralData }
                 referralCopy.userId = user.id
                 referralCopy.updated = new Date().toISOString()
-                referralCopy.package = edit && referral && referralData.status.name.toLowerCase() === 'closed' ? { internet, tv, home } : null;
+                referralCopy.package = edit && referral && referralData.status.name.toLowerCase() === 'closed' ? { internet, tv, home, wireless } : null;
                 referralCopy.order_date = edit && referral && referralData.status.name.toLowerCase() === 'closed' ? new Date(orderDate).toISOString() : null
                 referralCopy.due_date = edit && referral && referralData.status.name.toLowerCase() === 'closed' ? new Date(dueDate).toISOString() : null
                 referralCopy.mon = edit && referral && referralData.status.name.toLowerCase() === 'closed' ? mon : null
                 if (referralData.status.name.toLowerCase() === 'closed') {
-                    if (!internet && !tv && !home) {
+                    if (!internet && !tv && !home && !wireless) {
                         alert('Please select the service that was ordered')
                         return;
                     } else if (mon === '' || mon.length < 13) {
@@ -448,7 +474,10 @@ export default function MultiForm({ navigation, route }) {
 
                 const updated = await updateReferral(referralCopy)
                 if (updated) {
-                    navigation.pop()
+                    if (referralCopy.status.name.toLowerCase() === 'closed') {
+                        setSuccess(true)
+                    }
+
                 }
 
             } else {
@@ -517,11 +546,47 @@ export default function MultiForm({ navigation, route }) {
                 setMon(referral.mon)
                 setTv(referral.package.tv)
                 setHome(referral.package.home)
+                setWireless(referral.package.wireless)
             }
 
         }
 
     }, [edit, referral])
+
+    if (success) return <View style={{ flex: 1 }}>
+        <LottieView source={require('../../assets/animations/congratulations.json')} autoPlay />
+        <Animatable.View animation='fadeIn' duration={2000} style={{ position: 'absolute', bottom: 100, left: 0, right: 0 }}>
+            <Animatable.Text animation='slideInDown' style={{ ...FONTS.body4, textAlign: 'center' }}>Remember to send your Closed Sale email</Animatable.Text>
+            <Animatable.View animation='slideInUp' duration={1000} easing='ease-in-out' style={{ flexDirection: 'row', justifyContent: 'space-evenly', margin: 10 }}>
+                <TouchableOpacity style={{
+                    shadowColor: COLORS.lightGray, shadowOffset: { width: 5, height: 6 }, elevation: 8,
+                    shadowOpacity: 0.7, shadowRadius: 6, justifyContent: 'center', alignItems: 'center',
+                    paddingHorizontal: 25, paddingVertical: 10, backgroundColor: COLORS.white,
+                    borderRadius: SIZES.radius * 3
+                }}
+                    onPress={() => {
+                        setSuccess(false)
+                        navigation.pop()
+                    }}>
+                    <Text style={{ ...FONTS.body4 }}>Send Later</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={{
+                    shadowColor: COLORS.lightGray,
+                    shadowOffset: { width: 5, height: 6 },
+                    elevation: 8, shadowOpacity: 0.7, shadowRadius: 6,
+                    justifyContent: 'center', alignItems: 'center', paddingHorizontal: 25,
+                    paddingVertical: 10, backgroundColor: COLORS.white, borderRadius: SIZES.radius * 3
+                }}
+                    onPress={() => {
+                        setSuccess(false)
+                        navigation.pop()
+                        navigation.navigate('Spark')
+                    }}>
+                    <Animatable.Text animation='shake' style={{ ...FONTS.h4 }}>Send Now</Animatable.Text>
+                </TouchableOpacity>
+            </Animatable.View>
+        </Animatable.View>
+    </View>
 
 
     return (
@@ -554,7 +619,7 @@ export default function MultiForm({ navigation, route }) {
                     )}
                     data={data}
                     keyExtractor={(item) => item.id.toString()}
-                    renderItem={({ _, index }) => <Page index={index} inputRef={inputRef} mon={mon} status={status} setStatus={setStatus} setMon={setMon} tv={tv} setTv={setTv} internet={internet} setInternet={setInternet} home={home} setHome={setHome} dueDate={dueDate} setDueDate={setDueDate} orderDate={orderDate} setOrderDate={setOrderDate} canContinue={canContinue} moveIn={moveIn} setMoveIn={setMoveIn} setCanContinue={setCanContinue} referralData={referralData} setReferralData={setReferralData} />}
+                    renderItem={({ _, index }) => <Page index={index} inputRef={inputRef} mon={mon} status={status} setStatus={setStatus} setMon={setMon} tv={tv} wireless={wireless} setWireless={setWireless} setTv={setTv} internet={internet} setInternet={setInternet} home={home} setHome={setHome} dueDate={dueDate} setDueDate={setDueDate} orderDate={orderDate} setOrderDate={setOrderDate} canContinue={canContinue} moveIn={moveIn} setMoveIn={setMoveIn} setCanContinue={setCanContinue} referralData={referralData} setReferralData={setReferralData} />}
                 />
             </View>
             <View
@@ -598,7 +663,7 @@ export default function MultiForm({ navigation, route }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: COLORS.white,
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: SIZES.statusBarHeight
@@ -614,7 +679,7 @@ const styles = StyleSheet.create({
         shadowRadius: 8,
 
         borderRadius: (SIZES.width / 3) / 2,
-        width: SIZES.width / 3.2,
+        width: SIZES.width / 2.2,
         paddingHorizontal: SIZES.padding,
         paddingVertical: SIZES.padding * 0.5,
         justifyContent: 'space-between', alignItems: 'center',

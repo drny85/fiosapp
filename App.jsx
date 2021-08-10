@@ -1,6 +1,5 @@
 
 import React, { useEffect, useContext } from 'react';
-import moment from 'moment'
 import * as Notifications from 'expo-notifications';
 import { NavigationContainer } from "@react-navigation/native";
 import { AuthNavigator, TabNavigation } from './navigation';
@@ -15,6 +14,7 @@ import ManagersState from './context/manager/managersState';
 import RefereesState from './context/referee/refereesState';
 import CoachsState from './context/coach/coachState';
 import { useNotification } from './hooks/useNotification';
+import NotesState from './context/notes/notesState';
 
 
 Notifications.setNotificationHandler({
@@ -88,7 +88,9 @@ export default () => {
       <ManagersState>
         <RefereesState>
           <CoachsState>
-            <App />
+            <NotesState>
+              <App />
+            </NotesState>
           </CoachsState>
         </RefereesState>
       </ManagersState>

@@ -23,8 +23,12 @@ export const services = [
 				id: 'home-phone',
 				name: 'Home Phone',
 			},
-			{ id: 'wireless-referral', name: 'Wireless Referral' },
-			{ id: 'wireless-direct', name: 'Wireless Direct Sale' },
+		],
+	},
+	{
+		wireless: [
+			{ id: 'wireless-referral', name: 'Click To Call' },
+			{ id: 'wireless-direct', name: 'Direct Sale' },
 		],
 	},
 ];

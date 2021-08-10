@@ -1,14 +1,13 @@
 import React from 'react'
-import { TouchableOpacity } from 'react-native'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { COLORS, FONTS, SIZES } from '../constants/contantts'
 import AnimatedNumbers from 'react-native-animated-numbers';
 
 const MiniInfoCard = ({ title, subtitle, onPress, style }) => {
     return (
         <TouchableOpacity style={[styles.view, style]} onPress={onPress}>
-            <Text style={{ ...FONTS.body4 }}>{title}</Text>
-            <AnimatedNumbers animationDuration={600} animateToNumber={subtitle} fontStyle={{ ...FONTS.h2 }} />
+            <Text style={{ ...FONTS.body5 }}>{title}</Text>
+            <AnimatedNumbers animationDuration={600} animateToNumber={subtitle} fontStyle={{ ...FONTS.h3 }} />
         </TouchableOpacity>
     )
 }
@@ -18,7 +17,7 @@ export default MiniInfoCard
 const styles = StyleSheet.create({
     view: {
         maxWidth: SIZES.width / 3,
-        height: 80,
+        height: 60,
         padding: SIZES.padding * 0.5,
         shadowColor: COLORS.card,
         shadowOffset: {
@@ -28,8 +27,8 @@ const styles = StyleSheet.create({
         flex: 1,
         shadowRadius: SIZES.radius * 0.5,
         //elevation: 6,
-        backgroundColor: COLORS.light,
-        borderRadius: SIZES.radius,
+        backgroundColor: COLORS.background,
+        borderRadius: SIZES.radius * 1.1,
         justifyContent: 'center',
         alignItems: 'center',
 
