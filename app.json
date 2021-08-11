@@ -16,7 +16,7 @@
 		"assetBundlePatterns": ["**/*"],
 
 		"ios": {
-			"supportsTablet": true,
+			"supportsTablet": false,
 			"bundleIdentifier": "net.robertdev.melendez.fios",
 			"buildNumber": "1.0.1"
 		},
