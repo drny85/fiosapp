@@ -1,13 +1,36 @@
 {
-  "builds": {
-    "ios": {
-      "release": {
-        "buildType": "release"
-      },
-      "development": {
-        "buildType": "development-client",
-        "distribution": "internal"
-      }
-    }
-  }
+	"builds": {
+		"android": {
+			"release": {
+				"workflow": "managed",
+				"cache": { "key": "cahes" },
+				"releaseChannel": "production",
+				"env": {
+					"ENVIRONMENT": "production"
+				},
+				"buildType": "app-bundle"
+			},
+			"development": {
+				"workflow": "managed",
+				"buildType": "development-client",
+				"distribution": "internal"
+			}
+		},
+		"ios": {
+			"release": {
+				"workflow": "managed",
+				"releaseChannel": "production",
+				"cache": { "key": "cahes" },
+				"env": {
+					"ENVIRONMENT": "production"
+				}
+			},
+			"development": {
+				"workflow": "managed",
+				"buildType": "development-client",
+				"distribution": "internal",
+				"releaseChannel": "staging"
+			}
+		}
+	}
 }
