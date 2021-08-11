@@ -64,6 +64,7 @@ exports.onReferralClosed = functions.firestore
 				phone,
 				mon,
 				package,
+				due_date,
 				name,
 				order_date,
 			} = referral;
@@ -197,20 +198,17 @@ exports.onReferralClosed = functions.firestore
 						</html>
 						`,
 				});
+
+				await admin
+					.firestore()
+					.collection('referrals')
+					.doc(referral.userId)
+					.collection('referrals')
+					.doc(referral.id)
+					.update({ email_sent: true });
 				const { statusCode, body } = await congrat[0];
 
-				console.log('STATUS CODE', statusCode);
-				console.log('BODY', body);
-
-				if (congrat) {
-					await admin
-						.firestore()
-						.collection('referrals')
-						.doc(referral.userId)
-						.collection('referrals')
-						.doc(referral.id)
-						.update({ email_sent: true });
-
+				if (statusCode >= 200 && statusCode < 300) {
 					await sgMail.send({
 						to: [manager.email],
 						cc: [user.coachInfo.email, user.email],
@@ -248,7 +246,9 @@ exports.onReferralClosed = functions.firestore
 												<li style="text-decoration: none;list-style: none;padding: 0.8rem;margin: 0 auto;text-transform: uppercase;">Apt: ${
 													apt ? apt : 'none'
 												}</li>
-												<li style="text-decoration: none;list-style: none;padding: 0.8rem;margin: 0 auto; text-transform: capitalize;">Package: ${generatePackage()}</li>
+												<li style="text-decoration: none;list-style: none;padding: 0.8rem;margin: 0 auto; text-transform: capitalize;">Package: ${generatePackage(
+													package
+												)}</li>
 										
 												<li style="text-decoration: none;list-style: none;padding: 0.8rem;margin: 0 auto;">Phone: ${phone}</li>
 												<li style="text-decoration: none;list-style: none;padding: 0.8rem;margin: 0 auto;">Email: ${

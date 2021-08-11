@@ -485,7 +485,7 @@ export default function MultiForm({ navigation, route }) {
                 const added = await addReferral(referralData)
                 if (added) {
 
-                    navigation.pop()
+                    navigation.navigate('ReferralStack')
                 } else return;
             }
 

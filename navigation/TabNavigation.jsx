@@ -24,7 +24,7 @@ const TabNavigation = () => {
         <Tabs.Screen name='HomeStack' options={({ route }) => {
             const routeName = getFocusedRouteNameFromRoute(route)
             return {
-
+                title: 'Home',
                 tabBarIcon: ({ color, size }) => <MaterialIcons name="home" size={size} color={color} />,
                 tabBarVisible: routeName !== 'Details'
             }

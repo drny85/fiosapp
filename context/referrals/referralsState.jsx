@@ -127,7 +127,7 @@ const ReferralsState = ({ children }) => {
 
     const calculateMovingReferrals = data => {
 
-        const twoWeeks = data.filter(r => r.status.name !== 'Closed' && moment(r.moveIn).isAfter(moment().startOf('week').add(1, 'week')) && moment(r.moveIn).isBefore(moment().endOf('week').add(1, 'week')))
+        const twoWeeks = data.filter(r => r.status.name !== 'Closed' && moment(new Date()).isAfter(moment().startOf('day')) && moment(r.moveIn).isBefore(moment().endOf('week').add(1, 'week')))
         const today = data.filter(r => r.status.name !== 'Closed' && moment(r.moveIn).isAfter(moment().startOf('day')) && moment(r.moveIn).isBefore(moment().endOf('day')))
         const tomorrow = data.filter(r => r.status.name !== 'Closed' && moment(r.moveIn).isAfter(moment().startOf('day').add(1, 'day')) && moment(r.moveIn).isBefore(moment().endOf('day').add(1, 'day')))
         dispatch({ type: MOVING_IN_TWO_WEEKS, payload: { units: twoWeeks.length, data: [...twoWeeks] } })

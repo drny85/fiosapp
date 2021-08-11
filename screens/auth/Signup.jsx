@@ -123,6 +123,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         height: '100%',
+        maxWidth: 600,
+        alignSelf: 'center',
+        width: '100%',
         marginHorizontal: SIZES.padding * 0.5,
 
     }

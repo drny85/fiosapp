@@ -194,6 +194,8 @@ export default function App() {
                     flexDirection: 'row',
                     justifyContent: 'space-evenly',
                     width: '100%',
+
+
                 }}
             >
                 <NextPrevButton

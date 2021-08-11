@@ -17,7 +17,7 @@ export default MiniInfoCard
 const styles = StyleSheet.create({
     view: {
         maxWidth: SIZES.width / 3,
-        height: 60,
+        height: SIZES.width / 8,
         padding: SIZES.padding * 0.5,
         shadowColor: COLORS.card,
         shadowOffset: {

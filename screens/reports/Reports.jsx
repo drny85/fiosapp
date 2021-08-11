@@ -133,7 +133,9 @@ const Reports = () => {
                 flexDirection: 'row',
                 justifyContent: 'space-evenly',
                 alignItems: 'center',
-                height: 40, shadowRadius: 8,
+                height: SIZES.height / 15,
+                maxHeight: 80,
+                shadowRadius: 8,
                 alignSelf: 'center',
                 shadowOpacity: 0.7,
                 shadowColor: COLORS.card,
@@ -157,13 +159,16 @@ const Reports = () => {
             {plans.map(p => {
                 return (
                     <View key={p.id} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', paddingHorizontal: 10 }}>
-                        <Text style={{ textAlign: 'left', ...FONTS.h4 }}>{p.name}</Text>
-                        <View style={{ justifyContent: 'center', alignSelf: 'flex-end', marginLeft: 'auto' }}>
+                        <View style={{ width: '40%' }}>
+                            <Text style={{ textAlign: 'left', ...FONTS.h4 }}>{p.name}</Text>
+                        </View>
+                        <View style={{ justifyContent: 'center', width: '35%' }}>
                             <View style={{
                                 flexDirection: 'row',
                                 justifyContent: 'space-evenly',
                                 alignItems: 'center',
-                                height: 40, shadowRadius: 8,
+                                height: 50,
+                                shadowRadius: 8,
                                 shadowOpacity: 0.7,
                                 shadowColor: COLORS.card,
                                 borderRadius: SIZES.radius * 3,
@@ -180,7 +185,7 @@ const Reports = () => {
                                     }
                                 }
 
-                                } style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                } style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
                                     <AntDesign name='minuscircleo' style={{ opacity: (lines === 0 || p.line === 0) ? 0.3 : 1 }} size={28} />
                                 </TouchableOpacity>
                                 <View>
@@ -194,12 +199,12 @@ const Reports = () => {
                                     }
                                 }
 
-                                } style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                                } style={{ width: '100%', justifyContent: 'center', alignItems: 'center', }}>
                                     <AntDesign name='pluscircleo' size={28} />
                                 </TouchableOpacity>
                             </View>
                         </View>
-                        <View style={{ marginLeft: 30 }}>
+                        <View style={{ width: '25%', justifyContent: 'center', alignItems: 'flex-end', paddingRight: 30 }}>
                             <AnimatedNumbers animationDuration={600} animateToNumber={`${p.price}`} fontStyle={{ ...FONTS.h3, }} />
 
                         </View>
@@ -207,15 +212,15 @@ const Reports = () => {
                     </View>)
             })}
 
-            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 15, paddingRight: 10 }}>
-                <Text style={{ ...FONTS.h3, marginRight: 10 }}>Sub Total: $</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 15, paddingRight: 30 }}>
+                <Text style={{ ...FONTS.h3, }}>Sub Total: $</Text>
                 <AnimatedNumbers animationDuration={600} animateToNumber={calculateTotalPriceBeforeTaxes()} fontStyle={{ ...FONTS.h3 }} />
             </View>
-            <View style={{ paddingRight: 10 }}>
+            <View style={{ paddingRight: 30 }}>
                 {autoPay === 0 ? (<Text style={{ ...FONTS.body5, textAlign: 'right' }}>You can save ${lines * 10} with auto pay</Text>) : <Text style={{ ...FONTS.body5, textAlign: 'right' }}>You are saving ${lines * 10} with auto pay</Text>}
 
             </View>
-            <View style={{ justifyContent: 'flex-end', paddingRight: 10, width: '100%' }}>
+            <View style={{ justifyContent: 'flex-end', paddingRight: 30, width: '100%' }}>
                 <Text style={{ ...FONTS.h4, textAlign: 'right' }}>Estimated Taxes: ${calculateEstTaxes()} </Text>
                 <Text style={{ ...FONTS.h3, textAlign: 'right' }}>Total Before Discount: $ {calculateTotalPriceBeforeTaxes() + calculateEstTaxes()} </Text>
 

@@ -1,36 +1,38 @@
 {
-	"expo": {
-		"name": "Fios",
-		"slug": "Fios",
-		"version": "1.0.1",
-		"orientation": "portrait",
-		"icon": "./assets/icon.png",
-		"splash": {
-			"image": "./assets/splash.png",
-			"resizeMode": "contain",
-			"backgroundColor": "#ffffff"
-		},
-		"updates": {
-			"fallbackToCacheTimeout": 0
-		},
-		"assetBundlePatterns": ["**/*"],
-
-		"ios": {
-			"supportsTablet": false,
-			"bundleIdentifier": "net.robertdev.melendez.fios",
-			"buildNumber": "1.0.1"
-		},
-		"extra": {
-			"appId": "1:188462078951:web:0b59e22c794940dcaafb42"
-		},
-		"android": {
-			"adaptiveIcon": {
-				"foregroundImage": "./assets/adaptive-icon.png",
-				"backgroundColor": "#FFFFFF"
-			}
-		},
-		"web": {
-			"favicon": "./assets/favicon.png"
-		}
-	}
+  "expo": {
+    "name": "Fios",
+    "slug": "Fios",
+    "version": "1.0.1",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "net.robertdev.melendez.fios",
+      "buildNumber": "1.0.1"
+    },
+    "extra": {
+      "appId": "1:188462078951:web:0b59e22c794940dcaafb42"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "description": "available for tablets too"
+  }
 }
