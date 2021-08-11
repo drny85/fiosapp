@@ -23,7 +23,7 @@ const Home = ({ navigation }) => {
         todayUnits,
         mtdUnits,
         wtdUnits,
-        movingThisWeek,
+        movingInTwoWeeks,
         movingToday,
         movingTomorrow,
         gettingInstalledThisWeek,
@@ -101,11 +101,11 @@ const Home = ({ navigation }) => {
                     setTitle("Moving Tomorrow")
                 }} title="Tomorrow" subtitle={movingTomorrow.units} />
                 <MiniInfoCard onPress={() => {
-                    if (movingThisWeek.data.length === 0) return
-                    setData(movingThisWeek.data)
+                    if (movingInTwoWeeks.data.length === 0) return
+                    setData(movingInTwoWeeks.data)
                     setvisible(true)
-                    setTitle("Moving This Week")
-                }} title="This Week" subtitle={movingThisWeek.units} />
+                    setTitle("In 2 Weeks")
+                }} title="In 2 Weeks" subtitle={movingInTwoWeeks.units} />
             </View>
             <Text style={{ ...FONTS.h4, textAlign: 'center' }}>Upcoming Installations</Text>
             <View style={styles.mini}>

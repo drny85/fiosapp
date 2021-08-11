@@ -4,7 +4,7 @@ import ReferralsContext from './referralContext'
 import { db } from '../../database'
 import {
     ADD_REFERRAL, CLEAR_CURRENT, GET_REFERRAL, GET_REFERRALS, LOADING_REFERRAL, REFERRAL_ERROR,
-    UPDATE_REFERRAL, TODAY_UNIT, WTD_UNIT, MTD_UNIT, MOVING_THIS_WEEK, MOVING_TODAY, INSTALLING_THIS_WEEK, MOVING_TOMORROW, INSTALLING_TODAY, INSTALLING_TOMORROW
+    UPDATE_REFERRAL, TODAY_UNIT, WTD_UNIT, MTD_UNIT, MOVING_THIS_WEEK, MOVING_TODAY, INSTALLING_THIS_WEEK, MOVING_TOMORROW, INSTALLING_TODAY, INSTALLING_TOMORROW, MOVING_IN_TWO_WEEKS
 } from './referralsTypes'
 import moment from 'moment'
 
@@ -20,7 +20,7 @@ const ReferralsState = ({ children }) => {
         todayUnits: { units: 0, data: [] },
         wtdUnits: { units: 0, data: [] },
         mtdUnits: { units: 0, data: [] },
-        movingThisWeek: { units: 0, data: [] },
+        movingInTwoWeeks: { units: 0, data: [] },
         movingToday: { units: 0, data: [] },
         movingTomorrow: { units: 0, data: [] },
         gettingInstalledToday: { units: 0, data: [] },
@@ -127,10 +127,10 @@ const ReferralsState = ({ children }) => {
 
     const calculateMovingReferrals = data => {
 
-        const thisWeek = data.filter(r => r.status.name !== 'Closed' && moment(r.moveIn).isAfter(moment().startOf('week')) && moment(r.moveIn).isBefore(moment().endOf('week')))
+        const twoWeeks = data.filter(r => r.status.name !== 'Closed' && moment(r.moveIn).isAfter(moment().startOf('week').add(1, 'week')) && moment(r.moveIn).isBefore(moment().endOf('week').add(1, 'week')))
         const today = data.filter(r => r.status.name !== 'Closed' && moment(r.moveIn).isAfter(moment().startOf('day')) && moment(r.moveIn).isBefore(moment().endOf('day')))
         const tomorrow = data.filter(r => r.status.name !== 'Closed' && moment(r.moveIn).isAfter(moment().startOf('day').add(1, 'day')) && moment(r.moveIn).isBefore(moment().endOf('day').add(1, 'day')))
-        dispatch({ type: MOVING_THIS_WEEK, payload: { units: thisWeek.length, data: [...thisWeek] } })
+        dispatch({ type: MOVING_IN_TWO_WEEKS, payload: { units: twoWeeks.length, data: [...twoWeeks] } })
         dispatch({ type: MOVING_TODAY, payload: { units: today.length, data: [...today] } })
         dispatch({ type: MOVING_TOMORROW, payload: { units: tomorrow.length, data: [...tomorrow] } })
         //dispatch({ type: MOVING_THIS_WEEK, payload: w })
@@ -181,7 +181,7 @@ const ReferralsState = ({ children }) => {
             mtdUnits: state.mtdUnits,
             wtdUnits: state.wtdUnits,
             mtdUnits: state.mtdUnits,
-            movingThisWeek: state.movingThisWeek,
+            movingInTwoWeeks: state.movingInTwoWeeks,
             movingToday: state.movingToday,
             movingTomorrow: state.movingTomorrow,
             gettingInstalledThisWeek: state.gettingInstalledThisWeek,

@@ -1,6 +1,6 @@
 import {
     ADD_REFERRAL, CLEAR_CURRENT, GET_REFERRAL, GET_REFERRALS, LOADING_REFERRAL, REFERRAL_ERROR,
-    TODAY_UNIT, UPDATE_REFERRAL, WTD_UNIT, MTD_UNIT, MOVING_TODAY, MOVING_THIS_WEEK,
+    TODAY_UNIT, UPDATE_REFERRAL, WTD_UNIT, MTD_UNIT, MOVING_TODAY, MOVING_IN_TWO_WEEKS,
     INSTALLING_TOMORROW, INSTALLING_TODAY, MOVING_TOMORROW, INSTALLING_THIS_WEEK
 } from "./referralsTypes";
 
@@ -79,10 +79,10 @@ export default (state, { type, payload }) => {
                 loading: false,
                 movingTomorrow: payload
             };
-        case MOVING_THIS_WEEK:
+        case MOVING_IN_TWO_WEEKS:
             return {
                 ...state,
-                movingThisWeek: payload
+                movingInTwoWeeks: payload
             };
         case INSTALLING_TODAY:
             return {

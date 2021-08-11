@@ -99,7 +99,6 @@ const Managers = ({ navigation, route }) => {
 
     }, [subject])
 
-    console.log(managers.length, referees.length, coachs.length)
     if (loadingReferees || loadingCoach || loadingManagers) return <Loader />
     return (
         <View style={styles.view}>

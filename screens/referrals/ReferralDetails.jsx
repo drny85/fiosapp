@@ -125,21 +125,21 @@ const ReferralDetails = ({ route, navigation }) => {
                     <Text style={{ color: COLORS.lightGray }}>{moment(referral.moveIn).fromNow()}</Text>
                 </View>
                 <Text style={styles.text}>Status: <Text style={styles.subText}>{referral.status?.name}</Text></Text>
-                <Text style={styles.text}>Referred By: <Text style={styles.subText}>{referral.referee.name}</Text> </Text>
+                {referral.referee && (<Text style={styles.text}>Referred By: <Text style={styles.subText}>{referral?.referee.name}</Text> </Text>)}
                 {referral.manager && (<Text style={styles.text}>AM: <Text style={styles.subText}>{referral.manager.name}</Text> </Text>)}
 
             </View>
             {referral?.status.name.toLowerCase() === 'closed' && (
                 <View style={styles.customer}>
-                    <Text style={[styles.text]}>Mon: <Text style={styles.subText}>{referral.mon}</Text></Text>
+                    <Text style={[styles.text]}>Mon: <Text style={styles.subText, { ...FONTS.h3 }}>{referral.mon}</Text></Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Text style={[styles.Text]}>Due Date: <Text style={styles.subText}>{moment(referral.due_date).format('ll')}</Text> </Text>
+                        <Text style={[styles.Text, { ...FONTS.h4 }]}>Due Date: <Text style={styles.subText}>{moment(referral.due_date).format('ll')}</Text> </Text>
                         <Text style={{ color: COLORS.lightGray }}>{moment(referral.due_date).fromNow()}</Text>
                     </View>
 
                     <Text style={styles.text}>Package: {referral.package && referral.package.internet && referral.package.internet.name + ', '}  {referral.package && referral.package.tv && referral.package.tv.name + ', '}  {referral.package && referral.package.home && referral.package.home.name}</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Text style={[styles.text, { ...FONTS.h3 }]}>Order Date: {moment(referral.order_date).format('ll')}</Text>
+                        <Text style={[styles.text, { ...FONTS.h4 }]}>Order Date: {moment(referral.order_date).format('ll')}</Text>
                         <Text style={{ color: COLORS.lightGray }}>{moment(referral.order_date).fromNow()}</Text>
                     </View>
 
