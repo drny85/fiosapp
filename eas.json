@@ -3,7 +3,7 @@
 		"android": {
 			"release": {
 				"workflow": "managed",
-				"cache": { "key": "cahes" },
+				"cache": { "key": "cahes", "disabled": true },
 				"releaseChannel": "production",
 				"env": {
 					"ENVIRONMENT": "production"
@@ -20,7 +20,7 @@
 			"release": {
 				"workflow": "managed",
 				"releaseChannel": "production",
-				"cache": { "key": "cahes" },
+				"cache": { "key": "cahes", "disabled": true },
 				"env": {
 					"ENVIRONMENT": "production"
 				}
