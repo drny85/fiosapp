@@ -73,10 +73,10 @@ const Signin = ({ route }) => {
             ) : (
                     <KeyboardAvoidingView style={styles.view} behavior={Platform.OS === 'ios' ? 'padding' : null}>
                         <View style={{ width: '100%', height: 100, alignItems: 'center', justifyContent: 'center' }}>
-                            <Image source={require('../../assets/verizon-logo.png')} style={{ width: SIZES.width / 3, height: 100, resizeMode: 'cover' }} />
+                            <Image source={require('../../assets/verizon-logo.png')} style={{ width: SIZES.width / 3, height: 100, resizeMode: 'cover', marginBottom: 120 }} />
                         </View>
                         <View style={{ width: '100%' }}>
-                            <Input placeholder='Email Address' keyboardType='email-address' autoCapitalize='none' value={email} onChangeText={text => setEmail(text.trim().toLowerCase())} />
+                            <Input placeholder='Email Address' keyboardType='email-address' autoCorrect={false} autoCapitalize='none' value={email} onChangeText={text => setEmail(text.trim().toLowerCase())} />
                             <Input rightIcon={<Feather name="eye" size={24} color="black" />} placeholder='Password' secureTextEntry={true} value={password} onChangeText={text => setPassword(text.trim())} />
                         </View>
                         <View style={{ marginTop: 30 }}>

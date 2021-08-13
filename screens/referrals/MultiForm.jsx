@@ -38,7 +38,9 @@ import { services } from '../../services';
 import AddressSearch from '../../components/AddressSearch';
 import AddPersonModal from '../modals/AddPersonModal';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { GOOGLE_MAPS_KEY } from '@env'
+import { GOOGLE_MAPS_KEY, EMAIL_URL } from '@env'
+import { sendEmail } from '../../utils/sendEmail';
+
 
 
 const data = [
@@ -476,6 +478,10 @@ export default function MultiForm({ navigation, route }) {
                 if (updated) {
                     if (referralCopy.status.name.toLowerCase() === 'closed') {
                         setSuccess(true)
+                        const sent = await sendEmail({ referral: referralCopy })
+                        console.log('EMAIL SENT', sent)
+                    } else {
+                        navigation.pop()
                     }
 
                 }
@@ -483,15 +489,20 @@ export default function MultiForm({ navigation, route }) {
             } else {
 
                 const added = await addReferral(referralData)
+
                 if (added) {
 
-                    navigation.navigate('ReferralStack')
+                    navigation.navigate('Referrals')
                 } else return;
             }
 
         } catch (error) {
             console.log(error)
         }
+    }
+
+    const getItemLayout = ({ data, index }) => {
+        console.log(data, index)
     }
 
     useEffect(() => {
@@ -525,6 +536,10 @@ export default function MultiForm({ navigation, route }) {
             }
         }
 
+        // if (currentX === 0) {
+        //     slideRef.current.scrollToIndex({ index: currentX + 2 });
+        // }
+
 
     }, [referralData, currentX, edit])
 
@@ -551,10 +566,11 @@ export default function MultiForm({ navigation, route }) {
 
         }
 
+
     }, [edit, referral])
 
-    if (success) return <View style={{ flex: 1 }}>
-        <LottieView source={require('../../assets/animations/congratulations.json')} autoPlay />
+    if (success) return <View style={{ flex: 1, marginTop: SIZES.statusBarHeight }}>
+        <LottieView style={{ flex: 1, }} resizeMode='center' source={require('../../assets/animations/congratulations.json')} autoPlay />
         <Animatable.View animation='fadeIn' duration={2000} style={{ position: 'absolute', bottom: 100, left: 0, right: 0 }}>
             <Animatable.Text animation='slideInDown' style={{ ...FONTS.body4, textAlign: 'center' }}>Remember to send your Closed Sale email</Animatable.Text>
             <Animatable.View animation='slideInUp' duration={1000} easing='ease-in-out' style={{ flexDirection: 'row', justifyContent: 'space-evenly', margin: 10 }}>

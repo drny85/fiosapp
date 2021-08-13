@@ -3,4 +3,5 @@ export const GET_REFEREE = 'GET_REFEREE';
 export const GET_REFEREES = 'GET_REFEREES';
 export const REFEREE_LOADING = 'REFEREE_LOADING';
 export const REFEREE_ERROR = 'REFEREE_ERROR';
+export const RESET_REFEREE = 'RESET_REFEREE';
 

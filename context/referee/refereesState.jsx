@@ -3,7 +3,7 @@ import { db } from '../../database'
 
 import RefereesContext from './refereesContext'
 import refereesReducer from './refereesReducer'
-import { GET_REFEREES, REFEREE_ERROR, REFEREE_LOADING } from './refereesTypes'
+import { GET_REFEREES, REFEREE_ERROR, REFEREE_LOADING, RESET_REFEREE } from './refereesTypes'
 
 const RefereesState = ({ children }) => {
     const initialState = {
@@ -34,7 +34,7 @@ const RefereesState = ({ children }) => {
             console.log('Getting Referees')
             if (!userId) return;
             setLoadingReferees()
-            await db.collection('referees').doc(userId).collection('referees').onSnapshot(doc => {
+            await db.collection('referees').doc(userId).collection('referees').orderBy('name', 'asc').onSnapshot(doc => {
                 const data = []
                 return doc.forEach(ref => {
                     if (ref.exists) {
@@ -53,6 +53,8 @@ const RefereesState = ({ children }) => {
         }
     }
 
+    const resetRefereeState = () => dispatch({ type: RESET_REFEREE })
+
     const setLoadingReferees = () => dispatch({ type: REFEREE_LOADING })
 
     return (
@@ -63,6 +65,7 @@ const RefereesState = ({ children }) => {
             loadingReferees: state.loadingReferees,
             addReferee,
             getReferees,
+            resetRefereeState
         }}>
             {children}
         </RefereesContext.Provider>

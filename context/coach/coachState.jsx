@@ -30,7 +30,7 @@ const CoachsState = ({ children }) => {
 
             delete coachInfo.partners
             const res = await db.collection('coachs').doc(coachInfo.userId).collection('coachs').add(coachInfo)
-            await db.collection('users').doc(coachInfo.userId).set({ coachInfo: coachInfo }, { merge: true })
+            await db.collection('users').doc(coachInfo.userId).set({ coachInfo: coachInfo, coach: true }, { merge: true })
 
             return res.id;
         } catch (error) {

@@ -1,0 +1,51 @@
+{
+	"address": "1450 Clay Ave, Bronx, NY 10456, USA",
+	"apt": "1C",
+	"collateral_sent": false,
+	"collateral_sent_on": null,
+	"comment": null,
+	"date_entered": "2021-08-13T01:58:58.533Z",
+	"due_date": "2021-08-20T02:07:00.000Z",
+	"email": "carlos.rosa@aol.com",
+	"email_sent": false,
+	"id": "xgVdwbOsoCBHaTVjea7I",
+	"manager": {
+		"addedOn": "2021-08-12T19:12:27.286Z",
+		"email": "melendez@robertdev.net",
+		"id": "pG2ZqSPTqPQWBhNWnQYF",
+		"name": "Carlos Lopez",
+		"phone": "(646) 458-8522",
+		"property": null,
+		"userId": "SutEToiYDbhNSPjlcpwVlcLB1u33"
+	},
+	"mon": "NY11564554444",
+	"moveIn": "2021-08-13T01:58:58.533Z",
+	"name": "Carlos Rosa",
+	"order_date": "2021-08-13T02:07:48.203Z",
+	"package": {
+		"home": null,
+		"internet": {
+			"id": "internet-400",
+			"name": "400 or 500 Mbps"
+		},
+		"tv": null,
+		"wireless": null
+	},
+	"phone": "(646) 587-4111",
+	"property": null,
+	"referee": {
+		"addedOn": "2021-08-12T19:11:48.829Z",
+		"email": "DRNY85@gmail.com",
+		"id": "QsbHK4hFEbLMG2e9ydfz",
+		"name": "Julian Mendez",
+		"phone": "(646) 254-2588",
+		"property": null,
+		"userId": "SutEToiYDbhNSPjlcpwVlcLB1u33"
+	},
+	"status": {
+		"id": "closed",
+		"name": "Closed"
+	},
+	"updated": "2021-08-13T02:08:54.209Z",
+	"userId": "SutEToiYDbhNSPjlcpwVlcLB1u33"
+}

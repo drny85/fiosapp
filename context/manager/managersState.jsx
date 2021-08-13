@@ -3,7 +3,7 @@ import { db } from '../../database'
 
 import ManagersContext from './managersContext'
 import managersReducer from './managersReducer'
-import { GET_MANAGERS, MANAGER_ERROR, MANAGER_LOADING } from './managersTypes'
+import { GET_MANAGERS, MANAGER_ERROR, MANAGER_LOADING, RESET_MANAGERS } from './managersTypes'
 
 const ManagersState = ({ children }) => {
     const initialState = {
@@ -54,6 +54,7 @@ const ManagersState = ({ children }) => {
             dispatch({ type: MANAGER_ERROR, payload: error.message })
         }
     }
+    const resetManagerState = () => dispatch({ type: RESET_MANAGERS })
 
     const setManagersLoading = () => dispatch({ type: MANAGER_LOADING })
 
@@ -65,6 +66,7 @@ const ManagersState = ({ children }) => {
             loadingManagers: state.loadingManagers,
             addManager,
             getManagers,
+            resetManagerState
         }}>
             {children}
         </ManagersContext.Provider>

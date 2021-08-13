@@ -4,3 +4,4 @@ export const GET_MANAGER = 'GET_MANAGER';
 export const GET_MANAGERS = 'GET_MANAGERS';
 export const MANAGER_LOADING = 'MANAGER_LOADING';
 export const MANAGER_ERROR = 'MANAGER_ERROR';
+export const RESET_MANAGERS = 'RESET_MANAGERS';

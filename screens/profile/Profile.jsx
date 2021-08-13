@@ -5,16 +5,25 @@ import { COLORS, FONTS, SIZES } from '../../constants/contantts';
 
 import authContext from '../../context/auth/authContext';
 import ProfileListItem from '../../components/ProfileListItem';
+import refereesContext from '../../context/referee/refereesContext';
+import managersContext from '../../context/manager/managersContext';
 
 
 const Profile = ({ navigation }) => {
     const { logout, user } = useContext(authContext)
-
-    console.log(user)
+    const { resetRefereeState } = useContext(refereesContext)
+    const { resetManagerState } = useContext(managersContext)
 
     const logoutHandler = async () => {
         try {
-            Alert.alert('Log Out', 'Are you sure you want ot log out?', [{ text: 'Yes', onPress: async () => logout() }, { text: 'No', style: 'cancel' }])
+            Alert.alert('Log Out', 'Are you sure you want ot log out?', [{
+                text: 'Yes', onPress: async () => {
+                    resetManagerState()
+                    resetRefereeState()
+                    logout()
+
+                }
+            }, { text: 'No', style: 'cancel' }])
 
             return true
         } catch (error) {

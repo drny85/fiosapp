@@ -29,7 +29,6 @@ Notifications.setNotificationHandler({
 
 const App = () => {
 
-
   const [fontsLoaded, error] = useFonts({
     montserrat: require("./assets/fonts/Montserrat-Regular.ttf"),
     "montserrat-bold": require("./assets/fonts/Montserrat-Bold.ttf"),

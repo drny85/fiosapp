@@ -1,4 +1,5 @@
-import { ADD_REFEREE, GET_REFEREE, GET_REFEREES, REFEREE_LOADING, REFEREE_ERROR } from "./refereesTypes";
+import { RESET_MANAGERS } from "../manager/managersTypes";
+import { ADD_REFEREE, GET_REFEREE, GET_REFEREES, REFEREE_LOADING, REFEREE_ERROR, RESET_REFEREE } from "./refereesTypes";
 
 
 export default (state, { type, payload }) => {
@@ -25,6 +26,20 @@ export default (state, { type, payload }) => {
                 ...state,
                 error: payload,
                 loadingReferees: false,
+            }
+        case RESET_REFEREE:
+            return {
+                referees: [],
+                referee: null,
+                error: null,
+                loadingReferees: false
+            }
+        case RESET_MANAGERS:
+            return {
+                managers: [],
+                manager: null,
+                error: null,
+                loadingManagers: false
             }
 
         default:

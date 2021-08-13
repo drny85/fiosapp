@@ -163,7 +163,7 @@ const Referrals = ({ navigation }) => {
             {
                 referrals.length > 0 ? (
 
-                    <FlatList contentContainerStyle={{ width: SIZES.width }} data={(searchResult.length > 1 || filtered) ? referralCopy : referrals} keyExtractor={item => item.id} renderItem={items} />
+                    <FlatList contentContainerStyle={{ width: SIZES.width }} data={(searchResult.length > 1 || filtered) ? referralCopy : referrals.filter(r => r.status.name === 'New')} keyExtractor={item => item.id} renderItem={items} />
 
                 ) : (
                         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

@@ -142,10 +142,10 @@ const Home = ({ navigation }) => {
                     backgroundColor: COLORS.white,
                     marginTop: SIZES.statusBarHeight + 10,
                 }}>
-                    <TouchableOpacity style={{ width: 40, height: 40, borderRadius: 20, position: 'absolute', top: 10, left: 25, elevation: 8, zIndex: 20, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.light, }} onPress={() => setvisible(false)}>
+                    <TouchableOpacity style={{ width: 40, height: 40, borderRadius: 20, position: 'absolute', top: 10, left: 25, elevation: 8, zIndex: 20, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.light, marginBottom: 20 }} onPress={() => setvisible(false)}>
                         <Ionicons name='close' size={26} color={COLORS.black} />
                     </TouchableOpacity>
-                    <Text style={{ ...FONTS.h3, textAlign: 'center' }}>{title}</Text>
+                    <Text style={{ ...FONTS.h3, textAlign: 'center', marginBottom: 20 }}>{title}</Text>
                     <FlatList contentContainerStyle={{ marginTop: 20 }} data={data.length > 0 && data} keyExtractor={item => item.id} renderItem={({ item }) => <ReferralCard onPress={() => {
                         setvisible(false)
                         navigation.navigate('Details', { id: item.id })
