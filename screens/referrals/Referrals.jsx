@@ -235,6 +235,7 @@ const styles = StyleSheet.create({
         width: SIZES.width,
         marginTop: 10,
         alignItems: 'center',
+        backgroundColor: COLORS.background,
 
 
 

@@ -378,6 +378,8 @@ const Page = ({ index, inputRef, moveIn, status, setStatus, internet, setInterne
 export default function MultiForm({ navigation, route }) {
     const { edit, referral } = route.params
     const [currentX, setCurrentX] = useState(0);
+    const [submitting, setSubmitting] = useState(false)
+    const [wasClosed, setWasClosed] = useState(false)
     const { user } = useContext(authContext)
     const scrollX = useRef(new Animated.Value(0)).current;
     const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 75 }).current;
@@ -454,6 +456,7 @@ export default function MultiForm({ navigation, route }) {
                 slideRef.current.scrollToIndex({ index: 0 })
                 return
             }
+            setSubmitting(true)
             setReferralData({ ...referralData, moveIn: new Date(referralData.moveIn).toISOString() })
 
             if (edit && referral) {
@@ -478,8 +481,11 @@ export default function MultiForm({ navigation, route }) {
                 if (updated) {
                     if (referralCopy.status.name.toLowerCase() === 'closed') {
                         setSuccess(true)
-                        const sent = await sendEmail({ referral: referralCopy })
-                        console.log('EMAIL SENT', sent)
+                        if (wasClosed) {
+                            navigation.pop()
+                        }
+                        // const sent = await sendEmail({ referral: referralCopy })
+                        // console.log('EMAIL SENT', sent)
                     } else {
                         navigation.pop()
                     }
@@ -498,11 +504,9 @@ export default function MultiForm({ navigation, route }) {
 
         } catch (error) {
             console.log(error)
+        } finally {
+            setSubmitting(false)
         }
-    }
-
-    const getItemLayout = ({ data, index }) => {
-        console.log(data, index)
     }
 
     useEffect(() => {
@@ -557,6 +561,7 @@ export default function MultiForm({ navigation, route }) {
                 setDueDate(new Date(new Date(referral.due_date).getTime()))
                 setOrderDate(new Date(new Date(referral.order_date).getTime()))
                 setStatus(referral.status)
+                setWasClosed(true)
                 setInternet(referral.package.internet)
                 setMon(referral.mon)
                 setTv(referral.package.tv)
@@ -569,8 +574,8 @@ export default function MultiForm({ navigation, route }) {
 
     }, [edit, referral])
 
-    if (success) return <View style={{ flex: 1, marginTop: SIZES.statusBarHeight }}>
-        <LottieView style={{ flex: 1, }} resizeMode='center' source={require('../../assets/animations/congratulations.json')} autoPlay />
+    if (success && !wasClosed) return <View style={{ flex: 1, marginTop: SIZES.statusBarHeight }}>
+        <LottieView style={{ flex: 1, }} resizeMode='contain' source={require('../../assets/animations/congratulations.json')} autoPlay />
         <Animatable.View animation='fadeIn' duration={2000} style={{ position: 'absolute', bottom: 100, left: 0, right: 0 }}>
             <Animatable.Text animation='slideInDown' style={{ ...FONTS.body4, textAlign: 'center' }}>Remember to send your Closed Sale email</Animatable.Text>
             <Animatable.View animation='slideInUp' duration={1000} easing='ease-in-out' style={{ flexDirection: 'row', justifyContent: 'space-evenly', margin: 10 }}>
@@ -666,7 +671,7 @@ export default function MultiForm({ navigation, route }) {
                     <NextPrevButton
                         iconPosition="left"
                         iconName='md-save'
-                        disabled={!canContinue}
+                        disabled={!canContinue || submitting}
                         title={edit && referral ? 'Update Referral' : 'Save Referral'}
                         onPress={handleSubmit}
                     />

@@ -40,7 +40,6 @@ const ReferralDetails = ({ route, navigation }) => {
         order_date: referral.order_date,
         id: referral.id,
         package: referral.package,
-
     }
 
     const line = referral.address.split(',')

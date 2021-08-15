@@ -127,9 +127,9 @@ const ReferralsState = ({ children }) => {
 
     const calculateMovingReferrals = data => {
 
-        const twoWeeks = data.filter(r => r.status.name !== 'Closed' && moment(new Date()).isAfter(moment().startOf('day')) && moment(r.moveIn).isBefore(moment().endOf('week').add(1, 'week')))
-        const today = data.filter(r => r.status.name !== 'Closed' && moment(r.moveIn).isAfter(moment().startOf('day')) && moment(r.moveIn).isBefore(moment().endOf('day')))
-        const tomorrow = data.filter(r => r.status.name !== 'Closed' && moment(r.moveIn).isAfter(moment().startOf('day').add(1, 'day')) && moment(r.moveIn).isBefore(moment().endOf('day').add(1, 'day')))
+        const twoWeeks = data.filter(r => (r.status.name !== 'Closed' || r.status.name !== 'Not Sold') && moment(new Date()).isAfter(moment().startOf('day')) && moment(r.moveIn).isBefore(moment().endOf('week').add(1, 'week')))
+        const today = data.filter(r => (r.status.id !== 'closed' || r.status.id !== 'not_sold') && moment(r.moveIn).isAfter(moment().startOf('day')) && moment(r.moveIn).isBefore(moment().endOf('day')))
+        const tomorrow = data.filter(r => (r.status.name !== 'Closed' || r.status.name !== 'Not Sold') && moment(r.moveIn).isAfter(moment().startOf('day').add(1, 'day')) && moment(r.moveIn).isBefore(moment().endOf('day').add(1, 'day')))
         dispatch({ type: MOVING_IN_TWO_WEEKS, payload: { units: twoWeeks.length, data: [...twoWeeks] } })
         dispatch({ type: MOVING_TODAY, payload: { units: today.length, data: [...today] } })
         dispatch({ type: MOVING_TOMORROW, payload: { units: tomorrow.length, data: [...tomorrow] } })

@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
         flex: 1,
         shadowRadius: SIZES.radius * 0.5,
         //elevation: 6,
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.card,
         borderRadius: SIZES.radius * 1.1,
         justifyContent: 'center',
         alignItems: 'center',

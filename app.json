@@ -19,7 +19,12 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "net.robertdev.melendez.fiosrewardsapp",
-      "buildNumber": "1.0.0"
+      "buildNumber": "1.0.0",
+      "infoPlist": {
+        "UIBackgroundModes": {
+          "content-available": 1
+        }
+      }
     },
     "extra": {
       "appId": "1:188462078951:web:0b59e22c794940dcaafb42"
@@ -33,6 +38,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "description": "available for tablets too and bugs fixes"
+    "description": "todos\nFixed bugs"
   }
 }

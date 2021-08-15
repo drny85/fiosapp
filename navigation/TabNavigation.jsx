@@ -26,7 +26,7 @@ const TabNavigation = () => {
             return {
                 title: 'Home',
                 tabBarIcon: ({ color, size }) => <MaterialIcons name="home" size={size} color={color} />,
-                tabBarVisible: routeName !== 'Details'
+                tabBarVisible: (routeName === 'AddReferralScreen' || routeName === 'Details') ? false : true
             }
         }} component={HomeNavigator} />
         <Tabs.Screen name='ReferralStack' options={({ route }) => {

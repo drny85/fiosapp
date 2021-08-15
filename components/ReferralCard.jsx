@@ -13,7 +13,7 @@ const ReferralCard = ({ referral, onPress, style }) => {
 
 
     return (
-        <TouchableOpacity onPress={onPress} style={[styles.view, { backgroundColor: referral.status.name === 'Closed' ? COLORS.green : COLORS.white }, style]}>
+        <TouchableOpacity onPress={onPress} style={[styles.view, { backgroundColor: referral.status.name === 'Closed' ? COLORS.green : referral.status.id === 'in_progress' ? COLORS.progress : COLORS.card }, style]}>
             <Text style={{ ...FONTS.h3, textAlign: 'center', marginBottom: 4 }}>{referral.name}</Text>
             <View style={{ alignItems: 'flex-start' }}>
                 <View>
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
         elevation: 10,
         shadowOpacity: 0.6,
         shadowRadius: 10,
-        backgroundColor: COLORS.white,
+        backgroundColor: COLORS.card,
         marginVertical: 5,
         borderRadius: SIZES.radius,
         alignSelf: 'center'

@@ -1,4 +1,5 @@
 import * as Notifications from 'expo-notifications';
+import moment from 'moment';
 
 export const scheduleMotification = async (title, body, time) => {
 	try {
@@ -9,7 +10,7 @@ export const scheduleMotification = async (title, body, time) => {
 				autoDismiss: true,
 			},
 			trigger: {
-				seconds: time,
+				seconds: moment(time).diff(new Date(), 'seconds'),
 			},
 		});
 	} catch (error) {

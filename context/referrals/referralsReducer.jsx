@@ -93,7 +93,7 @@ export default (state, { type, payload }) => {
         case INSTALLING_THIS_WEEK:
             return {
                 ...state,
-                installedYesterday: payload,
+                gettingInstalledThisWeek: payload,
                 loading: false
             }
         case INSTALLING_TOMORROW:

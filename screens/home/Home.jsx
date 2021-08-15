@@ -48,7 +48,7 @@ const Home = ({ navigation }) => {
 
 
 
-
+    console.log(movingToday.data)
 
     useEffect(() => {
         getTodayQuote()
@@ -63,7 +63,7 @@ const Home = ({ navigation }) => {
     return (
         <ScreenView style={styles.container}>
             <View style={styles.dateView}>
-                <Text style={{ ...FONTS.h4 }}>{moment().format('dddd, MMMM Do YYYY')}</Text>
+                <Text style={{ ...FONTS.h4, marginTop: SIZES.padding * 0.5 }}>{moment().format('dddd, MMMM Do YYYY')}</Text>
             </View>
             <View style={styles.mini}>
                 <MiniInfoCard onPress={() => {
@@ -86,7 +86,7 @@ const Home = ({ navigation }) => {
                     setTitle('MTD UNITS')
                 }} title="MTD Units" subtitle={mtdUnits.units} />
             </View>
-            <Text style={{ ...FONTS.h4, textAlign: 'center' }}>Upcoming Moving</Text>
+            <Text style={{ ...FONTS.h4, textAlign: 'center', marginTop: SIZES.padding * 0.5 }}>Upcoming Moving</Text>
             <View style={styles.mini}>
                 <MiniInfoCard onPress={() => {
                     if (movingToday.data.length === 0) return
@@ -107,7 +107,7 @@ const Home = ({ navigation }) => {
                     setTitle("In 2 Weeks")
                 }} title="In 2 Weeks" subtitle={movingInTwoWeeks.units} />
             </View>
-            <Text style={{ ...FONTS.h4, textAlign: 'center' }}>Upcoming Installations</Text>
+            <Text style={{ ...FONTS.h4, textAlign: 'center', marginTop: SIZES.padding * 0.5 }}>Upcoming Installations</Text>
             <View style={styles.mini}>
                 <MiniInfoCard onPress={() => {
                     if (gettingInstalledToday.data.length === 0) return
@@ -136,6 +136,46 @@ const Home = ({ navigation }) => {
                 </View>
             )}
 
+            <Text style={{ ...FONTS.h4, textAlign: 'center', marginTop: SIZES.padding * 0.5 }}>Referrals Disposition</Text>
+            <View style={styles.mini}>
+                <MiniInfoCard onPress={() => {
+                    const refs = referrals.filter(r => r.status.name === 'New')
+                    if (refs.length > 0) {
+                        setData([...refs])
+                        setvisible(true)
+                        setTitle('New Referrals')
+                    }
+
+                }} title="New" subtitle={referrals.filter(r => r.status.name === 'New').length} />
+                <MiniInfoCard onPress={() => {
+                    const refs = referrals.filter(r => r.status.name === 'Pending')
+                    if (refs.length > 0) {
+                        setData([...refs])
+                        setvisible(true)
+                        setTitle('Pending Referrals')
+                    }
+                }} title="Pending" subtitle={referrals.filter(r => r.status.name === 'Pending').length} />
+                <MiniInfoCard onPress={() => {
+                    const refs = referrals.filter(r => r.status.name === 'In Progress')
+                    if (refs.length > 0) {
+                        setData([...refs])
+                        setvisible(true)
+                        setTitle('Referrals In Progress')
+                    }
+                }} title="In Progress" subtitle={referrals.filter(r => r.status.name === 'In Progress').length} />
+                <MiniInfoCard onPress={() => {
+                    const refs = referrals.filter(r => r.status.name === 'Closed')
+                    if (refs.length > 0) {
+                        setData([...refs])
+                        setvisible(true)
+                        setTitle('Closed Referrals')
+                    }
+                }} title="Closed" subtitle={referrals.filter(r => r.status.name === 'Closed').length} />
+
+
+
+            </View>
+
             <Modal animationType='slide' visible={visible}>
                 <View style={{
                     flex: 1,
@@ -163,7 +203,8 @@ export default Home
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor: COLORS.background
 
 
     },
@@ -191,7 +232,7 @@ const styles = StyleSheet.create({
         },
         // elevation: 8,
         shadowColor: COLORS.ascent,
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.card,
         padding: SIZES.padding * 0.5,
         marginHorizontal: SIZES.padding * 0.5,
         borderRadius: SIZES.radius,

@@ -17,7 +17,7 @@ export default ProfileListItem
 
 const styles = StyleSheet.create({
     view: {
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.card,
         justifyContent: 'space-between',
         alignItems: 'center',
         elevation: 10,
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
         paddingVertical: SIZES.padding,
         shadowRadius: 10,
         shadowOpacity: 0.7,
-        shadowColor: COLORS.lightGray,
+        shadowColor: COLORS.light,
         shadowOffset: {
             width: 8, height: 8,
         },

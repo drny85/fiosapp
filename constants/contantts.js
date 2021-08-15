@@ -12,14 +12,15 @@ export const COLORS = {
 	gray: '#BEC1D2',
 	primary: '#eceff1',
 	secondary: '#212121',
-	background: '#FFF',
+	background: '#FFFFFF',
 	ascent: '#607d8b',
-	card: '#bdc3c7',
-	green: '#00a32c',
+	card: '#d9d9d9',
+	green: '#4c9c8a',
 	tile: '#ecf0f1',
 	white: '#f7f7f7',
 	red: '#e62f17',
 	text: '#555B5D',
+	progress: '#c2c955',
 };
 
 export const SIZES = {
