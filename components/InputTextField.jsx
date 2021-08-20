@@ -7,7 +7,7 @@ const InputTextField = ({ style, placeholder, placeholderTextColor, value, onCha
     return (
 
         <View>
-            <TextInput textAlignVertical='center' autoFocus={autoFocus} autoCapitalize={autoCapitalize} {...others} placeholder={placeholder} value={value} onChangeText={onChangeText} placeholderTextColor={placeholderTextColor} style={[styles.input, style]} />
+            <TextInput textAlignVertical='center' autoFocus={autoFocus} autoCapitalize={autoCapitalize} {...others} placeholder={placeholder} value={value} onChangeText={onChangeText} placeholderTextColor={placeholderTextColor || COLORS.placeHolderTextColor} style={[styles.input, style]} />
         </View>
 
     )

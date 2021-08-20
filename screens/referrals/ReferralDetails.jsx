@@ -105,7 +105,7 @@ const ReferralDetails = ({ route, navigation }) => {
         <ScrollView style={[styles.view, { backgroundColor: referral.status.id === 'closed' ? COLORS.green : referral.status.id === 'not_sold' ? COLORS.red : COLORS.white }]}>
             <View style={styles.customer}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', marginBottom: 15 }}>
-                    <Text style={[styles.name]}>{referral.name} </Text>
+                    <Text style={[styles.name, { ...FONTS.h2 }]}>{referral.name} </Text>
                     <TouchableOpacity onPress={() => navigation.navigate('Spark')}>
                         <Ionicons name='mail-outline' size={26} color={COLORS.black} />
                     </TouchableOpacity>
@@ -202,10 +202,7 @@ const styles = StyleSheet.create({
 
     },
     name: {
-        fontFamily: 'lobster',
-        fontWeight: '600',
-        fontSize: 20,
-        lineHeight: 30,
+
         textAlign: 'center'
 
     },

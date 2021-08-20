@@ -20,6 +20,13 @@ let quote = Quotes[n].quote;
 exports.onReferralClosed = functions.firestore
 	.document('referrals/{userId}/referrals/{referralId}')
 	.onUpdate(async (change, context) => {
+		const eventId = context.eventId;
+		const emailRef = admin.firestore().collection('sentEmails').doc(eventId);
+
+		const wasAlreadySent =
+			(await emailRef.get()).exists || (await emailRef.get().sent);
+		if (wasAlreadySent) return;
+		console.log('EVENT ID', eventId);
 		const referral = change.after.data();
 		const oldReferral = change.before.data();
 		try {
@@ -42,7 +49,7 @@ exports.onReferralClosed = functions.firestore
 				comment,
 			} = referral;
 
-			if (status.name === oldReferral.status.name && oldReferral.email_sent) {
+			if (status.name === oldReferral.status.name && oldReferral.mon) {
 				return;
 			}
 
@@ -77,7 +84,7 @@ exports.onReferralClosed = functions.firestore
 				return final;
 			};
 
-			if (status.name === 'Closed' && !oldReferral.status.email_sent) {
+			if (status.name === 'Closed') {
 				return client
 					.sendMail({
 						to: [manager.email],
@@ -214,13 +221,7 @@ exports.onReferralClosed = functions.firestore
 						});
 					})
 					.then((data) => {
-						return admin
-							.firestore()
-							.collection('referrals')
-							.doc(userId)
-							.collection('referrals')
-							.doc(id)
-							.update({ email_sent: true });
+						return emailRef.set({ sent: true });
 					})
 					.catch((err) => console.log('ER', err));
 			}
@@ -229,3 +230,13 @@ exports.onReferralClosed = functions.firestore
 			return;
 		}
 	});
+
+function shouldSend(emailRef) {
+	return emailRef.get().then((emailDoc) => {
+		return !emailDoc.exists || !emailDoc.data().sent;
+	});
+}
+
+function markSent(emailRef) {
+	return emailRef.set({ sent: true });
+}

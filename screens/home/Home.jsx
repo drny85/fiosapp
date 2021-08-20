@@ -10,6 +10,7 @@ import MiniInfoCard from '../../components/MiniInfoCard'
 import referralsContext from '../../context/referrals/referralContext'
 import ReferralCard from '../../components/ReferralCard'
 import { scheduleMotification } from '../../hooks/scheduleNotification'
+import { number } from 'yup'
 
 
 
@@ -46,18 +47,18 @@ const Home = ({ navigation }) => {
 
     }
 
+    const getTotal = (categoty) => {
+        const total = referrals.filter(r => r.status.name === categoty).length
+        const x = referrals.length
+        return (total / x) * 100 ? (total / x) * 100 : null
+    }
 
-
-    console.log(movingToday.data)
 
     useEffect(() => {
         getTodayQuote()
         calculateReferralUnits(referrals)
         calculateMovingReferrals(referrals)
         calculateUpcomingInstallations(referrals)
-
-
-
 
     }, [referrals.length])
     return (
@@ -138,7 +139,7 @@ const Home = ({ navigation }) => {
 
             <Text style={{ ...FONTS.h4, textAlign: 'center', marginTop: SIZES.padding * 0.5 }}>Referrals Disposition</Text>
             <View style={styles.mini}>
-                <MiniInfoCard onPress={() => {
+                <MiniInfoCard color={COLORS.blue} percentage={getTotal('New')} onPress={() => {
                     const refs = referrals.filter(r => r.status.name === 'New')
                     if (refs.length > 0) {
                         setData([...refs])
@@ -147,7 +148,7 @@ const Home = ({ navigation }) => {
                     }
 
                 }} title="New" subtitle={referrals.filter(r => r.status.name === 'New').length} />
-                <MiniInfoCard onPress={() => {
+                <MiniInfoCard color={COLORS.yellow} percentage={getTotal('Pending')} onPress={() => {
                     const refs = referrals.filter(r => r.status.name === 'Pending')
                     if (refs.length > 0) {
                         setData([...refs])
@@ -155,15 +156,15 @@ const Home = ({ navigation }) => {
                         setTitle('Pending Referrals')
                     }
                 }} title="Pending" subtitle={referrals.filter(r => r.status.name === 'Pending').length} />
-                <MiniInfoCard onPress={() => {
-                    const refs = referrals.filter(r => r.status.name === 'In Progress')
+                <MiniInfoCard color={COLORS.light} percentage={getTotal('In Progress')} onPress={() => {
+                    const refs = referrals.filter(r => r.status.id === 'in_progress')
                     if (refs.length > 0) {
                         setData([...refs])
                         setvisible(true)
                         setTitle('Referrals In Progress')
                     }
-                }} title="In Progress" subtitle={referrals.filter(r => r.status.name === 'In Progress').length} />
-                <MiniInfoCard onPress={() => {
+                }} title="Progress" subtitle={referrals.filter(r => r.status.name === 'In Progress').length} />
+                <MiniInfoCard color={COLORS.green} percentage={getTotal('Closed')} onPress={() => {
                     const refs = referrals.filter(r => r.status.name === 'Closed')
                     if (refs.length > 0) {
                         setData([...refs])
@@ -231,11 +232,13 @@ const styles = StyleSheet.create({
             height: 6
         },
         // elevation: 8,
+        width: 'auto',
         shadowColor: COLORS.ascent,
         backgroundColor: COLORS.card,
         padding: SIZES.padding * 0.5,
-        marginHorizontal: SIZES.padding * 0.5,
+        marginHorizontal: SIZES.padding,
         borderRadius: SIZES.radius,
         marginTop: 10,
+
     }
 })

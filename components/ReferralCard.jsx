@@ -11,7 +11,6 @@ const ReferralCard = ({ referral, onPress, style }) => {
     const line1 = line[0] + ` ${referral.apt ? ', ' + referral.apt : ''}`;
     const line2 = line[1].trim() + ', ' + line[2]
 
-
     return (
         <TouchableOpacity onPress={onPress} style={[styles.view, { backgroundColor: referral.status.name === 'Closed' ? COLORS.green : referral.status.id === 'in_progress' ? COLORS.progress : COLORS.card }, style]}>
             <Text style={{ ...FONTS.h3, textAlign: 'center', marginBottom: 4 }}>{referral.name}</Text>
@@ -19,7 +18,7 @@ const ReferralCard = ({ referral, onPress, style }) => {
                 <View>
                     <Text style={{ ...FONTS.h4 }}>Address: <Text style={{ ...FONTS.body4 }}>{line1} {line2}</Text></Text>
                     <Text style={{ ...FONTS.h4 }}>Phone: <Text style={{ ...FONTS.body4 }}>{referral.phone}</Text></Text>
-                    {(referral.email !== '' || referral.email !== null) && (<Text style={{ ...FONTS.h4 }}>Email: <Text style={{ ...FONTS.body4 }}>{referral.email}</Text></Text>)}
+                    {(referral.email !== '' || referral.email !== null) && (<Text style={{ ...FONTS.h4 }}>Email: <Text style={{ ...FONTS.body4 }}>{referral.email ? referral.email : 'none'}</Text></Text>)}
 
                 </View>
                 <View style={{ justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row', width: '100%' }}>
@@ -47,8 +46,6 @@ export default ReferralCard
 const styles = StyleSheet.create({
     view: {
         width: '95%',
-        height: SIZES.height / 5,
-        maxHeight: 200,
         minHeight: 100,
         padding: SIZES.padding * 0.6,
         shadowColor: COLORS.card,
@@ -61,7 +58,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.6,
         shadowRadius: 10,
         backgroundColor: COLORS.card,
-        marginVertical: 5,
+        paddingVertical: SIZES.padding,
+        marginVertical: 10,
         borderRadius: SIZES.radius,
         alignSelf: 'center'
 

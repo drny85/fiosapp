@@ -15,6 +15,8 @@ import RefereesState from './context/referee/refereesState';
 import CoachsState from './context/coach/coachState';
 import { useNotification } from './hooks/useNotification';
 import NotesState from './context/notes/notesState';
+import refereesContext from './context/referee/refereesContext';
+import coachContext from './context/coach/coachContext';
 
 
 Notifications.setNotificationHandler({
@@ -40,6 +42,8 @@ const App = () => {
   })
   const { getReferrals } = useContext(referralsContext)
   const { setUser, user, logout, loading } = useContext(authContext)
+  const { getReferees } = useContext(refereesContext)
+  const { getCoachs } = useContext(coachContext)
 
   useNotification()
 
@@ -54,6 +58,8 @@ const App = () => {
         if (u.emailVerified) {
           setUser(u.uid)
           getReferrals(u.uid)
+          getReferees(u.uid)
+          getCoachs(u.uid)
         }
 
       }

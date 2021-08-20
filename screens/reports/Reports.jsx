@@ -8,7 +8,7 @@ import AnimatedNumbers from 'react-native-animated-numbers';
 import { Switch } from 'react-native-elements'
 
 const Reports = () => {
-
+    const [firstResponder, setFirstResponder] = useState(0)
     const [su, setSu] = useState(0)
     const [pm, setPm] = useState(0)
     const [dm, setDm] = useState(0)
@@ -138,18 +138,24 @@ const Reports = () => {
                 shadowRadius: 8,
                 alignSelf: 'center',
                 shadowOpacity: 0.7,
-                shadowColor: COLORS.card,
+                shadowColor: COLORS.lightGray,
                 borderRadius: SIZES.radius * 3,
                 shadowOffset: { width: 3, height: 5 },
-                backgroundColor: COLORS.white,
+                backgroundColor: COLORS.gray,
                 width: SIZES.width,
                 marginVertical: 5
             }}>
 
-                <Text style={{ ...FONTS.h4 }}>{lines} {lines > 1 ? 'Lines' : 'Line'}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={firstResponder === 0 ? { ...FONTS.body4 } : { ...FONTS.h4 }}>First Responder</Text>
+                    <Switch style={{ marginLeft: 10 }} value={firstResponder > 10} trackColor={COLORS.light} thumbColor={COLORS.background} ios_backgroundColor={COLORS.light} color={COLORS.lightGray} onValueChange={v => setFirstResponder(prev => prev === 0 ? 15 : 0)} />
+                </View>
+                <View style={{ paddingVertical: 4, paddingHorizontal: 8, backgroundColor: COLORS.background, borderRadius: SIZES.radius * 3 }}>
+                    <Text style={{ ...FONTS.h3 }}>{lines} {lines > 1 ? 'Lines' : 'Line'}</Text>
+                </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text style={autoPay === 0 ? { ...FONTS.body4 } : { ...FONTS.h4 }}>Auto Pay</Text>
-                    <Switch style={{ marginLeft: 10 }} value={autoPay === 10} trackColor={COLORS.light} thumbColor={COLORS.lightGray} color={COLORS.lightGray} onValueChange={v => setAutoPay(prev => prev === 0 ? 10 : 0)} />
+                    <Switch style={{ marginLeft: 10 }} value={autoPay === 10} trackColor={COLORS.light} ios_backgroundColor={COLORS.light} thumbColor={COLORS.background} color={COLORS.light} onValueChange={v => setAutoPay(prev => prev === 0 ? 10 : 0)} />
                 </View>
             </View>
 

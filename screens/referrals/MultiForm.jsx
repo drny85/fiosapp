@@ -26,7 +26,7 @@ import authContext from '../../context/auth/authContext';
 import InputTextField from '../../components/InputTextField';
 import LottieView from 'lottie-react-native'
 import * as Animatable from 'react-native-animatable';
-
+import moment from 'moment'
 import PickerModal from '../modals/PickerModal'
 
 import NextPrevButton from '../../components/Forms/NextPrevButton';
@@ -40,6 +40,7 @@ import AddPersonModal from '../modals/AddPersonModal';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { GOOGLE_MAPS_KEY, EMAIL_URL } from '@env'
 import { sendEmail } from '../../utils/sendEmail';
+import { Modal } from 'react-native';
 
 
 
@@ -58,8 +59,7 @@ const data = [
 
 const Paginator = ({ data, scrollX }) => {
     const { width } = useWindowDimensions();
-    const emailRef = useRef()
-
+    console.log(width)
     return (
         <View style={{ flexDirection: 'row', height: 20 }}>
             {data.map((_, i) => {
@@ -95,7 +95,7 @@ const Paginator = ({ data, scrollX }) => {
 
 const Step = ({ children }) => {
     return (
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={60} style={{ flex: 1, width: '100%', height: '100%', padding: 10 }}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={60} style={{ flex: 1, width: SIZES.width, height: '100%', padding: 10 }}>
             <ScrollView contentContainerStyle={{ flex: 1 }}>
                 {children}
             </ScrollView>
@@ -107,6 +107,7 @@ const Page = ({ index, inputRef, moveIn, status, setStatus, internet, setInterne
 
     const { width, height } = useWindowDimensions();
     const [loading, setLoading] = useState(false)
+    const [showDue, setShowDue] = useState(false)
     const [visible, setVisible] = useState(false)
     const [showPicker, setShowPicker] = useState(false)
     const [showAMs, setShowAms] = useState(false)
@@ -117,27 +118,40 @@ const Page = ({ index, inputRef, moveIn, status, setStatus, internet, setInterne
     const [pickStatus, setPickStatus] = useState(false);
     const [show, setShow] = useState(false);
 
-
     const [showInternetPicker, setShowInternetPicker] = useState(false)
     const [showTvPicker, setShowTvPicker] = useState(false)
     const [showWirelessPicker, setShowWirelessPicker] = useState(false)
     const [showHomePicker, setShowHomePicker] = useState(false)
 
     const onChange = (_, selectedDate) => {
-        const currentDate = selectedDate || date;
+
+        const currentDate = selectedDate;
         setShow(Platform.OS === 'ios');
-        setMoveIn(currentDate);
+        if (selectedDate) {
+            setMoveIn(currentDate);
+        }
+
 
     };
+
     const onChangeDueDate = (_, selectedDate) => {
-        const currentDate = selectedDate || date;
+        const currentDate = selectedDate;
         setShow(Platform.OS === 'ios');
-        setDueDate(currentDate);
+        setShowDue(false)
+        if (currentDate) {
+            setDueDate(currentDate);
+        }
+
     };
     const onChangeOrderDate = (event, selectedDate) => {
-        const currentDate = selectedDate || date;
-        setShow(Platform.OS === 'ios');
-        setOrderDate(currentDate);
+        const currentDate = selectedDate;
+        //setShow(Platform.OS === 'ios');
+
+        setShow(Platform.OS === 'ios')
+        if (currentDate) {
+            setOrderDate(currentDate);
+        }
+
     };
 
     const getAddress = (_, { formatted_address, geometry }) => {
@@ -197,31 +211,62 @@ const Page = ({ index, inputRef, moveIn, status, setStatus, internet, setInterne
                             <View style={{ width: '98%', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
                                 <View style={{ flex: 1, flexDirection: 'row', width: '100%', alignItems: 'center' }}>
                                     <Text style={{ ...FONTS.body3, marginHorizontal: SIZES.padding * 0.5 }}>Move In Date:</Text>
-                                    <View style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-
+                                    <TouchableHighlight underlayColor='transparent' activeOpacity={0} onPress={() => setShow(true)} style={{ flex: 1, borderBottomColor: COLORS.light, borderBottomWidth: 0.5, paddingHorizontal: SIZES.padding * 0.5, paddingVertical: SIZES.padding * 0.7 }}>
+                                        <Text style={{ ...FONTS.body3 }}>{moment(moveIn).format('ll')}</Text>
+                                    </TouchableHighlight>
+                                    {Platform.OS === 'android' && show && (
                                         <DateTimePicker
-                                            style={{ width: '90%', marginRight: SIZES.padding * 0.5, }}
+                                            timeZoneOffsetInSeconds={0}
+                                            style={{ width: '90%', marginRight: SIZES.padding * 0.5, height: '100%' }}
                                             testID="dateTimePicker"
                                             value={moveIn}
+                                            minimumDate={new Date(moment().subtract(1, 'year').format('YYYY-MM-DD'))}
                                             mode='date'
                                             is24Hour={true}
-                                            display="default"
+                                            display='spinner'
                                             onChange={onChange}
                                         />
-
-
-                                    </View>
+                                    )}
                                 </View>
                             </View>
                         </View>
+                        {Platform.OS === 'ios' && (
+                            <Modal transparent animationType='slide' visible={show}>
+                                <View style={{ backgroundColor: COLORS.background, position: 'absolute', left: 0, right: 0, height: SIZES.height / 2, bottom: 0, borderTopLeftRadius: SIZES.radius * 3, borderTopRightRadius: SIZES.radius * 3 }}>
+                                    <View style={{ flexDirection: 'row', paddingVertical: SIZES.padding, justifyContent: 'space-between', marginHorizontal: SIZES.padding * 2 }}>
+                                        <TouchableHighlight onPress={() => setShow(false)}>
+                                            <Text style={{ ...FONTS.body3, color: COLORS.red }}>Cancel</Text>
+                                        </TouchableHighlight>
+                                        <TouchableHighlight onPress={() => setShow(false)}>
+                                            <Text style={{ ...FONTS.h3, color: 'blue' }}>Done</Text>
+                                        </TouchableHighlight>
+                                    </View>
+                                    <View style={{ flex: 1, marginBottom: 20, justifyContent: 'center', alignItems: 'center' }}>
+
+                                        <DateTimePicker
+                                            timeZoneOffsetInSeconds={0}
+                                            style={{ width: '90%', marginRight: SIZES.padding * 0.5, height: '100%' }}
+                                            testID="dateTimePicker"
+                                            value={moveIn}
+                                            minimumDate={new Date(moment().subtract(1, 'year').format('YYYY-MM-DD'))}
+                                            mode='date'
+                                            is24Hour={true}
+                                            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                                            onChange={onChange}
+                                        />
+                                    </View>
+                                </View>
+                            </Modal>
+                        )}
+
                     </Step>
                 )}
                 {index === 1 && (
-                    <View style={{ flex: 1 }}>
+                    <View style={{ flex: 1, width: SIZES.width, }}>
                         <View style={{ padding: SIZES.padding * 0.5 }}>
                             <Text style={styles.title}>Property's Info</Text>
 
-                            <GooglePlacesAutocomplete nearbyPlacesAPI='GooglePlacesSearch' fetchDetails={true} ref={inputRef} query={{ key: GOOGLE_MAPS_KEY, language: 'en', components: 'country:us' }} enablePoweredByContainer={false} onPress={getAddress} placeholder='Type Address' styles={{ container: { flex: 0 }, textInput: { ...FONTS.body4, borderBottomWidth: 0.5, borderBottomColor: COLORS.light } }} />
+                            <GooglePlacesAutocomplete nearbyPlacesAPI='GooglePlacesSearch' fetchDetails={true} ref={inputRef} query={{ key: GOOGLE_MAPS_KEY, language: 'en', components: 'country:us' }} enablePoweredByContainer={false} onPress={getAddress} placeholder='Type Address' pla styles={{ container: { flex: 0 }, textInput: { ...FONTS.body4, borderBottomWidth: 0.5, borderBottomColor: COLORS.light } }} />
                             {referralData.address.length > 5 && (
                                 <InputTextField
                                     style={{ marginTop: 50, }}
@@ -237,6 +282,7 @@ const Page = ({ index, inputRef, moveIn, status, setStatus, internet, setInterne
                 )}
                 {index === 2 && (
                     <Step>
+
                         <Text style={styles.title}>Addiotional Info</Text>
                         <InputTextField placeholder='Referred By' value={referralData.referee.name} autoCapitalize='words' onFocus={() => setShowReferee(true)} />
                         <InputTextField placeholder='Account Manager - AM' value={referralData.manager.name} autoCapitalize='words' onFocus={() => setShowAms(true)} />
@@ -248,28 +294,42 @@ const Page = ({ index, inputRef, moveIn, status, setStatus, internet, setInterne
                                 <View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'space-evenly', marginBottom: 10 }}>
                                     <View style={{ flex: 1 }}>
                                         <Text style={{ ...FONTS.body3, marginHorizontal: SIZES.padding * 0.5 }}>Order Date:</Text>
+                                        <TouchableHighlight underlayColor='transparent' activeOpacity={0} onPress={() => setShow(true)} style={{ width: '95%', borderBottomColor: COLORS.light, borderBottomWidth: 0.5, paddingHorizontal: SIZES.padding * 0.5, paddingVertical: SIZES.padding * 0.7 }}>
+                                            <Text style={{ ...FONTS.body3 }}>{moment(orderDate).format('ll')}</Text>
+                                        </TouchableHighlight>
+                                        {Platform.OS === 'android' && show && (
+                                            <DateTimePicker
+                                                timeZoneOffsetInSeconds={0}
+                                                style={{ width: '90%', marginRight: SIZES.padding * 0.5, height: '100%' }}
+                                                testID="dateTimePicker"
+                                                value={orderDate}
+                                                minimumDate={new Date(moment().subtract(1, 'year').format('YYYY-MM-DD'))}
+                                                mode='date'
+                                                is24Hour={true}
+                                                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                                                onChange={onChangeOrderDate}
+                                            />)
+                                        }
 
-                                        <DateTimePicker
-                                            style={{ width: '90%', marginRight: SIZES.padding * 0.5 }}
-                                            testID="dateTimePicker"
-                                            value={orderDate}
-                                            mode='date'
-                                            is24Hour={true}
-                                            display="default"
-                                            onChange={onChangeOrderDate}
-                                        />
                                     </View>
                                     <View style={{ flex: 1 }}>
                                         <Text style={{ ...FONTS.body3, marginHorizontal: SIZES.padding * 0.5 }}>Due Date:</Text>
-                                        <DateTimePicker
-                                            style={{ width: '90%', marginRight: SIZES.padding * 0.5 }}
-                                            testID="dateTimePicker"
-                                            value={dueDate}
-                                            mode='date'
-                                            is24Hour={true}
-                                            display="default"
-                                            onChange={onChangeDueDate}
-                                        />
+                                        <TouchableHighlight underlayColor='transparent' activeOpacity={0} onPress={() => setShowDue(true)} style={{ width: '95%', borderBottomColor: COLORS.light, borderBottomWidth: 0.5, paddingHorizontal: SIZES.padding * 0.5, paddingVertical: SIZES.padding * 0.7 }}>
+                                            <Text style={{ ...FONTS.body3 }}>{moment(dueDate).format('ll')}</Text>
+                                        </TouchableHighlight>
+                                        {Platform.OS === 'android' && showDue && (
+                                            <DateTimePicker
+                                                timeZoneOffsetInSeconds={0}
+                                                style={{ width: '90%', marginRight: SIZES.padding * 0.5, height: '100%' }}
+                                                testID="dateTimePicker"
+                                                value={dueDate}
+                                                minimumDate={new Date(moment().subtract(1, 'year').format('YYYY-MM-DD'))}
+                                                mode='date'
+                                                is24Hour={true}
+                                                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                                                onChange={onChangeDueDate}
+                                            />)
+                                        }
                                     </View>
 
 
@@ -316,9 +376,37 @@ const Page = ({ index, inputRef, moveIn, status, setStatus, internet, setInterne
                                 </View>
                             </View>
                         )}
-                        <InputTextField placeholder='Notes, Comments' numberOfLines={5} multiline={true} style={{ height: SIZES.height / 6, borderWidth: 0.3, borderRadius: 8, borderColor: COLORS.lightGray }} value={referralData.comment} onChangeText={text => setReferralData({ ...referralData, comment: text })} />
+                        <InputTextField placeholder='Notes, Comments' numberOfLines={5} multiline={true} style={{ height: SIZES.height / 6, borderWidth: 0.3, borderRadius: 8, borderColor: COLORS.lightGray, marginBottom: 50, }} value={referralData.comment} onChangeText={text => setReferralData({ ...referralData, comment: text })} />
 
 
+                        {Platform.OS === 'ios' && (
+                            <Modal transparent animationType='slide' visible={show || showDue}>
+                                <View style={{ backgroundColor: COLORS.background, position: 'absolute', left: 0, right: 0, height: SIZES.height / 2, bottom: 0, borderTopLeftRadius: SIZES.radius * 3, borderTopRightRadius: SIZES.radius * 3 }}>
+                                    <View style={{ flexDirection: 'row', paddingVertical: SIZES.padding, justifyContent: 'space-between', marginHorizontal: SIZES.padding * 2 }}>
+                                        <TouchableHighlight activeOpacity={0} underlayColor={COLORS.light} onPress={() => showDue ? setShowDue(false) : setShow(false)}>
+                                            <Text style={{ ...FONTS.body3, color: COLORS.red }}>Cancel</Text>
+                                        </TouchableHighlight>
+                                        <TouchableHighlight onPress={() => showDue ? setShowDue(false) : setShow(false)}>
+                                            <Text style={{ ...FONTS.h3, color: 'blue' }}>Done</Text>
+                                        </TouchableHighlight>
+                                    </View>
+                                    <View style={{ flex: 1, marginBottom: 20, justifyContent: 'center', alignItems: 'center' }}>
+
+                                        <DateTimePicker
+                                            timeZoneOffsetInSeconds={0}
+                                            style={{ width: '90%', marginRight: SIZES.padding * 0.5, height: '100%' }}
+                                            testID="dateTimePicker"
+                                            value={showDue ? dueDate : orderDate}
+                                            minimumDate={new Date(moment().subtract(1, 'year').format('YYYY-MM-DD'))}
+                                            mode='date'
+                                            is24Hour={true}
+                                            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                                            onChange={showDue ? onChangeDueDate : onChangeOrderDate}
+                                        />
+                                    </View>
+                                </View>
+                            </Modal>
+                        )}
 
                     </Step>
                 )}
@@ -622,12 +710,13 @@ export default function MultiForm({ navigation, route }) {
             <View style={{ marginTop: 20, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', width: '100%' }}>
                 <Paginator data={data} scrollX={scrollX} />
             </View>
-            <View style={{ flex: 3 }}>
+            <View style={{ width: SIZES.width }}>
                 <FlatList
                     ref={slideRef}
                     keyboardShouldPersistTaps={'handled'}
                     showsHorizontalScrollIndicator={false}
                     pagingEnabled
+                    contentContainerStyle={{ marginTop: 40, }}
                     scrollEnabled={canContinue}
                     horizontal
                     viewabilityConfig={viewConfig}
@@ -648,6 +737,12 @@ export default function MultiForm({ navigation, route }) {
                     flexDirection: 'row',
                     justifyContent: 'space-evenly',
                     width: '100%',
+                    position: 'absolute',
+                    left: 0,
+                    right: 0,
+                    bottom: 60,
+
+
                 }}
             >
                 <NextPrevButton
