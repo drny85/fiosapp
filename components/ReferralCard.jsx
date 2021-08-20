@@ -12,7 +12,7 @@ const ReferralCard = ({ referral, onPress, style }) => {
     const line2 = line[1].trim() + ', ' + line[2]
 
     return (
-        <TouchableOpacity onPress={onPress} style={[styles.view, { backgroundColor: referral.status.name === 'Closed' ? COLORS.green : referral.status.id === 'in_progress' ? COLORS.progress : COLORS.card }, style]}>
+        <TouchableOpacity onPress={onPress} style={[styles.view, { backgroundColor: referral.status.name === 'Closed' ? COLORS.green : referral.status.id === 'in_progress' ? COLORS.progress : referral.status.id === 'not_sold' ? COLORS.red : COLORS.card }, style]}>
             <Text style={{ ...FONTS.h3, textAlign: 'center', marginBottom: 4 }}>{referral.name}</Text>
             <View style={{ alignItems: 'flex-start' }}>
                 <View>

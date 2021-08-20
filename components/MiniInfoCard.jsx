@@ -4,7 +4,7 @@ import { COLORS, FONTS, SIZES } from '../constants/contantts'
 import AnimatedNumbers from 'react-native-animated-numbers';
 import ProgressCircle from 'react-native-progress-circle'
 
-const MiniInfoCard = ({ title, subtitle, onPress, style, percentage = null, color }) => {
+const MiniInfoCard = ({ title, subtitle, onPress, style, percentage, color }) => {
     console.log('P', percentage)
     return (
         <TouchableOpacity style={[styles.view, style]} onPress={onPress}>
@@ -12,22 +12,22 @@ const MiniInfoCard = ({ title, subtitle, onPress, style, percentage = null, colo
             {percentage && (
                 <ProgressCircle
                     containerStyle={{ justifyContent: 'center', alignItems: 'center' }}
-                    percent={percentage}
+                    percent={percentage || 0}
                     radius={SIZES.width / 20}
                     borderWidth={5}
                     color={color ? color : COLORS.green}
                     shadowColor={COLORS.primary}
-                    bgColor={COLORS.background}
+                    bgColor={COLORS.card}
 
                 >
                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                        <AnimatedNumbers animationDuration={600} animateToNumber={Math.round(Math.ceil(percentage))} fontStyle={{ ...FONTS.h4 }} />
+                        <AnimatedNumbers animationDuration={600} animateToNumber={Math.ceil(percentage) || 0} fontStyle={{ ...FONTS.h4 }} />
                         <Text>%</Text>
                     </View>
 
                 </ProgressCircle>
             )}
-            {percentage === null && (
+            {!percentage && (
                 <AnimatedNumbers animationDuration={600} animateToNumber={subtitle} fontStyle={{ ...FONTS.h3 }} />
             )}
 

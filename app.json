@@ -17,12 +17,7 @@
 		"ios": {
 			"supportsTablet": true,
 			"bundleIdentifier": "net.robertdev.melendez.fiosrewardsapp",
-			"buildNumber": "1.0.1",
-			"infoPlist": {
-				"UIBackgroundModes": {
-					"content-available": 1
-				}
-			}
+			"buildNumber": "1.0.1"
 		},
 		"extra": {
 			"appId": "1:188462078951:web:0b59e22c794940dcaafb42"
@@ -36,6 +31,6 @@
 		"web": {
 			"favicon": "./assets/favicon.png"
 		},
-		"description": "todos\nFixed bugs"
+		"description": "todos\nFixed bugs added circle progress"
 	}
 }
