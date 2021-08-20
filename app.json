@@ -1,43 +1,41 @@
 {
-  "expo": {
-    "name": "Fios Referrals",
-    "slug": "Fios_Referrals",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "net.robertdev.melendez.fiosrewardsapp",
-      "buildNumber": "1.0.0",
-      "infoPlist": {
-        "UIBackgroundModes": {
-          "content-available": 1
-        }
-      }
-    },
-    "extra": {
-      "appId": "1:188462078951:web:0b59e22c794940dcaafb42"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-    "description": "todos\nFixed bugs"
-  }
+	"expo": {
+		"name": "Fios Referrals",
+		"slug": "Fios_Referrals",
+		"version": "1.0.1",
+		"orientation": "portrait",
+		"icon": "./assets/icon.png",
+		"splash": {
+			"image": "./assets/splash.png",
+			"resizeMode": "contain",
+			"backgroundColor": "#ffffff"
+		},
+		"updates": {
+			"fallbackToCacheTimeout": 0
+		},
+		"assetBundlePatterns": ["**/*"],
+		"ios": {
+			"supportsTablet": true,
+			"bundleIdentifier": "net.robertdev.melendez.fiosrewardsapp",
+			"buildNumber": "1.0.1",
+			"infoPlist": {
+				"UIBackgroundModes": {
+					"content-available": 1
+				}
+			}
+		},
+		"extra": {
+			"appId": "1:188462078951:web:0b59e22c794940dcaafb42"
+		},
+		"android": {
+			"adaptiveIcon": {
+				"foregroundImage": "./assets/adaptive-icon.png",
+				"backgroundColor": "#FFFFFF"
+			}
+		},
+		"web": {
+			"favicon": "./assets/favicon.png"
+		},
+		"description": "todos\nFixed bugs"
+	}
 }
