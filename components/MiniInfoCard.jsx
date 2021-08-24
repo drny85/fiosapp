@@ -5,7 +5,7 @@ import AnimatedNumbers from 'react-native-animated-numbers';
 import ProgressCircle from 'react-native-progress-circle'
 
 const MiniInfoCard = ({ title, subtitle, onPress, style, percentage, color }) => {
-    console.log('P', percentage)
+
     return (
         <TouchableOpacity style={[styles.view, style]} onPress={onPress}>
             <Text style={{ ...FONTS.body5 }}>{title}</Text>

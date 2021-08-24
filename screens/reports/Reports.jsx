@@ -1,14 +1,23 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, ScrollView } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { COLORS, FONTS, SIZES } from '../../constants/contantts'
 import { AntDesign } from '@expo/vector-icons'
 import AnimatedNumbers from 'react-native-animated-numbers';
-import { Switch } from 'react-native-elements'
+import { Divider, Switch } from 'react-native-elements'
+import { firstResponderDiscount } from '../../utils/firstResponderDiscount'
+import { Modal } from 'react-native'
+import { TouchableHighlight } from 'react-native'
+import { mobilePlusHome } from '../../utils/mobilePlusHome'
 
 const Reports = () => {
-    const [firstResponder, setFirstResponder] = useState(0)
+    const [firstResponder, setFirstResponder] = useState(false)
+    const [rewards, setRewards] = useState(false)
+    const [rewardsValue, setRewardsValue] = useState(0)
+    const [show, setShow] = useState(false)
+    const [customerType, setCustomerType] = useState(null)
+    const [internetSpeed, setInternetSpeed] = useState(null)
     const [su, setSu] = useState(0)
     const [pm, setPm] = useState(0)
     const [dm, setDm] = useState(0)
@@ -124,6 +133,12 @@ const Reports = () => {
         return total * 0.15
 
     }
+    const calculateEstTaxesWithFirstResponder = () => {
+        const total = plans.reduce((pre, acc) => (acc.line * acc.price) + pre, 0)
+        return (total - firstResponderDiscount(lines, firstResponder) - mobilePlusHome(rewards, lines, customerType, internetSpeed)) * 0.15
+
+    }
+
 
 
     return (
@@ -148,7 +163,7 @@ const Reports = () => {
 
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text style={firstResponder === 0 ? { ...FONTS.body4 } : { ...FONTS.h4 }}>First Responder</Text>
-                    <Switch style={{ marginLeft: 10 }} value={firstResponder > 10} trackColor={COLORS.light} thumbColor={COLORS.background} ios_backgroundColor={COLORS.light} color={COLORS.lightGray} onValueChange={v => setFirstResponder(prev => prev === 0 ? 15 : 0)} />
+                    <Switch style={{ marginLeft: 10 }} value={firstResponder} trackColor={COLORS.light} thumbColor={COLORS.background} ios_backgroundColor={COLORS.light} color={COLORS.lightGray} onValueChange={v => setFirstResponder(prev => !prev)} />
                 </View>
                 <View style={{ paddingVertical: 4, paddingHorizontal: 8, backgroundColor: COLORS.background, borderRadius: SIZES.radius * 3 }}>
                     <Text style={{ ...FONTS.h3 }}>{lines} {lines > 1 ? 'Lines' : 'Line'}</Text>
@@ -217,21 +232,119 @@ const Reports = () => {
 
                     </View>)
             })}
+            <Divider subHeader='Price Before Discount' subHeaderStyle={{ textAlign: 'center', marginBottom: 10 }} color={COLORS.light} style={{ marginTop: 20 }} />
+            <ScrollView style={{ flex: 1, marginBottom: 20 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 15, paddingRight: 30 }}>
+                    <Text style={{ ...FONTS.h3, }}>Sub Total: $</Text>
+                    <AnimatedNumbers animationDuration={600} animateToNumber={calculateTotalPriceBeforeTaxes()} fontStyle={{ ...FONTS.h3 }} />
+                </View>
 
-            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 15, paddingRight: 30 }}>
-                <Text style={{ ...FONTS.h3, }}>Sub Total: $</Text>
-                <AnimatedNumbers animationDuration={600} animateToNumber={calculateTotalPriceBeforeTaxes()} fontStyle={{ ...FONTS.h3 }} />
-            </View>
-            <View style={{ paddingRight: 30 }}>
-                {autoPay === 0 ? (<Text style={{ ...FONTS.body5, textAlign: 'right' }}>You can save ${lines * 10} with auto pay</Text>) : <Text style={{ ...FONTS.body5, textAlign: 'right' }}>You are saving ${lines * 10} with auto pay</Text>}
+                <View style={{ paddingRight: 30 }}>
+                    {autoPay === 0 ? (<Text style={{ ...FONTS.body5, textAlign: 'right' }}>You can save ${lines * 10} with auto pay</Text>) : <Text style={{ ...FONTS.body5, textAlign: 'right' }}>You are saving ${lines * 10} with auto pay</Text>}
 
-            </View>
-            <View style={{ justifyContent: 'flex-end', paddingRight: 30, width: '100%' }}>
-                <Text style={{ ...FONTS.h4, textAlign: 'right' }}>Estimated Taxes: ${calculateEstTaxes()} </Text>
-                <Text style={{ ...FONTS.h3, textAlign: 'right' }}>Total Before Discount: $ {calculateTotalPriceBeforeTaxes() + calculateEstTaxes()} </Text>
+                </View>
+                <View style={{ justifyContent: 'flex-end', paddingRight: 30, width: '100%' }}>
+                    <Text style={{ ...FONTS.body4, textAlign: 'right' }}>Estimated Taxes: ${calculateEstTaxes()} </Text>
+                    {autoPay === 10 ? (<Text style={{ ...FONTS.h3, textAlign: 'right' }}>Total With AutoPay Before Discount: $ {calculateTotalPriceBeforeTaxes() + calculateEstTaxes()} </Text>)
+                        : (<Text style={{ ...FONTS.h3, textAlign: 'right' }}>Total w/o AutoPay Before Discount: $ {calculateTotalPriceBeforeTaxes() + calculateEstTaxes()} </Text>)
+                    }
+                </View>
+                <Divider subHeader='Price After Additional Discount' subHeaderStyle={{ textAlign: 'center', marginBottom: 10 }} color={COLORS.light} style={{ marginTop: 20 }} />
+                {/* PRICE AFTER DISCOUNT */}
+                <View style={{ backgroundColor: COLORS.light, paddingVertical: SIZES.padding }}>
+                    {firstResponder && (
+                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 15, paddingRight: 30 }}>
+                            <Text style={{ ...FONTS.body4, }}>1st Responder Discount: -$</Text>
+                            <AnimatedNumbers animationDuration={600} animateToNumber={firstResponderDiscount(lines, firstResponder)} fontStyle={{ ...FONTS.body4 }} />
+                        </View>
+                    )}
+                    {rewards && (
+                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 15, paddingRight: 30 }}>
+                            <Text style={{ ...FONTS.body4, }}>M + H Rewards: -$</Text>
+                            <AnimatedNumbers animationDuration={600} animateToNumber={mobilePlusHome(rewards, lines, customerType, internetSpeed)} fontStyle={{ ...FONTS.body4 }} />
+                        </View>
+                    )}
+                    <View style={{ justifyContent: 'flex-end', paddingRight: 30, width: '100%' }}>
+                        <Text style={{ ...FONTS.body4, textAlign: 'right' }}>Estimated Taxes: ${calculateEstTaxesWithFirstResponder()} </Text>
+                        <Text style={{ ...FONTS.h3, textAlign: 'right' }}>Total Price After Discount: $ {calculateTotalPriceBeforeTaxes() + calculateEstTaxesWithFirstResponder() - firstResponderDiscount(lines, firstResponder) - mobilePlusHome(rewards, lines, customerType, internetSpeed)} </Text>
 
-            </View>
+                    </View>
+                </View>
 
+                <Divider subHeader='Mobile + Home Rewards' subHeaderStyle={{ textAlign: 'center', marginBottom: 10 }} color={COLORS.light} style={{ marginTop: 20 }} />
+                <View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 10 }}>
+                        <Text style={autoPay === 0 ? { ...FONTS.body4 } : { ...FONTS.h4 }}>Is Home + Rewards Eligible ?</Text>
+                        <Switch disabled={lines === 0} style={{ marginLeft: 10 }} value={rewards} trackColor={COLORS.light} ios_backgroundColor={COLORS.light} thumbColor={COLORS.background} color={COLORS.light} onValueChange={v => setRewards(prev => !prev)} />
+                    </View>
+                    {rewards && (
+                        <TouchableOpacity onPress={() => setShow(true)} style={{ justifyContent: 'center', alignItems: 'center', width: 'auto', marginBottom: 20, paddingVertical: SIZES.padding * 0.5, paddingHorizontal: 6, shadowColor: COLORS.card, shadowOffset: { width: 5, height: 6 }, elevation: 6, borderRadius: SIZES.radius * 3, backgroundColor: COLORS.card, shadowOpacity: 0.6, shadowRadius: 8 }}>
+                            <Text style={{ ...FONTS.h4, color: COLORS.blue }}>Apply M + H Discounts</Text>
+                        </TouchableOpacity>
+                    )}
+
+
+                </View>
+            </ScrollView>
+            <Modal visible={show} transparent animationType='slide'>
+                <View style={{ position: 'absolute', left: 0, right: 0, backgroundColor: COLORS.background, flex: 1, height: SIZES.height * 0.8, bottom: 0, borderTopEndRadius: 35, borderTopLeftRadius: 35, shadowOffset: { width: 5, height: 8 }, elevation: 8, shadowColor: COLORS.black, shadowRadius: 20, shadowOpacity: 0.7 }}>
+                    <TouchableHighlight underlayColor={COLORS.gray} style={{ justifyContent: 'center', alignItems: 'flex-end', zIndex: 110, paddingHorizontal: 30, paddingVertical: 15 }} onPress={() => setShow(false)}>
+                        <Text style={{ ...FONTS.h4, color: COLORS.blue }}>Done</Text>
+                    </TouchableHighlight>
+                    <View>
+                        <Text style={{ ...FONTS.body2, textAlign: 'center' }}>M + H Discount: ${mobilePlusHome(rewards, lines, customerType, internetSpeed)}</Text>
+                        <Divider />
+                    </View>
+                    <View style={{ width: '100%', marginTop: 20, alignItems: 'center' }}>
+                        <Text style={{ ...FONTS.h2, marginBottom: 20 }}>Customer Type</Text>
+                        <View style={{ flexDirection: 'row', marginBottom: SIZES.padding, width: SIZES.width / 2, justifyContent: 'flex-end', alignItems: 'center' }}>
+                            <Text style={{ ...FONTS.h3, marginRight: 10, justifyContent: 'center', alignItems: 'center' }}>Is New / New ?</Text>
+                            <Switch style={{ marginLeft: 10 }} value={customerType === 'newNew'} trackColor={COLORS.light} ios_backgroundColor={COLORS.light} thumbColor={COLORS.background} color={COLORS.light} onValueChange={v => setCustomerType('newNew')} />
+
+                        </View>
+                        <View style={{ flexDirection: 'row', marginBottom: SIZES.padding, alignItems: 'center', width: SIZES.width / 2, justifyContent: 'flex-end' }}>
+                            <Text style={{ ...FONTS.h3, marginRight: 10, justifyContent: 'center', alignItems: 'center' }}>Is Existing?</Text>
+                            <Switch style={{ marginLeft: 10 }} value={customerType === 'existing'} trackColor={COLORS.light} ios_backgroundColor={COLORS.light} thumbColor={COLORS.background} color={COLORS.light} onValueChange={v => setCustomerType('existing')} />
+
+                        </View>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', width: SIZES.width / 2, justifyContent: 'flex-end' }}>
+                            <Text style={{ ...FONTS.h3, marginRight: 10, justifyContent: 'center', alignItems: 'center' }}>Is Just New</Text>
+                            <Switch style={{ marginLeft: 10 }} value={customerType === 'justNew'} trackColor={COLORS.light} ios_backgroundColor={COLORS.light} thumbColor={COLORS.background} color={COLORS.light} onValueChange={v => {
+                                setCustomerType('justNew')
+                                setInternetSpeed(null)
+                            }} />
+
+                        </View>
+
+
+                    </View>
+                    {customerType !== 'justNew' && (
+                        <>
+                            <Divider insetType='middle' inset={true} color={COLORS.lightGray} style={{ marginVertical: 10 }} />
+                            <View style={{ width: '100%', alignItems: 'center', marginTop: 10 }}>
+                                <Text style={{ textAlign: 'center', ...FONTS.h2, marginBottom: 20 }}>What Internet Speed?</Text>
+                                <View style={{ flexDirection: 'row', marginBottom: SIZES.padding, width: SIZES.width / 2, justifyContent: 'flex-end', alignItems: 'center' }}>
+                                    <Text style={{ ...FONTS.h3, marginRight: 10, justifyContent: 'center', alignItems: 'center' }}>200 or 300 Mbps</Text>
+                                    <Switch style={{ marginLeft: 10 }} value={internetSpeed === '300'} trackColor={COLORS.light} ios_backgroundColor={COLORS.light} thumbColor={COLORS.background} color={COLORS.light} onValueChange={v => setInternetSpeed('300')} />
+
+                                </View>
+                                <View style={{ flexDirection: 'row', marginBottom: SIZES.padding, alignItems: 'center', width: SIZES.width / 2, justifyContent: 'flex-end' }}>
+                                    <Text style={{ ...FONTS.h3, marginRight: 10, justifyContent: 'center', alignItems: 'center' }}>400 or 500 Mbps</Text>
+                                    <Switch style={{ marginLeft: 10 }} value={internetSpeed === '500'} trackColor={COLORS.light} ios_backgroundColor={COLORS.light} thumbColor={COLORS.background} color={COLORS.light} onValueChange={() => setInternetSpeed('500')} />
+
+                                </View>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', width: SIZES.width / 2, justifyContent: 'flex-end' }}>
+                                    <Text style={{ ...FONTS.h3, marginRight: 10, justifyContent: 'center', alignItems: 'center' }}>Gigabit 940 /880 Mbps</Text>
+                                    <Switch style={{ marginLeft: 10 }} value={internetSpeed === 'gigabit'} trackColor={COLORS.light} ios_backgroundColor={COLORS.light} thumbColor={COLORS.background} color={COLORS.light} onValueChange={v => setInternetSpeed('gigabit')} />
+
+                                </View>
+                            </View>
+                        </>
+                    )}
+
+
+                </View>
+            </Modal>
 
         </View>
 

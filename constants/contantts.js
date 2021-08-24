@@ -14,7 +14,7 @@ export const COLORS = {
 	secondary: '#212121',
 	background: '#FFFFFF',
 	ascent: '#607d8b',
-	card: '#d9d9d9',
+	card: 'rgba(0,0,110,0.1)',
 	placeHolderTextColor: '#808080',
 	green: '#4c9c8a',
 	tile: '#ecf0f1',
@@ -24,6 +24,10 @@ export const COLORS = {
 	red: '#e62f17',
 	text: '#555B5D',
 	progress: '#c2c955',
+};
+
+export const EXTRAS = {
+	bonusOffer: 10,
 };
 
 export const SIZES = {
@@ -105,6 +109,6 @@ export const FONTS = {
 	},
 };
 
-const appTheme = { COLORS, SIZES, FONTS, WEEKDAYS, STATES };
+const appTheme = { COLORS, SIZES, FONTS, WEEKDAYS, STATES, EXTRAS };
 
 export default appTheme;

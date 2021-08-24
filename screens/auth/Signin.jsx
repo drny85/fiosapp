@@ -53,12 +53,6 @@ const Signin = ({ route }) => {
     }
 
 
-    useEffect(() => {
-        if (preview) {
-            setEmail(preview)
-        }
-    }, [route.params])
-
     if (loading) return <Loader />
 
     return (

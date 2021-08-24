@@ -49,7 +49,7 @@ const App = () => {
 
   useEffect(() => {
     const subscription = Notifications.addNotificationReceivedListener(notification => {
-      console.log(notification.request.content);
+
     });
     const listener = auth.onAuthStateChanged(u => {
 
