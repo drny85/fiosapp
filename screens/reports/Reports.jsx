@@ -240,7 +240,7 @@ const Reports = () => {
                 </View>
 
                 <View style={{ paddingRight: 30 }}>
-                    {autoPay === 0 ? (<Text style={{ ...FONTS.body5, textAlign: 'right' }}>You can save ${lines * 10} with auto pay</Text>) : <Text style={{ ...FONTS.body5, textAlign: 'right' }}>You are saving ${lines * 10} with auto pay</Text>}
+                    {autoPay === 0 ? (<Text style={{ ...FONTS.body4, textAlign: 'right' }}>You can save ${lines * 10} with auto pay</Text>) : <Text style={{ ...FONTS.body4, textAlign: 'right' }}>You are saving ${lines * 10} with auto pay</Text>}
 
                 </View>
                 <View style={{ justifyContent: 'flex-end', paddingRight: 30, width: '100%' }}>
@@ -251,9 +251,15 @@ const Reports = () => {
                 </View>
                 <Divider subHeader='Price After Additional Discount' subHeaderStyle={{ textAlign: 'center', marginBottom: 10 }} color={COLORS.light} style={{ marginTop: 20 }} />
                 {/* PRICE AFTER DISCOUNT */}
+
+
                 <View style={{ backgroundColor: COLORS.light, paddingVertical: SIZES.padding }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 15, paddingRight: 30 }}>
+                        <Text style={{ ...FONTS.h3, }}>Sub Total: $</Text>
+                        <AnimatedNumbers animationDuration={600} animateToNumber={calculateTotalPriceBeforeTaxes()} fontStyle={{ ...FONTS.h3 }} />
+                    </View>
                     {firstResponder && (
-                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 15, paddingRight: 30 }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 10, paddingRight: 30 }}>
                             <Text style={{ ...FONTS.body4, }}>1st Responder Discount: -$</Text>
                             <AnimatedNumbers animationDuration={600} animateToNumber={firstResponderDiscount(lines, firstResponder)} fontStyle={{ ...FONTS.body4 }} />
                         </View>
@@ -269,6 +275,10 @@ const Reports = () => {
                         <Text style={{ ...FONTS.h3, textAlign: 'right' }}>Total Price After Discount: $ {calculateTotalPriceBeforeTaxes() + calculateEstTaxesWithFirstResponder() - firstResponderDiscount(lines, firstResponder) - mobilePlusHome(rewards, lines, customerType, internetSpeed)} </Text>
 
                     </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={{ ...FONTS.h1, textAlign: 'center', marginVertical: 10 }}>Total Saving: $</Text>
+                        <AnimatedNumbers animationDuration={600} animateToNumber={firstResponderDiscount(lines, firstResponder) + mobilePlusHome(rewards, lines, customerType, internetSpeed) + (autoPay ? lines * 10 : 0)} fontStyle={{ ...FONTS.h1 }} />
+                    </View>
                 </View>
 
                 <Divider subHeader='Mobile + Home Rewards' subHeaderStyle={{ textAlign: 'center', marginBottom: 10 }} color={COLORS.light} style={{ marginTop: 20 }} />
@@ -277,6 +287,7 @@ const Reports = () => {
                         <Text style={autoPay === 0 ? { ...FONTS.body4 } : { ...FONTS.h4 }}>Is Home + Rewards Eligible ?</Text>
                         <Switch disabled={lines === 0} style={{ marginLeft: 10 }} value={rewards} trackColor={COLORS.light} ios_backgroundColor={COLORS.light} thumbColor={COLORS.background} color={COLORS.light} onValueChange={v => setRewards(prev => !prev)} />
                     </View>
+
                     {rewards && (
                         <TouchableOpacity onPress={() => setShow(true)} style={{ justifyContent: 'center', alignItems: 'center', width: 'auto', marginBottom: 20, paddingVertical: SIZES.padding * 0.5, paddingHorizontal: 6, shadowColor: COLORS.card, shadowOffset: { width: 5, height: 6 }, elevation: 6, borderRadius: SIZES.radius * 3, backgroundColor: COLORS.card, shadowOpacity: 0.6, shadowRadius: 8 }}>
                             <Text style={{ ...FONTS.h4, color: COLORS.blue }}>Apply M + H Discounts</Text>
@@ -315,6 +326,7 @@ const Reports = () => {
                             }} />
 
                         </View>
+
 
 
                     </View>
