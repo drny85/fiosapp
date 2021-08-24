@@ -41,7 +41,7 @@ const TabNavigation = () => {
             component={ReferralsNavigation} />
 
         <Tabs.Screen name='NotesStack' options={{ title: 'Notes', tabBarIcon: ({ color, size }) => <Foundation name="clipboard-notes" size={size} color={color} /> }} component={NotesNavigation} />
-        <Tabs.Screen name='ReportsStack' options={{ title: 'Reports', tabBarIcon: ({ color, size }) => <Ionicons name="analytics" size={size} color={color} /> }} component={ReportsNavigation} />
+        <Tabs.Screen name='ReportsStack' options={{ title: 'Wireless', tabBarIcon: ({ color, size }) => <Ionicons name="cellular" size={size} color={color} /> }} component={ReportsNavigation} />
         <Tabs.Screen name='ProfileStack' options={{ title: 'Profile', tabBarIcon: ({ color, size }) => <Feather name="user" size={size} color={color} /> }} component={ProfileNavigation} />
     </Tabs.Navigator>
     )
