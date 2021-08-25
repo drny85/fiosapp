@@ -22,7 +22,7 @@ const MiniInfoCard = ({ title, subtitle, onPress, style, percentage, color }) =>
 
                 >
                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                        <AnimatedNumbers animationDuration={600} animateToNumber={Math.ceil(percentage) || 0} fontStyle={{ ...FONTS.h4 }} />
+                        <AnimatedNumbers animationDuration={600} animateToNumber={Math.ceil(percentage) || 0} fontStyle={{ ...FONTS.body5 }} />
                         <Text>%</Text>
                     </View>
 

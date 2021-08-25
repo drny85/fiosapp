@@ -1,14 +1,12 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, View, ScrollView, TouchableWithoutFeedback, Alert } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, TouchableWithoutFeedback, Alert,TouchableHighlight, Modal } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { COLORS, FONTS, SIZES } from '../../constants/contantts'
 import { AntDesign } from '@expo/vector-icons'
 import AnimatedNumbers from 'react-native-animated-numbers';
 import { Divider, Switch } from 'react-native-elements'
 import { firstResponderDiscount } from '../../utils/firstResponderDiscount'
-import { Modal } from 'react-native'
-import { TouchableHighlight } from 'react-native'
+
 import { mobilePlusHome } from '../../utils/mobilePlusHome'
 
 const ACTIVATION_FEE = 35;
@@ -159,9 +157,7 @@ const Reports = () => {
     const handleResetAll = () => {
         return Alert.alert('Reset', 'Do you want to start from scratch?', [{ text: 'No', style: 'cancel' }, { text: 'Yes', style: 'destructive', onPress: resetAll }])
     }
-    console.log(calculateTotalPriceBeforeTaxes() + calculateEstTaxesWithFirstResponder() - firstResponderDiscount(lines, firstResponder) - mobilePlusHome(rewards, lines, customerType, internetSpeed))
-
-
+   
     return (
 
         <View style={styles.view}>
@@ -185,7 +181,7 @@ const Reports = () => {
                 <TouchableWithoutFeedback onLongPress={handleResetAll}>
                     <>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={firstResponder === 0 ? { ...FONTS.body4 } : { ...FONTS.h4 }}>First Responder</Text>
+                            <Text style={firstResponder === 0 ? { ...FONTS.body4 } : { ...FONTS.h4 }}>1st Responder</Text>
                             <Switch style={{ marginLeft: 10 }} value={firstResponder} trackColor={COLORS.light} thumbColor={COLORS.background} ios_backgroundColor={COLORS.light} color={COLORS.lightGray} onValueChange={v => setFirstResponder(prev => !prev)} />
                         </View>
                         <View style={{ paddingVertical: 4, paddingHorizontal: 8, backgroundColor: COLORS.background, borderRadius: SIZES.radius * 3 }}>
@@ -260,13 +256,14 @@ const Reports = () => {
 
                 )
             })}
-            <Divider subHeader='Price Before Discount / First Month' subHeaderStyle={{ textAlign: 'center', marginBottom: 10 }} color={COLORS.lightGray} width={1.2} style={{ marginTop: 20 }} />
+           
             <ScrollView style={{ flex: 1, marginBottom: 20 }}>
+            <Divider subHeader='Price Before Discount / First Month' subHeaderStyle={{ textAlign: 'center' }} color={COLORS.lightGray} width={1.2} style={{ marginTop: 20 }} />
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 15, paddingRight: 30 }}>
                     <Text style={{ ...FONTS.h3, }}>Sub Total: $</Text>
                     <AnimatedNumbers animationDuration={600} animateToNumber={calculateTotalPriceBeforeTaxes() + (autoPay ? lines * 10 : 0)} fontStyle={{ ...FONTS.h3 }} />
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 15, paddingRight: 30 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', paddingRight: 30 }}>
                     <Text style={{ ...FONTS.body3, }}>Activation Fee: $</Text>
                     <AnimatedNumbers animationDuration={600} animateToNumber={lines * ACTIVATION_FEE} fontStyle={{ ...FONTS.body3 }} />
                 </View>
@@ -315,16 +312,17 @@ const Reports = () => {
 
                 <Divider subHeader='Mobile + Home Rewards' subHeaderStyle={{ textAlign: 'center', marginBottom: 10 }} color={COLORS.lightGray} width={1.2} style={{ marginTop: 20 }} />
                 <View>
+                {rewards && (
+                        <TouchableOpacity onPress={() => setShow(true)} style={{ justifyContent: 'center', alignItems: 'center', width: 'auto', marginBottom: 20, paddingVertical: SIZES.padding * 0.5, paddingHorizontal: 6, shadowColor: COLORS.card, shadowOffset: { width: 5, height: 6 }, elevation: 6, borderRadius: SIZES.radius * 3, backgroundColor: COLORS.card, shadowOpacity: 0.6, shadowRadius: 8 }}>
+                            <Text style={{ ...FONTS.h4, color: COLORS.blue }}>Apply M + H Discounts</Text>
+                        </TouchableOpacity>
+                    )}
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 10 }}>
                         <Text style={autoPay === 0 ? { ...FONTS.body4 } : { ...FONTS.h4 }}>Is Home + Rewards Eligible ?</Text>
                         <Switch disabled={lines === 0} style={{ marginLeft: 10 }} value={rewards} trackColor={COLORS.light} ios_backgroundColor={COLORS.light} thumbColor={COLORS.background} color={COLORS.light} onValueChange={v => setRewards(prev => !prev)} />
                     </View>
 
-                    {rewards && (
-                        <TouchableOpacity onPress={() => setShow(true)} style={{ justifyContent: 'center', alignItems: 'center', width: 'auto', marginBottom: 20, paddingVertical: SIZES.padding * 0.5, paddingHorizontal: 6, shadowColor: COLORS.card, shadowOffset: { width: 5, height: 6 }, elevation: 6, borderRadius: SIZES.radius * 3, backgroundColor: COLORS.card, shadowOpacity: 0.6, shadowRadius: 8 }}>
-                            <Text style={{ ...FONTS.h4, color: COLORS.blue }}>Apply M + H Discounts</Text>
-                        </TouchableOpacity>
-                    )}
+                   
 
 
                 </View>

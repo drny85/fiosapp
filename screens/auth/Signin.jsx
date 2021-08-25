@@ -19,6 +19,7 @@ const Signin = ({ route }) => {
     const [password, setPassword] = useState('')
     const { error, setUser, loading } = useContext(authContext)
     const [processing, setProcessing] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
 
     const preview = route.params?.previewEmail
 
@@ -71,7 +72,7 @@ const Signin = ({ route }) => {
                         </View>
                         <View style={{ width: '100%' }}>
                             <Input placeholder='Email Address' keyboardType='email-address' autoCorrect={false} autoCapitalize='none' value={email} onChangeText={text => setEmail(text.trim().toLowerCase())} />
-                            <Input rightIcon={<Feather name="eye" size={24} color="black" />} placeholder='Password' secureTextEntry={true} value={password} onChangeText={text => setPassword(text.trim())} />
+                            <Input rightIcon={<Feather name={!showPassword ? 'eye':'eye-off'} size={24} onPress={() => setShowPassword(!showPassword)} color="black" />} placeholder='Password' secureTextEntry={!showPassword} value={password} onChangeText={text => setPassword(text.trim())} />
                         </View>
                         <View style={{ marginTop: 30 }}>
                             <Button type='outline' buttonStyle={{ borderColor: COLORS.secondary, backgroundColor: COLORS.primary }} style={{ width: SIZES.width / 3, }} titleStyle={{ color: COLORS.secondary }} raised title='Sign In' onPress={singinHandler} />

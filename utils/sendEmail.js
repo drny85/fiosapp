@@ -2,7 +2,7 @@ import axios from 'axios';
 import { EMAIL_URL } from '@env';
 
 export const sendEmail = async (referral) => {
-	console.log(EMAIL_URL);
+	
 	if (!referral) return;
 
 	try {
