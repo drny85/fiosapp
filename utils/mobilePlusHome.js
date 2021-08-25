@@ -1,4 +1,5 @@
 import { EXTRAS } from '../constants/contantts';
+import moment from 'moment';
 
 export const mobilePlusHome = (
 	rewards,
@@ -8,6 +9,10 @@ export const mobilePlusHome = (
 	bonusOffer = EXTRAS.bonusOffer
 ) => {
 	if (totalLines === 0 || !rewards) return 0;
+
+	if (moment().isAfter(moment('20210930', 'YYYYMMDD').startOf('day'))) {
+		bonusOffer = 0;
+	}
 
 	switch (true) {
 		case customerType === 'newNew' && internetSpeed === 'gigabit':

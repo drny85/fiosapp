@@ -47,6 +47,7 @@ const Profile = ({ navigation }) => {
                 <ProfileListItem tittle='Manage AMs' onPress={() => navigation.navigate('Managers', { subject: 'manager' })} />
                 <ProfileListItem tittle='Manage Coach' onPress={() => navigation.navigate('Managers', { subject: 'coach' })} />
                 <ProfileListItem tittle='Manage Referees' onPress={() => navigation.navigate('Managers', { subject: 'referee' })} />
+                <ProfileListItem tittle='Chat Screen' onPress={() => navigation.navigate('Chat')} />
             </ScreenView>
         </View>
     )

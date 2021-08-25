@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, View, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, TouchableWithoutFeedback, Alert } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { COLORS, FONTS, SIZES } from '../../constants/contantts'
@@ -14,7 +14,6 @@ import { mobilePlusHome } from '../../utils/mobilePlusHome'
 const Reports = () => {
     const [firstResponder, setFirstResponder] = useState(false)
     const [rewards, setRewards] = useState(false)
-    const [rewardsValue, setRewardsValue] = useState(0)
     const [show, setShow] = useState(false)
     const [customerType, setCustomerType] = useState(null)
     const [internetSpeed, setInternetSpeed] = useState(null)
@@ -58,6 +57,21 @@ const Reports = () => {
         },
     ]
 
+    const resetAll = () => {
+        setCustomerType(null)
+        setAutoPay(0)
+        setDm(0)
+        setSu(0)
+        setJk(0)
+        setPm(0)
+        setGm(0)
+        setInternetSpeed(null)
+        setRewards(false)
+        setLines(0)
+        setFirstResponder(false)
+
+    }
+
     const calculatePriceByLineMinus = (plan_id) => {
         switch (plan_id) {
             case 'start_unlimited':
@@ -90,6 +104,7 @@ const Reports = () => {
                 break;
         }
     }
+
     const calculatePriceByLinePlus = (plan_id) => {
         switch (plan_id) {
             case 'start_unlimited':
@@ -130,7 +145,7 @@ const Reports = () => {
 
     const calculateEstTaxes = () => {
         const total = plans.reduce((pre, acc) => (acc.line * acc.price) + pre, 0)
-        return total * 0.15
+        return (total + (autoPay ? lines * 10 : 0)) * 0.15
 
     }
     const calculateEstTaxesWithFirstResponder = () => {
@@ -139,11 +154,16 @@ const Reports = () => {
 
     }
 
+    const handleResetAll = () => {
+        return Alert.alert('Reset', 'Do you want to start from scratch?', [{ text: 'No', style: 'cancel' }, { text: 'Yes', style: 'destructive', onPress: resetAll }])
+    }
+    console.log(calculateTotalPriceBeforeTaxes() + calculateEstTaxesWithFirstResponder() - firstResponderDiscount(lines, firstResponder) - mobilePlusHome(rewards, lines, customerType, internetSpeed))
 
 
     return (
 
         <View style={styles.view}>
+
             <View style={{
                 flexDirection: 'row',
                 justifyContent: 'space-evenly',
@@ -160,18 +180,21 @@ const Reports = () => {
                 width: SIZES.width,
                 marginVertical: 5
             }}>
-
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={firstResponder === 0 ? { ...FONTS.body4 } : { ...FONTS.h4 }}>First Responder</Text>
-                    <Switch style={{ marginLeft: 10 }} value={firstResponder} trackColor={COLORS.light} thumbColor={COLORS.background} ios_backgroundColor={COLORS.light} color={COLORS.lightGray} onValueChange={v => setFirstResponder(prev => !prev)} />
-                </View>
-                <View style={{ paddingVertical: 4, paddingHorizontal: 8, backgroundColor: COLORS.background, borderRadius: SIZES.radius * 3 }}>
-                    <Text style={{ ...FONTS.h3 }}>{lines} {lines > 1 ? 'Lines' : 'Line'}</Text>
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={autoPay === 0 ? { ...FONTS.body4 } : { ...FONTS.h4 }}>Auto Pay</Text>
-                    <Switch style={{ marginLeft: 10 }} value={autoPay === 10} trackColor={COLORS.light} ios_backgroundColor={COLORS.light} thumbColor={COLORS.background} color={COLORS.light} onValueChange={v => setAutoPay(prev => prev === 0 ? 10 : 0)} />
-                </View>
+                <TouchableWithoutFeedback onLongPress={handleResetAll}>
+                    <>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Text style={firstResponder === 0 ? { ...FONTS.body4 } : { ...FONTS.h4 }}>First Responder</Text>
+                            <Switch style={{ marginLeft: 10 }} value={firstResponder} trackColor={COLORS.light} thumbColor={COLORS.background} ios_backgroundColor={COLORS.light} color={COLORS.lightGray} onValueChange={v => setFirstResponder(prev => !prev)} />
+                        </View>
+                        <View style={{ paddingVertical: 4, paddingHorizontal: 8, backgroundColor: COLORS.background, borderRadius: SIZES.radius * 3 }}>
+                            <Text style={{ ...FONTS.h3 }}>{lines} {lines > 1 ? 'Lines' : 'Line'}</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Text style={autoPay === 0 ? { ...FONTS.body4 } : { ...FONTS.h4 }}>Auto Pay</Text>
+                            <Switch style={{ marginLeft: 10 }} value={autoPay === 10} trackColor={COLORS.light} ios_backgroundColor={COLORS.light} thumbColor={COLORS.background} color={COLORS.light} onValueChange={v => setAutoPay(prev => prev === 0 ? 10 : 0)} />
+                        </View>
+                    </>
+                </TouchableWithoutFeedback>
             </View>
 
 
@@ -179,6 +202,7 @@ const Reports = () => {
 
             {plans.map(p => {
                 return (
+
                     <View key={p.id} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', paddingHorizontal: 10 }}>
                         <View style={{ width: '40%' }}>
                             <Text style={{ textAlign: 'left', ...FONTS.h4 }}>{p.name}</Text>
@@ -210,7 +234,7 @@ const Reports = () => {
                                     <AntDesign name='minuscircleo' style={{ opacity: (lines === 0 || p.line === 0) ? 0.3 : 1 }} size={28} />
                                 </TouchableOpacity>
                                 <View>
-                                    <Text style={{ ...FONTS.body3 }}>{p.line}</Text>
+                                    <Text style={{ ...FONTS.h4 }}>{p.line}</Text>
                                 </View>
                                 <TouchableOpacity onPress={() => {
                                     if (p.id === 'just_kids' && lines === 0) return
@@ -230,33 +254,34 @@ const Reports = () => {
 
                         </View>
 
-                    </View>)
+                    </View>
+
+                )
             })}
-            <Divider subHeader='Price Before Discount' subHeaderStyle={{ textAlign: 'center', marginBottom: 10 }} color={COLORS.light} style={{ marginTop: 20 }} />
+            <Divider subHeader='Price Before Discount' subHeaderStyle={{ textAlign: 'center', marginBottom: 10 }} color={COLORS.lightGray} width={1.2} style={{ marginTop: 20 }} />
             <ScrollView style={{ flex: 1, marginBottom: 20 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 15, paddingRight: 30 }}>
                     <Text style={{ ...FONTS.h3, }}>Sub Total: $</Text>
-                    <AnimatedNumbers animationDuration={600} animateToNumber={calculateTotalPriceBeforeTaxes()} fontStyle={{ ...FONTS.h3 }} />
+                    <AnimatedNumbers animationDuration={600} animateToNumber={calculateTotalPriceBeforeTaxes() + (autoPay ? lines * 10 : 0)} fontStyle={{ ...FONTS.h3 }} />
                 </View>
 
-                <View style={{ paddingRight: 30 }}>
-                    {autoPay === 0 ? (<Text style={{ ...FONTS.body4, textAlign: 'right' }}>You can save ${lines * 10} with auto pay</Text>) : <Text style={{ ...FONTS.body4, textAlign: 'right' }}>You are saving ${lines * 10} with auto pay</Text>}
 
-                </View>
                 <View style={{ justifyContent: 'flex-end', paddingRight: 30, width: '100%' }}>
                     <Text style={{ ...FONTS.body4, textAlign: 'right' }}>Estimated Taxes: ${calculateEstTaxes()} </Text>
-                    {autoPay === 10 ? (<Text style={{ ...FONTS.h3, textAlign: 'right' }}>Total With AutoPay Before Discount: $ {calculateTotalPriceBeforeTaxes() + calculateEstTaxes()} </Text>)
-                        : (<Text style={{ ...FONTS.h3, textAlign: 'right' }}>Total w/o AutoPay Before Discount: $ {calculateTotalPriceBeforeTaxes() + calculateEstTaxes()} </Text>)
-                    }
+                    <Text style={{ ...FONTS.h3, textAlign: 'right' }}>Total Before Discount: $ {calculateTotalPriceBeforeTaxes() + calculateEstTaxes() + (autoPay ? lines * 10 : 0)} </Text>
                 </View>
-                <Divider subHeader='Price After Additional Discount' subHeaderStyle={{ textAlign: 'center', marginBottom: 10 }} color={COLORS.light} style={{ marginTop: 20 }} />
+                <Divider subHeader='Price After Additional Discount' subHeaderStyle={{ textAlign: 'center', marginBottom: 10 }} color={COLORS.lightGray} width={1.2} style={{ marginTop: 20 }} />
                 {/* PRICE AFTER DISCOUNT */}
 
 
-                <View style={{ backgroundColor: COLORS.light, paddingVertical: SIZES.padding }}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 15, paddingRight: 30 }}>
+                <View style={{ backgroundColor: COLORS.light, paddingVertical: SIZES.padding * 0.5 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', paddingRight: 30 }}>
                         <Text style={{ ...FONTS.h3, }}>Sub Total: $</Text>
                         <AnimatedNumbers animationDuration={600} animateToNumber={calculateTotalPriceBeforeTaxes()} fontStyle={{ ...FONTS.h3 }} />
+                    </View>
+                    <View style={{ paddingRight: 30 }}>
+                        {autoPay === 0 ? (<Text style={{ ...FONTS.body4, textAlign: 'right' }}>You can save ${lines * 10} with auto pay</Text>) : <Text style={{ ...FONTS.body4, textAlign: 'right' }}>You are saving ${lines * 10} with auto pay</Text>}
+
                     </View>
                     {firstResponder && (
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 10, paddingRight: 30 }}>
@@ -272,16 +297,17 @@ const Reports = () => {
                     )}
                     <View style={{ justifyContent: 'flex-end', paddingRight: 30, width: '100%' }}>
                         <Text style={{ ...FONTS.body4, textAlign: 'right' }}>Estimated Taxes: ${calculateEstTaxesWithFirstResponder()} </Text>
-                        <Text style={{ ...FONTS.h3, textAlign: 'right' }}>Total Price After Discount: $ {calculateTotalPriceBeforeTaxes() + calculateEstTaxesWithFirstResponder() - firstResponderDiscount(lines, firstResponder) - mobilePlusHome(rewards, lines, customerType, internetSpeed)} </Text>
+                        <Text style={{ ...FONTS.h3, textAlign: 'right' }}>Total Price After Discount: $ <Text style={{ ...FONTS.h2 }}>{calculateTotalPriceBeforeTaxes() + calculateEstTaxesWithFirstResponder() - firstResponderDiscount(lines, firstResponder) - mobilePlusHome(rewards, lines, customerType, internetSpeed)} </Text> </Text>
 
                     </View>
+
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={{ ...FONTS.h1, textAlign: 'center', marginVertical: 10 }}>Total Saving: $</Text>
-                        <AnimatedNumbers animationDuration={600} animateToNumber={firstResponderDiscount(lines, firstResponder) + mobilePlusHome(rewards, lines, customerType, internetSpeed) + (autoPay ? lines * 10 : 0)} fontStyle={{ ...FONTS.h1 }} />
+                        <Text style={{ ...FONTS.h3, textAlign: 'center', marginVertical: 10 }}>Total Saving: $</Text>
+                        <AnimatedNumbers animationDuration={600} animateToNumber={+(firstResponderDiscount(lines, firstResponder) + mobilePlusHome(rewards, lines, customerType, internetSpeed) + (autoPay ? lines * 10 : 0)).toFixed(2)} fontStyle={{ ...FONTS.h1 }} />
                     </View>
                 </View>
 
-                <Divider subHeader='Mobile + Home Rewards' subHeaderStyle={{ textAlign: 'center', marginBottom: 10 }} color={COLORS.light} style={{ marginTop: 20 }} />
+                <Divider subHeader='Mobile + Home Rewards' subHeaderStyle={{ textAlign: 'center', marginBottom: 10 }} color={COLORS.lightGray} width={1.2} style={{ marginTop: 20 }} />
                 <View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 10 }}>
                         <Text style={autoPay === 0 ? { ...FONTS.body4 } : { ...FONTS.h4 }}>Is Home + Rewards Eligible ?</Text>
@@ -358,7 +384,10 @@ const Reports = () => {
                 </View>
             </Modal>
 
+
+
         </View>
+
 
     )
 }

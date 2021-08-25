@@ -172,8 +172,8 @@ const Referrals = ({ navigation }) => {
                     )
             }
 
-            <Modal transparent visible={showFilter} animationType='slide' style={{ height: 300, }}>
-                <View style={{ backgroundColor: COLORS.card, position: 'absolute', left: 0, right: 0, height: '70%', bottom: 0, borderTopEndRadius: 35, borderTopLeftRadius: 35, }}>
+            <Modal transparent visible={showFilter} animationType='slide' >
+                <View style={{ backgroundColor: COLORS.gray, position: 'absolute', left: 0, right: 0, height: '70%', bottom: 0, borderTopEndRadius: 35, borderTopLeftRadius: 35, }}>
                     <TouchableOpacity style={{ position: 'absolute', top: 20, left: 30 }} onPress={() => setShowFilter(false)}>
                         <Ionicons name="close" size={24} color="black" />
                     </TouchableOpacity>
