@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { KeyboardAvoidingView, Platform, FlatList, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, Animated } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons';
 import { COLORS, FONTS, SIZES } from '../../constants/contantts'
-import moment from 'moment'
 import authContext from '../../context/auth/authContext';
 import firebase from 'firebase'
 import { db } from '../../database';
@@ -23,13 +22,17 @@ const ChatScreen = () => {
     const sendMessage = () => {
         try {
             if (message === '') return
-            const msg = {
+            const data = {
                 sender: { id: user?.id, name: user?.name },
                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                body: message
+                body: message,
+                isReplied: isReplying ? isReplying : false,
+                reply: isReplying ? msg : null
             }
-            db.collection('messages').add(msg)
+            console.log(data)
+            db.collection('messages').add({ ...data })
             setMessage('')
+            setIsReplying(false)
             //viewRef.current?.scrollToEnd({ animated: true })
         } catch (error) {
             alert(error.message)
@@ -38,48 +41,49 @@ const ChatScreen = () => {
 
     const onDeleteMessage = async (id, userId) => {
         try {
-           const canDelete = user.id === userId
-           if (!canDelete) {
-               alert('No autorized')
-               return
-           }
-           await db.collection('messages').doc(id).delete()
+            const canDelete = user.id === userId
+            if (!canDelete) {
+                alert('No autorized')
+                return
+            }
+            await db.collection('messages').doc(id).delete()
         } catch (error) {
             alert(error.message)
         }
     }
 
-    const keyboardIsUp = ({endCoordinates}) => {
-        const {height} = endCoordinates;
-        
+
+    const keyboardIsUp = ({ endCoordinates }) => {
+        const { height } = endCoordinates;
+
         Animated.timing(valueY, {
-            toValue: height,
-            duration:600,
-            useNativeDriver:false
+            toValue: height > 400 ? height + 30 : height,
+            duration: 600,
+            useNativeDriver: false
         }).start()
     }
-    const keyboardIsDown = ({endCoordinates}) => {
-        const { screenX} = endCoordinates;
-       
+    const keyboardIsDown = ({ endCoordinates }) => {
+        const { screenX } = endCoordinates;
+
         Animated.timing(valueY, {
             toValue: screenX + 60,
-            duration:600,
-            useNativeDriver:false
+            duration: 600,
+            useNativeDriver: false
         }).start()
     }
 
-    const onReply = (m) =>{
+    const onReply = (m) => {
         setMsg(m)
         inputRef.current?.focus()
         setIsReplying(true)
-        
+
     }
     const closeReply = () => {
         setIsReplying(false)
         Keyboard.dismiss()
     }
 
-    
+
     useEffect(() => {
         const keyboardListener = Keyboard.addListener('keyboardWillShow', keyboardIsUp)
         const keyboardListener2 = Keyboard.addListener('keyboardWillHide', keyboardIsDown)
@@ -103,7 +107,7 @@ const ChatScreen = () => {
         <View style={{ flex: 1 }}>
             <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={100}>
                 {messages.length > 0 ? (<FlatList onContentSizeChange={(w, h) => { viewRef.current.scrollToEnd({ animated: true }) }} ref={viewRef} contentContainerStyle={{ marginBottom: 25 }} data={messages} keyExtractor={item => item.id} renderItem={({ item }) =>
-                    <Message key={item.id} onReply={() =>onReply(item)} onClose={() => setIsReplying(false)} onDelete={() => onDeleteMessage(item.id, item.sender.id)} userId={user.id} sender={item?.sender} message={item.body} timeStamp={moment(item.timestamp?.toDate()).fromNow()} />} />) : (
+                    <Message key={item.id} onReply={() => onReply(item)} msgBody={item} onClose={() => setIsReplying(false)} onDelete={() => onDeleteMessage(item.id, item.sender.id)} userId={user.id} />} />) : (
                         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                             <Text style={{ ...FONTS.body3 }}>No Messages</Text>
                         </View>
@@ -112,22 +116,25 @@ const ChatScreen = () => {
 
 
 
+
                 <View style={styles.input}>
-                    <TextInput ref={inputRef} multiline returnKeyType='send' value={message} onChangeText={text => setMessage(text)} style={{ alignItems: 'center', flex: 1, paddingLeft: 10, ...FONTS.body3, justifyContent: 'center' }} placeholder='Type your message' placeholderTextColor={COLORS.lightGray} />
+
+                    <TextInput ref={inputRef} autoCorrect={false} multiline value={message} onChangeText={text => setMessage(text)} style={{ alignItems: 'center', flex: 1, paddingLeft: 10, ...FONTS.body3, justifyContent: 'center' }} placeholder='Type your message' placeholderTextColor={COLORS.lightGray} />
                     <TouchableOpacity disabled={message.length < 2} onPress={sendMessage} style={{ paddingHorizontal: 5 }}>
                         <MaterialIcons name="send" size={34} color={COLORS.blue} />
                     </TouchableOpacity>
                 </View>
+
                 {isReplying && (
-                     <Animated.View style={[styles.reply,{position:'absolute', bottom:valueY}, ]}>
-                         <TouchableOpacity onPress={closeReply} style={styles.close}>
-                             <MaterialIcons name='close' size={24} color={COLORS.black} />
-                         </TouchableOpacity>
-                    <Text style={styles.replyTo}>Reply to {msg?.sender.name}</Text>
-                     <Text style={{...FONTS.body4, color: COLORS.white, textAlign:'left'}}>{msg.body}</Text>
-                 </Animated.View>
+                    <Animated.View style={[styles.reply, { position: 'absolute', bottom: valueY },]}>
+                        <TouchableOpacity onPress={closeReply} style={styles.close}>
+                            <MaterialIcons name='close' size={24} color={COLORS.black} />
+                        </TouchableOpacity>
+                        <Text style={styles.replyTo}>Reply to {msg?.sender.name}</Text>
+                        <Text style={{ ...FONTS.body4, color: COLORS.white, textAlign: 'left' }}>{msg.body}</Text>
+                    </Animated.View>
                 )}
-               
+
             </KeyboardAvoidingView>
         </View>
     )
@@ -162,25 +169,27 @@ const styles = StyleSheet.create({
 
 
     },
-    reply: {backgroundColor:COLORS.green, 
-        paddingHorizontal:SIZES.padding, 
-        paddingVertical: SIZES.padding *0.5, width:'95%', 
-        alignSelf:'center',
-        marginBottom:4,
+    reply: {
+        backgroundColor: COLORS.green,
+        paddingHorizontal: SIZES.padding,
+        paddingVertical: SIZES.padding * 0.5, width: '95%',
+        alignSelf: 'center',
+        marginBottom: 4,
         borderRadius: SIZES.radius,
     },
-    close: {width:30, height:30, borderRadius:15, 
-        backgroundColor:COLORS.tile, 
-        justifyContent:'center', 
-        position:'absolute',
-        alignItems:'center',
+    close: {
+        width: 30, height: 30, borderRadius: 15,
+        backgroundColor: COLORS.tile,
+        justifyContent: 'center',
+        position: 'absolute',
+        alignItems: 'center',
         right: -5,
         top: -10,
     },
     replyTo: {
         ...FONTS.body5,
-        position:'absolute',
-        left:0,
+        position: 'absolute',
+        left: 0,
         top: -25,
     }
 
