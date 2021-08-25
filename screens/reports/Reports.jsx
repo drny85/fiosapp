@@ -11,6 +11,8 @@ import { Modal } from 'react-native'
 import { TouchableHighlight } from 'react-native'
 import { mobilePlusHome } from '../../utils/mobilePlusHome'
 
+const ACTIVATION_FEE = 35;
+
 const Reports = () => {
     const [firstResponder, setFirstResponder] = useState(false)
     const [rewards, setRewards] = useState(false)
@@ -145,7 +147,7 @@ const Reports = () => {
 
     const calculateEstTaxes = () => {
         const total = plans.reduce((pre, acc) => (acc.line * acc.price) + pre, 0)
-        return (total + (autoPay ? lines * 10 : 0)) * 0.15
+        return (total + (lines * ACTIVATION_FEE) + (autoPay ? lines * 10 : 0)) * 0.15
 
     }
     const calculateEstTaxesWithFirstResponder = () => {
@@ -258,17 +260,21 @@ const Reports = () => {
 
                 )
             })}
-            <Divider subHeader='Price Before Discount' subHeaderStyle={{ textAlign: 'center', marginBottom: 10 }} color={COLORS.lightGray} width={1.2} style={{ marginTop: 20 }} />
+            <Divider subHeader='Price Before Discount / First Month' subHeaderStyle={{ textAlign: 'center', marginBottom: 10 }} color={COLORS.lightGray} width={1.2} style={{ marginTop: 20 }} />
             <ScrollView style={{ flex: 1, marginBottom: 20 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 15, paddingRight: 30 }}>
                     <Text style={{ ...FONTS.h3, }}>Sub Total: $</Text>
                     <AnimatedNumbers animationDuration={600} animateToNumber={calculateTotalPriceBeforeTaxes() + (autoPay ? lines * 10 : 0)} fontStyle={{ ...FONTS.h3 }} />
                 </View>
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 15, paddingRight: 30 }}>
+                    <Text style={{ ...FONTS.body3, }}>Activation Fee: $</Text>
+                    <AnimatedNumbers animationDuration={600} animateToNumber={lines * ACTIVATION_FEE} fontStyle={{ ...FONTS.body3 }} />
+                </View>
 
 
                 <View style={{ justifyContent: 'flex-end', paddingRight: 30, width: '100%' }}>
                     <Text style={{ ...FONTS.body4, textAlign: 'right' }}>Estimated Taxes: ${calculateEstTaxes()} </Text>
-                    <Text style={{ ...FONTS.h3, textAlign: 'right' }}>Total Before Discount: $ {calculateTotalPriceBeforeTaxes() + calculateEstTaxes() + (autoPay ? lines * 10 : 0)} </Text>
+                    <Text style={{ ...FONTS.h3, textAlign: 'right' }}>Total Before Discount: $ {calculateTotalPriceBeforeTaxes() + calculateEstTaxes() + (lines * ACTIVATION_FEE) + (autoPay ? lines * 10 : 0)} </Text>
                 </View>
                 <Divider subHeader='Price After Additional Discount' subHeaderStyle={{ textAlign: 'center', marginBottom: 10 }} color={COLORS.lightGray} width={1.2} style={{ marginTop: 20 }} />
                 {/* PRICE AFTER DISCOUNT */}

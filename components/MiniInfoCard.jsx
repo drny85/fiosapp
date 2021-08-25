@@ -4,6 +4,7 @@ import { COLORS, FONTS, SIZES } from '../constants/contantts'
 import AnimatedNumbers from 'react-native-animated-numbers';
 import ProgressCircle from 'react-native-progress-circle'
 
+
 const MiniInfoCard = ({ title, subtitle, onPress, style, percentage, color }) => {
 
     return (
@@ -26,6 +27,7 @@ const MiniInfoCard = ({ title, subtitle, onPress, style, percentage, color }) =>
                     </View>
 
                 </ProgressCircle>
+
             )}
             {!percentage && (
                 <AnimatedNumbers animationDuration={600} animateToNumber={subtitle} fontStyle={{ ...FONTS.h3 }} />

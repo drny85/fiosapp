@@ -97,7 +97,7 @@ const Home = ({ navigation }) => {
                 }} title="Today" subtitle={movingToday.units} />
                 <MiniInfoCard onPress={() => {
                     if (movingTomorrow.data.length === 0) return
-                    setData(movingToday.data)
+                    setData(movingTomorrow.data)
                     setvisible(true)
                     setTitle("Moving Tomorrow")
                 }} title="Tomorrow" subtitle={movingTomorrow.units} />
