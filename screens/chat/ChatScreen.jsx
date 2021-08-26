@@ -29,7 +29,7 @@ const ChatScreen = () => {
                 isReplied: isReplying ? isReplying : false,
                 reply: isReplying ? msg : null
             }
-            console.log(data)
+
             db.collection('messages').add({ ...data })
             setMessage('')
             setIsReplying(false)
@@ -119,7 +119,7 @@ const ChatScreen = () => {
 
                 <View style={styles.input}>
 
-                    <TextInput ref={inputRef} autoCorrect={false} multiline value={message} onChangeText={text => setMessage(text)} style={{ alignItems: 'center', flex: 1, paddingLeft: 10, ...FONTS.body3, justifyContent: 'center' }} placeholder='Type your message' placeholderTextColor={COLORS.lightGray} />
+                    <TextInput ref={inputRef} autoCorrect={false} multiline value={message} onChangeText={text => setMessage(text)} style={{ flex: 1, paddingLeft: 10, ...FONTS.body3, height: '90%', }} placeholder='Type your message' placeholderTextColor={COLORS.black} />
                     <TouchableOpacity disabled={message.length < 2} onPress={sendMessage} style={{ paddingHorizontal: 5 }}>
                         <MaterialIcons name="send" size={34} color={COLORS.blue} />
                     </TouchableOpacity>
@@ -146,8 +146,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'space-between',
-        backgroundColor: COLORS.background
-
+        backgroundColor: COLORS.light
     },
 
     input: {
@@ -155,13 +154,15 @@ const styles = StyleSheet.create({
 
         borderRadius: SIZES.radius * 3,
         borderWidth: 0.5,
-        borderColor: COLORS.lightGray,
+        borderColor: COLORS.background,
         paddingHorizontal: 20,
         marginVertical: SIZES.padding * 0.5,
         marginHorizontal: 10,
+        backgroundColor: COLORS.background,
         flexDirection: 'row',
         width: SIZES.width * 0.98,
         minHeight: 50,
+
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'center',

@@ -22,7 +22,7 @@ export const COLORS = {
 	yellow: '#EEE253',
 	white: '#f7f7f7',
 	red: '#e62f17',
-	text: '#555B5D',
+	text: '#333333',
 	progress: '#c2c955',
 };
 

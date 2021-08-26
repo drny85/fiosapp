@@ -8,6 +8,7 @@ import { AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
 
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import { Switch } from 'react-native-elements'
+import { db } from '../../database'
 
 const defaltFilter = {
     new: false,
@@ -57,6 +58,19 @@ const Referrals = ({ navigation }) => {
         setShowFilter(false)
     }
 
+    const handleDelete = async (itemId) => {
+        try {
+            await db.collection('referrals').doc(user.id).collection('referrals').doc(itemId).delete()
+            setReferralCopy(referralCopy.filter(r => r.id !== itemId))
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+
+    const confirmDelete = (id) => {
+        Alert.alert('Delete Referral', 'Are you sure you want to delete it?', [{ text: 'NO', style: 'cancel', }, { text: 'YES', style: 'destructive', onPress: () => handleDelete(id) }])
+    }
+
     const handleSearch = e => {
         const newSearch = referralCopy.filter(r => {
             const regex = new RegExp(`${searchResult}`, "gi");
@@ -97,7 +111,7 @@ const Referrals = ({ navigation }) => {
     const items = ({ item }) => {
 
         return (
-            <ReferralCard referral={item} onPress={() => navigation.navigate('ReferralDetails', { id: item.id })} />
+            <ReferralCard onDelete={() => confirmDelete(item.id)} referral={item} onPress={() => navigation.navigate('ReferralDetails', { id: item.id })} />
         )
     }
 

@@ -27,14 +27,14 @@ const Message = ({ userId, onReply, onDelete, onClose, msgBody }) => {
         }))
 
 
-        return (<Animated.View style={[styles.left, { transform: [{ scale }], opacity }]}>
+        return (<Animated.View style={[styles.left, { transform: [{ scale }], opacity, alignSelf: 'center', paddingVertical: SIZES.padding }]}>
             <TouchableOpacity onPress={onReply} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
                 <Entypo name="reply" size={24} color={COLORS.blue} />
-                <Animated.Text>reply</Animated.Text>
+                <Animated.Text style={{ ...FONTS.body3 }}>reply</Animated.Text>
             </TouchableOpacity>
             {userId === sender.id && (<TouchableOpacity onPress={userId === sender.id && onDelete} style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Entypo name="trash" size={24} color={COLORS.red} />
-                <Animated.Text style={{ color: COLORS.red }}>delete</Animated.Text>
+                <Animated.Text style={{ color: COLORS.red, ...FONTS.body3 }}>delete</Animated.Text>
             </TouchableOpacity>)}
 
         </Animated.View>)
@@ -46,7 +46,7 @@ const Message = ({ userId, onReply, onDelete, onClose, msgBody }) => {
             <View style={[styles.message, { alignSelf: sender.id === userId ? 'flex-end' : 'flex-start', backgroundColor: sender.id === userId ? COLORS.green : COLORS.tile }]}>
                 {isReplied && (<Text style={{ ...FONTS.h5, color: COLORS.black, opacity: 0.6 }}>{reply.sender.name}</Text>)}
                 <Text style={styles.sender}>{sender.name}</Text>
-                <Text style={{ ...FONTS.body3 }}>{isReplied ? reply.body : body}</Text>
+                <Text style={{ ...FONTS.body3, color: COLORS.text }}>{isReplied ? reply.body : body}</Text>
                 <Text style={styles.timeStamp}>{moment(timestamp?.toDate()).fromNow()}</Text>
                 {isReplied && (
                     <View style={{ backgroundColor: COLORS.background, padding: 10, borderRadius: SIZES.radius, marginVertical: 8, }}>
@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
         marginVertical: SIZES.padding,
         marginHorizontal: SIZES.padding,
         borderRadius: SIZES.radius * 2,
+
 
 
 
