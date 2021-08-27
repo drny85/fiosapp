@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, View, ScrollView, TouchableWithoutFeedback, Alert,TouchableHighlight, Modal } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, TouchableWithoutFeedback, Alert, TouchableHighlight, Modal } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { COLORS, FONTS, SIZES } from '../../constants/contantts'
 import { AntDesign } from '@expo/vector-icons'
@@ -157,7 +157,7 @@ const Reports = () => {
     const handleResetAll = () => {
         return Alert.alert('Reset', 'Do you want to start from scratch?', [{ text: 'No', style: 'cancel' }, { text: 'Yes', style: 'destructive', onPress: resetAll }])
     }
-   
+
     return (
 
         <View style={styles.view}>
@@ -174,7 +174,7 @@ const Reports = () => {
                 shadowColor: COLORS.lightGray,
                 borderRadius: SIZES.radius * 3,
                 shadowOffset: { width: 3, height: 5 },
-                backgroundColor: COLORS.gray,
+                backgroundColor: COLORS.card,
                 width: SIZES.width,
                 marginVertical: 5
             }}>
@@ -256,9 +256,9 @@ const Reports = () => {
 
                 )
             })}
-           
+
             <ScrollView style={{ flex: 1, marginBottom: 20 }}>
-            <Divider subHeader='Price Before Discount / First Month' subHeaderStyle={{ textAlign: 'center' }} color={COLORS.lightGray} width={1.2} style={{ marginTop: 20 }} />
+                <Divider subHeader='Price Before Discount / First Month' subHeaderStyle={{ textAlign: 'center' }} color={COLORS.lightGray} width={1.2} style={{ marginTop: 20 }} />
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 15, paddingRight: 30 }}>
                     <Text style={{ ...FONTS.h3, }}>Sub Total: $</Text>
                     <AnimatedNumbers animationDuration={600} animateToNumber={calculateTotalPriceBeforeTaxes() + (autoPay ? lines * 10 : 0)} fontStyle={{ ...FONTS.h3 }} />
@@ -312,7 +312,7 @@ const Reports = () => {
 
                 <Divider subHeader='Mobile + Home Rewards' subHeaderStyle={{ textAlign: 'center', marginBottom: 10 }} color={COLORS.lightGray} width={1.2} style={{ marginTop: 20 }} />
                 <View>
-                {rewards && (
+                    {rewards && (
                         <TouchableOpacity onPress={() => setShow(true)} style={{ justifyContent: 'center', alignItems: 'center', width: 'auto', marginBottom: 20, paddingVertical: SIZES.padding * 0.5, paddingHorizontal: 6, shadowColor: COLORS.card, shadowOffset: { width: 5, height: 6 }, elevation: 6, borderRadius: SIZES.radius * 3, backgroundColor: COLORS.card, shadowOpacity: 0.6, shadowRadius: 8 }}>
                             <Text style={{ ...FONTS.h4, color: COLORS.blue }}>Apply M + H Discounts</Text>
                         </TouchableOpacity>
@@ -322,7 +322,7 @@ const Reports = () => {
                         <Switch disabled={lines === 0} style={{ marginLeft: 10 }} value={rewards} trackColor={COLORS.light} ios_backgroundColor={COLORS.light} thumbColor={COLORS.background} color={COLORS.light} onValueChange={v => setRewards(prev => !prev)} />
                     </View>
 
-                   
+
 
 
                 </View>

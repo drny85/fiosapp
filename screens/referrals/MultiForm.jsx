@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useRef, useState, useContext, useEffect, createRef } from 'react';
+import React, { useRef, useState, useContext, useEffect } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
     StyleSheet,
@@ -35,11 +35,9 @@ import { isEmailValid } from '../../utils/isEmailValide';
 import { formatPhone } from '../../utils/formatPhone';
 import { statuses } from '../../statuses';
 import { services } from '../../services';
-import AddressSearch from '../../components/AddressSearch';
 import AddPersonModal from '../modals/AddPersonModal';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { GOOGLE_MAPS_KEY, EMAIL_URL } from '@env'
-import { sendEmail } from '../../utils/sendEmail';
 import { Modal } from 'react-native';
 
 
@@ -59,7 +57,6 @@ const data = [
 
 const Paginator = ({ data, scrollX }) => {
     const { width } = useWindowDimensions();
-    console.log(width)
     return (
         <View style={{ flexDirection: 'row', height: 20 }}>
             {data.map((_, i) => {
@@ -103,7 +100,7 @@ const Step = ({ children }) => {
     );
 };
 
-const Page = ({ index, inputRef, moveIn, status, setStatus, internet, setInternet, mon, setMon, wireless, setWireless, home, setHome, tv, setTv, setMoveIn, referralData, setReferralData, orderDate, setOrderDate, dueDate, setDueDate }) => {
+const Page = ({ index, inputRef, monRef, edit, moveIn, status, setStatus, internet, setInternet, mon, setMon, wireless, setWireless, home, setHome, tv, setTv, setMoveIn, referralData, setReferralData, orderDate, setOrderDate, dueDate, setDueDate }) => {
 
     const { width, height } = useWindowDimensions();
     const [loading, setLoading] = useState(false)
@@ -122,7 +119,6 @@ const Page = ({ index, inputRef, moveIn, status, setStatus, internet, setInterne
     const [showTvPicker, setShowTvPicker] = useState(false)
     const [showWirelessPicker, setShowWirelessPicker] = useState(false)
     const [showHomePicker, setShowHomePicker] = useState(false)
-
     const onChange = (_, selectedDate) => {
 
         const currentDate = selectedDate;
@@ -159,7 +155,7 @@ const Page = ({ index, inputRef, moveIn, status, setStatus, internet, setInterne
         setReferralData({ ...referralData, address: formatted_address })
 
     }
-
+    console.log(monRef.current)
 
     useEffect(() => {
         managers.length === 0 && getManagers(user?.userId)
@@ -290,7 +286,7 @@ const Page = ({ index, inputRef, moveIn, status, setStatus, internet, setInterne
                         {/* IF REFERRAL CHANGED TO CLOSED */}
                         {referralData.status.name === 'Closed' && (
                             <View>
-                                <InputTextField placeholder='Master Order Number - MON' maxLength={13} keyboardType={mon.length > 1 ? 'numeric' : 'default'} value={mon} style={{ ...FONTS.h3, letterSpacing: 1 }} onChangeText={text => setMon(text.toUpperCase())} />
+                                <InputTextField ref={monRef} placeholder='Master Order Number - MON' maxLength={13} keyboardType={mon.length > 1 ? 'numeric' : 'default'} value={mon} style={{ ...FONTS.h3, letterSpacing: 1 }} onChangeText={text => setMon(text.toUpperCase())} />
                                 <View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'space-evenly', marginBottom: 10 }}>
                                     <View style={{ flex: 1 }}>
                                         <Text style={{ ...FONTS.body3, marginHorizontal: SIZES.padding * 0.5 }}>Order Date:</Text>
@@ -433,10 +429,15 @@ const Page = ({ index, inputRef, moveIn, status, setStatus, internet, setInterne
                     setReferralData({ ...referralData, manager: am })
                 }} />
 
-                <PickerModal data={statuses} showPicker={pickStatus} title='Status' onPress={(newStatus) => {
+                <PickerModal data={edit ? statuses : statuses.filter(s => s.id !== 'closed')} showPicker={pickStatus} title='Status' onPress={(newStatus) => {
                     setPickStatus(false)
                     setStatus(newStatus)
                     setReferralData({ ...referralData, status: newStatus })
+
+                    if (newStatus.name === 'Closed') {
+                        console.log(monRef?.current)
+                        monRef.current?.focus()
+                    }
                 }} />
 
                 <PickerModal data={services[0].internet} showPicker={showInternetPicker} title='Internet' onPress={(int_serv) => {
@@ -473,6 +474,7 @@ export default function MultiForm({ navigation, route }) {
     const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 75 }).current;
     const slideRef = useRef();
     const inputRef = useRef();
+    const monRef = useRef();
     const [canContinue, setCanContinue] = useState(false)
     const { addReferral, updateReferral } = useContext(referralsContext)
     const [moveIn, setMoveIn] = useState(new Date())
@@ -729,7 +731,7 @@ export default function MultiForm({ navigation, route }) {
                     )}
                     data={data}
                     keyExtractor={(item) => item.id.toString()}
-                    renderItem={({ _, index }) => <Page index={index} inputRef={inputRef} mon={mon} status={status} setStatus={setStatus} setMon={setMon} tv={tv} wireless={wireless} setWireless={setWireless} setTv={setTv} internet={internet} setInternet={setInternet} home={home} setHome={setHome} dueDate={dueDate} setDueDate={setDueDate} orderDate={orderDate} setOrderDate={setOrderDate} canContinue={canContinue} moveIn={moveIn} setMoveIn={setMoveIn} setCanContinue={setCanContinue} referralData={referralData} setReferralData={setReferralData} />}
+                    renderItem={({ _, index }) => <Page index={index} monRef={monRef} inputRef={inputRef} mon={mon} status={status} edit={edit} setStatus={setStatus} setMon={setMon} tv={tv} wireless={wireless} setWireless={setWireless} setTv={setTv} internet={internet} setInternet={setInternet} home={home} setHome={setHome} dueDate={dueDate} setDueDate={setDueDate} orderDate={orderDate} setOrderDate={setOrderDate} canContinue={canContinue} moveIn={moveIn} setMoveIn={setMoveIn} setCanContinue={setCanContinue} referralData={referralData} setReferralData={setReferralData} />}
                 />
             </View>
             <View

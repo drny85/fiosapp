@@ -29,8 +29,9 @@ const FilterSwitcher = ({ title, value, onValueChange }) => {
 
 
 const Referrals = ({ navigation }) => {
-    const { referrals } = useContext(referralsContext)
+    const { referrals, getReferrals } = useContext(referralsContext)
     const { user } = useContext(authContext)
+    const [isRefreshing, setIsRefreshing] = useState(false)
 
     const [searchResult, setSearchResult] = useState('')
     const [title, setTitle] = useState('New')
@@ -177,7 +178,7 @@ const Referrals = ({ navigation }) => {
             {
                 referrals.length > 0 ? (
 
-                    <FlatList contentContainerStyle={{ width: SIZES.width }} style={{ marginBottom: 50 }} data={(searchResult.length > 1 || filtered) ? referralCopy : referrals.filter(r => r.status.name === 'New')} keyExtractor={item => item.id} renderItem={items} />
+                    <FlatList refreshing={isRefreshing} onRefresh={() => getReferrals(user.id)} contentContainerStyle={{ width: SIZES.width }} style={{ marginBottom: 50 }} data={(searchResult.length > 1 || filtered) ? referralCopy : referrals.filter(r => r.status.name === 'New')} keyExtractor={item => item.id} renderItem={items} />
 
                 ) : (
                         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

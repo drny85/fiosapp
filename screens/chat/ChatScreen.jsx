@@ -15,6 +15,7 @@ const ChatScreen = () => {
     const valueY = useState(new Animated.Value(0))[0]
     const viewRef = useRef()
     const inputRef = useRef()
+    const msgRef = useRef()
     const [isReplying, setIsReplying] = useState(false)
     const [messages, setMessages] = useState([])
     const [message, setMessage] = useState('')
@@ -82,7 +83,6 @@ const ChatScreen = () => {
         setIsReplying(false)
         Keyboard.dismiss()
     }
-
 
     useEffect(() => {
         const keyboardListener = Keyboard.addListener('keyboardWillShow', keyboardIsUp)

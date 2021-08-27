@@ -31,7 +31,7 @@ const RefereesState = ({ children }) => {
 
     const getReferees = async (userId) => {
         try {
-            console.log('Getting Referees')
+
             if (!userId) return;
             setLoadingReferees()
             await db.collection('referees').doc(userId).collection('referees').orderBy('name', 'asc').onSnapshot(doc => {

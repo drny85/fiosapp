@@ -1,17 +1,18 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import { StyleSheet, View, TextInput } from 'react-native'
+
 import { COLORS, FONTS, SIZES } from '../constants/contantts'
 
-const InputTextField = ({ style, placeholder, placeholderTextColor, value, onChangeText, autoFocus, autoCapitalize, ...others }) => {
+const InputTextField = forwardRef(({ style, placeholder, placeholderTextColor, value, onChangeText, autoFocus, autoCapitalize, ...others }, ref) => {
 
     return (
 
         <View>
-            <TextInput textAlignVertical='center' autoFocus={autoFocus} autoCapitalize={autoCapitalize} {...others} placeholder={placeholder} value={value} onChangeText={onChangeText} placeholderTextColor={placeholderTextColor || COLORS.placeHolderTextColor} style={[styles.input, style]} />
+            <TextInput ref={ref} textAlignVertical='center' autoFocus={autoFocus} autoCapitalize={autoCapitalize} {...others} placeholder={placeholder} value={value} onChangeText={onChangeText} placeholderTextColor={placeholderTextColor || COLORS.placeHolderTextColor} style={[styles.input, style]} />
         </View>
 
     )
-}
+})
 
 export default InputTextField
 

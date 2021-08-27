@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Animated } from 'react-native'
 import { COLORS, FONTS, SIZES } from '../constants/contantts'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 import { Entypo } from '@expo/vector-icons';
 import moment from 'moment'
+
 
 
 
@@ -57,6 +58,8 @@ const Message = ({ userId, onReply, onDelete, onClose, msgBody }) => {
 
         </Swipeable>)
 }
+
+
 
 
 export default Message
