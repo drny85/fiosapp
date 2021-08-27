@@ -24,6 +24,15 @@ const AuthState = ({ children }) => {
         }
     }
 
+    const saveExpoPushToken = async (userId, token) => {
+		console.log("saving token");
+		try {
+			await db.collection("users").doc(userId).set({ pushToken: token },{merge:true});
+		} catch (error) {
+			console.log("ERROR SETIING TOKEN", error);
+		}
+	};
+
     const logout = async () => {
         try {
 
@@ -109,6 +118,7 @@ const AuthState = ({ children }) => {
             sendVerificationEmail,
             createUser,
             setUser,
+            saveExpoPushToken,
         }}>
             {children}
         </AuthContex.Provider>
