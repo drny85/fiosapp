@@ -35,7 +35,6 @@ const Referrals = ({ navigation }) => {
 
     const [searchResult, setSearchResult] = useState('')
     const [title, setTitle] = useState('New')
-    const [filterParam, setFilterParam] = useState('new')
     const [showFilter, setShowFilter] = useState(false)
     const [filtered, setFiltered] = useState(false)
     const [referralCopy, setReferralCopy] = useState([])

@@ -14,6 +14,7 @@ import Loader from '../../components/Loader'
 import LottieView from 'lottie-react-native';
 
 
+
 const Signin = ({ route }) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -22,7 +23,6 @@ const Signin = ({ route }) => {
     const [showPassword, setShowPassword] = useState(false)
 
     const preview = route.params?.previewEmail
-
     const navigation = useNavigation()
 
     const singinHandler = async () => {

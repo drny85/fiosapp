@@ -1,6 +1,5 @@
 
 import React, { useEffect, useContext } from 'react';
-import * as Notifications from 'expo-notifications';
 import { NavigationContainer } from "@react-navigation/native";
 import { AuthNavigator, TabNavigation } from './navigation';
 import { auth } from './database';
@@ -13,20 +12,9 @@ import Loader from './components/Loader';
 import ManagersState from './context/manager/managersState';
 import RefereesState from './context/referee/refereesState';
 import CoachsState from './context/coach/coachState';
-import { useNotification } from './hooks/useNotification';
 import NotesState from './context/notes/notesState';
 import refereesContext from './context/referee/refereesContext';
 import coachContext from './context/coach/coachContext';
-
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-
-  }),
-});
 
 
 
@@ -45,12 +33,8 @@ const App = () => {
   const { getReferees } = useContext(refereesContext)
   const { getCoachs } = useContext(coachContext)
 
-  useNotification()
-
   useEffect(() => {
-    const subscription = Notifications.addNotificationReceivedListener(notification => {
-
-    });
+    
     const listener = auth.onAuthStateChanged(u => {
 
       if (u) {
@@ -71,7 +55,7 @@ const App = () => {
 
     return () => {
       listener && listener()
-      subscription && subscription.remove();
+     
     }
   }, [])
 

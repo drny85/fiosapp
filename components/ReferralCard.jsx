@@ -1,14 +1,14 @@
 import React from 'react'
 import moment from 'moment'
 
-import { StyleSheet, Text, View, TouchableOpacity, Animated } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Animated, } from 'react-native'
 import { COLORS, FONTS, SIZES } from '../constants/contantts'
 import { Swipeable } from 'react-native-gesture-handler'
 import { Entypo } from '@expo/vector-icons';
 
 const ReferralCard = ({ referral, onPress, style, onDelete }) => {
 
-
+    
     const line = referral.address.split(',')
     const line1 = line[0] + ` ${referral.apt ? ', ' + referral.apt : ''}`;
     const line2 = line[1].trim() + ', ' + line[2]

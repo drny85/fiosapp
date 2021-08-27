@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View, } from 'react-native'
-import { Button } from 'react-native-elements/dist/buttons/Button'
+
 import { COLORS, FONTS, SIZES } from '../../constants/contantts'
 import ScreenView from '../ScreenView'
 import moment from 'moment'
@@ -10,12 +10,12 @@ import MiniInfoCard from '../../components/MiniInfoCard'
 import referralsContext from '../../context/referrals/referralContext'
 import ReferralCard from '../../components/ReferralCard'
 import { scheduleMotification } from '../../hooks/scheduleNotification'
-import { number } from 'yup'
-
-
+import { useCallback } from 'react'
+import useNotifications from '../../hooks/useNotifications'
 
 
 const Home = ({ navigation }) => {
+    useNotifications()
     const [quote, setQuote] = useState('')
     const [title, setTitle] = useState('')
     const [visible, setvisible] = useState(false)
@@ -33,8 +33,9 @@ const Home = ({ navigation }) => {
         calculateMovingReferrals,
         gettingInstalledToday,
         gettingInstalledTomorrow } = useContext(referralsContext)
-    const getTodayQuote = async () => {
+    const getTodayQuote =  async () => {
         try {
+           
             const res = await fetch('https://zenquotes.io/api/today')
             const data = await res.json()
             const quote = data[0].h.split(';')[1].split('&')[0];
@@ -53,8 +54,13 @@ const Home = ({ navigation }) => {
         return (total / x) * 100 ? (total / x) * 100 : null
     }
 
+    const sendNot = useCallback(() => {
+        scheduleMotification('HEllo','Cuando se van', {data:'here', screen:'ReferralStack', params: null}, moment().add(4, 'seconds') )
+    },[])
+
 
     useEffect(() => {
+        //sendNot()
         getTodayQuote()
         calculateReferralUnits(referrals)
         calculateMovingReferrals(referrals)

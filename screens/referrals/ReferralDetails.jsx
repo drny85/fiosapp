@@ -1,29 +1,31 @@
 import React, { useContext, useState, useLayoutEffect, useEffect } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, TouchableWithoutFeedback, Modal, Keyboard } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, TouchableWithoutFeedback, Modal, Keyboard,Animated } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Loader from '../../components/Loader';
 import referralsContext from '../../context/referrals/referralContext';
 import { COLORS, FONTS, SIZES } from '../../constants/contantts';
 import moment from 'moment/moment'
 import { Ionicons } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker'
 
 import PhoneCall from '../../components/PhoneCall';
-import { Button } from 'react-native-elements/dist/buttons/Button';
 import InputTextField from '../../components/InputTextField';
 import authContext from '../../context/auth/authContext';
+import { scheduleMotification } from '../../hooks/scheduleNotification';
+
 
 const ReferralDetails = ({ route, navigation }) => {
-
+    
     const [showCommentModal, setShowCommentModal] = useState(false)
     const { updateReferral } = useContext(referralsContext)
     const { user } = useContext(authContext)
-    const [keyH, setKeyH] = useState(0)
-    const [success, setSuccess] = useState(true)
     const [updatedComment, setUpdateComment] = useState('')
     const { referrals } = useContext(referralsContext)
+    const [show,setShow] = useState(false)
+    const [scheduleDate,setScheduleDate] = useState(new Date())
 
     const referral = referrals.find(r => r.id === route.params.id)
-
+    console.log(scheduleDate)
     const inititalValues = {
         name: referral.name,
         address: referral.address,
@@ -56,6 +58,10 @@ const ReferralDetails = ({ route, navigation }) => {
         setKeyH(0)
     }
 
+    const scheduleReminder = () => {
+        scheduleMotification('Reminder', 'call this person', {...referral}, scheduleDate)
+    }
+
 
     const handleUpdate = async () => {
         try {
@@ -75,6 +81,19 @@ const ReferralDetails = ({ route, navigation }) => {
 
     }
 
+    const onDateChange = (event, selectedDate) => {
+        const currentDate = selectedDate;
+        //setShow(Platform.OS === 'ios');
+
+        setShow(Platform.OS === 'ios')
+        if (currentDate) {
+            setScheduleDate(currentDate);
+        }
+
+    };
+
+    
+
 
 
     useLayoutEffect(() => {
@@ -87,6 +106,7 @@ const ReferralDetails = ({ route, navigation }) => {
     }, [navigation])
 
     useEffect(() => {
+        
         setUpdateComment(inititalValues.comment)
         Keyboard.addListener('keyboardDidShow', onKeyBoardShow)
         Keyboard.addListener('keyboardDidHide', onKeyHide)
@@ -103,6 +123,28 @@ const ReferralDetails = ({ route, navigation }) => {
 
     return (
         <ScrollView style={[styles.view, { backgroundColor: referral.status.id === 'closed' ? COLORS.green : referral.status.id === 'not_sold' ? COLORS.red : COLORS.white }]}>
+            <Animated.View style={[{position:'absolute', height:100, width:'90%',top:10, alignSelf:'center', zIndex:100, backgroundColor:COLORS.lightGray}]}>
+                <Text>Hola Amigo</Text>
+                <View>
+                <DateTimePicker
+                                            timeZoneOffsetInSeconds={0}
+                                            style={{ width: '90%', marginRight: SIZES.padding * 0.5, height: '100%' }}
+                                            testID="dateTimePicker"
+                                            value={scheduleDate}
+                                            minimumDate={new Date(moment().subtract(1, 'year').format('YYYY-MM-DD'))}
+                                            mode='datetime'
+                                            is24Hour={true}
+                                            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                                            onChange={onDateChange}
+                                        />
+
+                        <TouchableOpacity onPress={scheduleReminder}>
+                            <Text>Set Reminder</Text>
+                        </TouchableOpacity>
+                </View>
+                
+                
+            </Animated.View>
             <View style={styles.customer}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', marginBottom: 15 }}>
                     <Text style={[styles.name, { ...FONTS.h2 }]}>{referral.name} </Text>

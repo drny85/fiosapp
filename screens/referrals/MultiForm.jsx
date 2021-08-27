@@ -150,13 +150,12 @@ const Page = ({ index, inputRef, monRef, edit, moveIn, status, setStatus, intern
 
     };
 
-    const getAddress = (_, { formatted_address, geometry }) => {
+    const getAddress = (_, { formatted_address }) => {
 
         setReferralData({ ...referralData, address: formatted_address })
 
     }
-    console.log(monRef.current)
-
+    
     useEffect(() => {
         managers.length === 0 && getManagers(user?.userId)
         referees.length === 0 && getReferees(user?.userId)
