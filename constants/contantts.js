@@ -29,6 +29,10 @@ export const COLORS = {
 export const EXTRAS = {
 	bonusOffer: 10,
 };
+export const TIER = {
+	tier2: 9,
+	tier3: 17,
+};
 
 export const SIZES = {
 	// global sizes
@@ -55,18 +59,6 @@ export const SIZES = {
 	width,
 	height,
 };
-
-export const WEEKDAYS = {
-	1: 'mon',
-	2: 'tue',
-	3: 'wed',
-	4: 'thu',
-	5: 'fri',
-	6: 'sat',
-	7: 'sun',
-};
-
-export const STATES = ['New York', 'New Jersey', 'Connecticut', 'Philadelphia'];
 
 export const FONTS = {
 	italic: { fontFamily: 'montserrat-bold-italic', fontSize: SIZES.body2 },
@@ -109,6 +101,6 @@ export const FONTS = {
 	},
 };
 
-const appTheme = { COLORS, SIZES, FONTS, WEEKDAYS, STATES, EXTRAS };
+const appTheme = { COLORS, SIZES, FONTS, EXTRAS, TIER };
 
 export default appTheme;

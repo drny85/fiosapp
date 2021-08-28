@@ -1,16 +1,14 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View, } from 'react-native'
+import React, { useContext, useEffect, useState, useCallback } from 'react'
+import { FlatList, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View, } from 'react-native'
 
-import { COLORS, FONTS, SIZES } from '../../constants/contantts'
-import ScreenView from '../ScreenView'
+import { COLORS, FONTS, SIZES, TIER } from '../../constants/contantts'
 import moment from 'moment'
 import { Ionicons } from '@expo/vector-icons'
-
+import * as Animatable from 'react-native-animatable'
 import MiniInfoCard from '../../components/MiniInfoCard'
 import referralsContext from '../../context/referrals/referralContext'
 import ReferralCard from '../../components/ReferralCard'
 import { scheduleMotification } from '../../hooks/scheduleNotification'
-import { useCallback } from 'react'
 import useNotifications from '../../hooks/useNotifications'
 
 
@@ -33,9 +31,9 @@ const Home = ({ navigation }) => {
         calculateMovingReferrals,
         gettingInstalledToday,
         gettingInstalledTomorrow } = useContext(referralsContext)
-    const getTodayQuote =  async () => {
+    const getTodayQuote = async () => {
         try {
-           
+
             const res = await fetch('https://zenquotes.io/api/today')
             const data = await res.json()
             const quote = data[0].h.split(';')[1].split('&')[0];
@@ -54,10 +52,6 @@ const Home = ({ navigation }) => {
         return (total / x) * 100 ? (total / x) * 100 : null
     }
 
-    const sendNot = useCallback(() => {
-        scheduleMotification('HEllo','Cuando se van', {data:'here', screen:'ReferralStack', params: null}, moment().add(4, 'seconds') )
-    },[])
-
 
     useEffect(() => {
         //sendNot()
@@ -68,7 +62,7 @@ const Home = ({ navigation }) => {
 
     }, [referrals.length])
     return (
-        <ScreenView style={styles.container}>
+        <ScrollView style={styles.container}>
             <View style={styles.dateView}>
                 <Text style={{ ...FONTS.h4, marginTop: SIZES.padding * 0.5 }}>{moment().format('dddd, MMMM Do YYYY')}</Text>
             </View>
@@ -93,6 +87,16 @@ const Home = ({ navigation }) => {
                     setTitle('MTD UNITS')
                 }} title="MTD Units" subtitle={mtdUnits.units} />
             </View>
+            <Animatable.View animation='fadeInDown' duration={800} delay={1000}>
+                {wtdUnits.units < TIER.tier2 ? (
+                    <Animatable.Text animation='fadeIn' style={{ textAlign: 'center', ...FONTS.body4 }}>You are {(TIER.tier2 - wtdUnits.units) === 1 ? `${TIER.tier2 - wtdUnits.units} unit away from tier 2` : `${TIER.tier2 - wtdUnits.units} units away from tier 2`} </Animatable.Text>
+                ) : wtdUnits.units >= TIER.tier2 && wtdUnits.units < TIER.tier3 ? (
+                    <Text style={{ textAlign: 'center', ...FONTS.body4 }}>Congratulations!, You made it to tier 2. {TIER.tier3 - wtdUnits.units} more for tier 3</Text>
+                ) : (
+                            <Text style={{ textAlign: 'center', ...FONTS.body4 }}>Congratulations!, You made it to tier 3</Text>
+                        )}
+
+            </Animatable.View>
             <Text style={{ ...FONTS.h4, textAlign: 'center', marginTop: SIZES.padding * 0.5 }}>Upcoming Moving</Text>
             <View style={styles.mini}>
                 <MiniInfoCard onPress={() => {
@@ -202,7 +206,7 @@ const Home = ({ navigation }) => {
             </Modal>
 
 
-        </ScreenView>
+        </ScrollView>
     )
 }
 
@@ -211,7 +215,8 @@ export default Home
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS.background
+        backgroundColor: COLORS.white,
+        marginTop: SIZES.statusBarHeight,
 
 
     },

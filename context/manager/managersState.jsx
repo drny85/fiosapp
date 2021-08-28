@@ -34,6 +34,28 @@ const ManagersState = ({ children }) => {
         }
     }
 
+    const updateManager = async (manager) => {
+        try {
+
+            const res = db.collection('maangers').doc(manager.userId).collection('managers').doc(manager.id).update(manager)
+            return true
+        } catch (error) {
+            console.log('Error @updateManager', error)
+            dispatch({ type: MANAGER_ERROR, payload: error.message })
+            return false
+        }
+    }
+    const deleteManager = async (manager) => {
+        try {
+
+            const res = db.collection('maangers').doc(manager.userId).collection('managers').doc(manager.id).delete()
+            return true
+        } catch (error) {
+            console.log('Error @deleteManager', error)
+            dispatch({ type: MANAGER_ERROR, payload: error.message })
+            return false
+        }
+    }
     const getManagers = async (userId) => {
         try {
             console.log('Gettings AMs')
@@ -66,7 +88,9 @@ const ManagersState = ({ children }) => {
             loadingManagers: state.loadingManagers,
             addManager,
             getManagers,
-            resetManagerState
+            resetManagerState,
+            updateManager,
+            deleteManager
         }}>
             {children}
         </ManagersContext.Provider>

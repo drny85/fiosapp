@@ -19,11 +19,32 @@ const RefereesState = ({ children }) => {
         try {
 
             const res = await db.collection('referees').doc(refereeInfo.userId).collection('referees').add(refereeInfo)
-
-
             return res.id;
         } catch (error) {
             console.log('Error @addReferee', error)
+            dispatch({ type: REFEREE_ERROR, payload: error.message })
+            return false
+        }
+    }
+
+    const updateReferee = async (referee) => {
+        try {
+
+            const res = await db.collection('referees').doc(referee.userId).collection('referees').doc(referee.id).update(referee)
+            return true
+        } catch (error) {
+            console.log('Error @updateReferee', error)
+            dispatch({ type: REFEREE_ERROR, payload: error.message })
+            return false
+        }
+    }
+    const deleteReferee = async (referee) => {
+        try {
+
+            const res = db.collection('referees').doc(referee.userId).collection('referees').doc(referee.id).delete()
+            return true
+        } catch (error) {
+            console.log('Error @deleteReferee', error)
             dispatch({ type: REFEREE_ERROR, payload: error.message })
             return false
         }
@@ -65,7 +86,9 @@ const RefereesState = ({ children }) => {
             loadingReferees: state.loadingReferees,
             addReferee,
             getReferees,
-            resetRefereeState
+            resetRefereeState,
+            updateReferee,
+            deleteReferee,
         }}>
             {children}
         </RefereesContext.Provider>

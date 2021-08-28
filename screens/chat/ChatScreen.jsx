@@ -15,7 +15,7 @@ const ChatScreen = () => {
     const valueY = useState(new Animated.Value(0))[0]
     const viewRef = useRef()
     const inputRef = useRef()
-    const msgRef = useRef()
+    const ref = useRef()
     const [isReplying, setIsReplying] = useState(false)
     const [messages, setMessages] = useState([])
     const [message, setMessage] = useState('')
@@ -73,6 +73,8 @@ const ChatScreen = () => {
         }).start()
     }
 
+    let rowRefs = new Map();
+
     const onReply = (m) => {
         setMsg(m)
         inputRef.current?.focus()
@@ -100,14 +102,23 @@ const ChatScreen = () => {
     }, [user])
 
 
+
     if (!user) return <Loader />
 
 
     return (
         <View style={{ flex: 1 }}>
             <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={100}>
-                {messages.length > 0 ? (<FlatList onContentSizeChange={(w, h) => { viewRef.current.scrollToEnd({ animated: true }) }} ref={viewRef} contentContainerStyle={{ marginBottom: 25 }} data={messages} keyExtractor={item => item.id} renderItem={({ item }) =>
-                    <Message key={item.id} onReply={() => onReply(item)} msgBody={item} onClose={() => setIsReplying(false)} onDelete={() => onDeleteMessage(item.id, item.sender.id)} userId={user.id} />} />) : (
+                {messages.length > 0 ? (<FlatList onContentSizeChange={(w, h) => { viewRef.current.scrollToEnd({ animated: true }) }} ref={viewRef} contentContainerStyle={{ marginBottom: 25 }} data={messages} keyExtractor={item => item.id} renderItem={({ item, index }) =>
+                    <Message ref={ref => {
+                        if (ref && !rowRefs.get(item.id)) {
+                            rowRefs.set(item.id, ref)
+                        }
+                    }} onSwipeableWillOpen={() => {
+                        [...rowRefs.entries()].forEach(([key, ref]) => {
+                            if (key !== item.id && ref) ref.close();
+                        });
+                    }} key={item.id} onReply={() => onReply(item)} msgBody={item} onClose={() => setIsReplying(false)} onDelete={() => onDeleteMessage(item.id, item.sender.id)} userId={user.id} />} />) : (
                         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                             <Text style={{ ...FONTS.body3 }}>No Messages</Text>
                         </View>

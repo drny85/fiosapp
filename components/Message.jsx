@@ -10,7 +10,8 @@ import moment from 'moment'
 
 
 
-const Message = ({ userId, onReply, onDelete, onClose, msgBody }) => {
+
+const Message = forwardRef(({ userId, onReply, onDelete, onClose, msgBody, onSwipeableWillOpen }, ref) => {
 
     const { isReplied, reply, body, sender, timestamp } = msgBody
 
@@ -43,7 +44,7 @@ const Message = ({ userId, onReply, onDelete, onClose, msgBody }) => {
 
 
     return (
-        <Swipeable overshootRight={false} onSwipeableClose={onClose} renderRightActions={rightActions}>
+        <Swipeable ref={ref} overshootRight={false} onSwipeableClose={onClose} onSwipeableWillOpen={onSwipeableWillOpen} renderRightActions={rightActions}>
             <View style={[styles.message, { alignSelf: sender.id === userId ? 'flex-end' : 'flex-start', backgroundColor: sender.id === userId ? COLORS.green : COLORS.tile }]}>
                 {isReplied && (<Text style={{ ...FONTS.h5, color: COLORS.black, opacity: 0.6 }}>{reply.sender.name}</Text>)}
                 <Text style={styles.sender}>{sender.name}</Text>
@@ -57,7 +58,7 @@ const Message = ({ userId, onReply, onDelete, onClose, msgBody }) => {
             </View>
 
         </Swipeable>)
-}
+})
 
 
 

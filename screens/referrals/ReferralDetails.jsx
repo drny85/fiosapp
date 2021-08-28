@@ -134,7 +134,18 @@ const ReferralDetails = ({ route, navigation }) => {
 
                 <View style={{ height: '80%', borderRadius: SIZES.radius }}>
                     <View style={{ paddingVertical: SIZES.padding, }}>
-                        <Text style={{ textAlign: 'center' }}>Message</Text>
+                        <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-evenly', alignItems: 'center' }}>
+                            <Text style={{ textAlign: 'center', ...FONTS.h3 }}>Schedule Task</Text>
+                            <TouchableOpacity onPress={() => {
+                                Animated.timing(heighY, {
+                                    toValue: - SIZES.height * 0.5,
+                                    duration: 600,
+                                    useNativeDriver: false
+                                }).start()
+                            }}>
+                                <Ionicons name='close-circle-outline' size={30} color={COLORS.black} />
+                            </TouchableOpacity>
+                        </View>
                         <InputTextField autoCapitalize='words' placeholder='A message for this reminder' onChangeText={text => setReminderMessage(text)} value={reminderMessage} style={{ backgroundColor: COLORS.white, width: '90%', alignSelf: 'center', borderRadius: SIZES.radius * 2, paddingVertical: 10 }} />
                     </View>
                     <View style={{ height: '30%' }}>
