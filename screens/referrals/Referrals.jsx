@@ -47,6 +47,8 @@ const Referrals = ({ navigation }) => {
     })
     const [disposition, setDisposition] = useState('New')
 
+    let rowRefs = new Map()
+
     const handleFilter = () => {
 
         setTitle(disposition)
@@ -68,7 +70,7 @@ const Referrals = ({ navigation }) => {
     }
 
     const confirmDelete = (id) => {
-        Alert.alert('Delete Referral', 'Are you sure you want to delete it?', [{ text: 'NO', style: 'cancel', }, { text: 'YES', style: 'destructive', onPress: () => handleDelete(id) }])
+        Alert.alert('Delete Referral', 'Are you sure you want to delete it?', [{ text: 'NO', style: 'cancel', onPress: () => rowRefs.get(id).close() }, { text: 'YES', style: 'destructive', onPress: () => handleDelete(id) }])
     }
 
     const handleSearch = e => {
@@ -111,7 +113,15 @@ const Referrals = ({ navigation }) => {
     const items = ({ item }) => {
 
         return (
-            <ReferralCard onDelete={() => confirmDelete(item.id)} referral={item} onPress={() => navigation.navigate('ReferralDetails', { id: item.id })} />
+            <ReferralCard ref={ref => {
+                if (ref && !rowRefs.get(item.id)) {
+                    rowRefs.set(item.id, ref)
+                }
+            }} onSwipeableWillOpen={() => {
+                [...rowRefs.entries()].forEach(([key, ref]) => {
+                    if (key !== item.id && ref) ref.close();
+                });
+            }} onDelete={() => confirmDelete(item.id)} referral={item} onPress={() => navigation.navigate('ReferralDetails', { id: item.id })} />
         )
     }
 

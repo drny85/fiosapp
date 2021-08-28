@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Animated } from 'react-native'
 import { Swipeable } from 'react-native-gesture-handler'
 import { Entypo } from '@expo/vector-icons'
 import { COLORS, FONTS, SIZES } from '../constants/contantts'
 
-const PeopleCard = ({ item, onPress, onEditPress, onDeletePress }) => {
+const PeopleCard = forwardRef(({ item, onPress, onEditPress, onDeletePress, onSwipeableWillOpen }, ref) => {
 
     const rightActions = (progress, dragX) => {
         const scale = dragX.interpolate({
@@ -34,7 +34,7 @@ const PeopleCard = ({ item, onPress, onEditPress, onDeletePress }) => {
     }
 
     return (
-        <Swipeable overshootLeft={false} renderRightActions={rightActions}>
+        <Swipeable ref={ref} onSwipeableWillOpen={onSwipeableWillOpen} overshootLeft={false} renderRightActions={rightActions}>
             <TouchableOpacity
                 style={styles.item}
                 key={item.id}
@@ -51,7 +51,7 @@ const PeopleCard = ({ item, onPress, onEditPress, onDeletePress }) => {
             </TouchableOpacity>
         </Swipeable>
     )
-}
+})
 
 export default PeopleCard
 

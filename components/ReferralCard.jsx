@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import moment from 'moment'
 
 import { StyleSheet, Text, View, TouchableOpacity, Animated, } from 'react-native'
@@ -6,9 +6,9 @@ import { COLORS, FONTS, SIZES } from '../constants/contantts'
 import { Swipeable } from 'react-native-gesture-handler'
 import { Entypo } from '@expo/vector-icons';
 
-const ReferralCard = ({ referral, onPress, style, onDelete }) => {
+const ReferralCard = forwardRef(({ referral, onPress, style, onDelete, onSwipeableWillOpen }, ref) => {
 
-    
+
     const line = referral.address.split(',')
     const line1 = line[0] + ` ${referral.apt ? ', ' + referral.apt : ''}`;
     const line2 = line[1].trim() + ', ' + line[2]
@@ -38,7 +38,7 @@ const ReferralCard = ({ referral, onPress, style, onDelete }) => {
 
 
     return (
-        <Swipeable overshootRight={false} renderRightActions={rightActions} >
+        <Swipeable ref={ref} overshootRight={false} onSwipeableWillOpen={onSwipeableWillOpen} renderRightActions={rightActions} >
             <TouchableOpacity onPress={onPress} style={[styles.view, { backgroundColor: referral.status.name === 'Closed' ? COLORS.green : referral.status.id === 'in_progress' ? COLORS.progress : referral.status.id === 'not_sold' ? COLORS.red : COLORS.card }, style]}>
                 <Text style={{ ...FONTS.h3, textAlign: 'center', marginBottom: 4 }}>{referral.name}</Text>
                 <View style={{ alignItems: 'flex-start' }}>
@@ -67,7 +67,7 @@ const ReferralCard = ({ referral, onPress, style, onDelete }) => {
             </TouchableOpacity>
         </Swipeable>
     )
-}
+})
 
 export default ReferralCard
 

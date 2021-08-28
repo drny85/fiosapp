@@ -36,7 +36,7 @@ const Message = forwardRef(({ userId, onReply, onDelete, onClose, msgBody, onSwi
             </TouchableOpacity>
             {userId === sender.id && (<TouchableOpacity onPress={userId === sender.id && onDelete} style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Entypo name="trash" size={24} color={COLORS.red} />
-                <Animated.Text style={{ color: COLORS.red, ...FONTS.body3 }}>delete</Animated.Text>
+                <Animated.Text style={{ color: COLORS.red, ...FONTS.h3 }}>delete</Animated.Text>
             </TouchableOpacity>)}
 
         </Animated.View>)
@@ -48,7 +48,7 @@ const Message = forwardRef(({ userId, onReply, onDelete, onClose, msgBody, onSwi
             <View style={[styles.message, { alignSelf: sender.id === userId ? 'flex-end' : 'flex-start', backgroundColor: sender.id === userId ? COLORS.green : COLORS.tile }]}>
                 {isReplied && (<Text style={{ ...FONTS.h5, color: COLORS.black, opacity: 0.6 }}>{reply.sender.name}</Text>)}
                 <Text style={styles.sender}>{sender.name}</Text>
-                <Text style={{ ...FONTS.body3, color: COLORS.text }}>{isReplied ? reply.body : body}</Text>
+                <Text style={{ ...FONTS.body3, color: sender.id === userId ? COLORS.white : COLORS.text }}>{isReplied ? reply.body : body}</Text>
                 <Text style={styles.timeStamp}>{moment(timestamp?.toDate()).fromNow()}</Text>
                 {isReplied && (
                     <View style={{ backgroundColor: COLORS.background, padding: 10, borderRadius: SIZES.radius, marginVertical: 8, }}>

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
+import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
 
@@ -24,6 +24,7 @@ const formSchema = Yup.object().shape({
 
 const Managers = ({ navigation, route }) => {
     const { subject } = route.params;
+    const ref = useRef()
     const [manager, setManager] = useState(true)
     const [editing, setEditing] = useState(false)
     const [visible, setVisible] = useState(false)
@@ -35,6 +36,8 @@ const Managers = ({ navigation, route }) => {
     const { managers, getManagers, loadingManagers } = useContext(managersContext)
     const { coachs, getCoachs, loadingCoach } = useContext(coachContext)
     const [data, setData] = useState([])
+
+    let rowRefs = new Map();
 
     const title = () => {
         switch (subject) {
@@ -100,7 +103,15 @@ const Managers = ({ navigation, route }) => {
 
             {data.length > 0 ? (
 
-                <FlatList data={data} keyExtractor={item => item.id} renderItem={({ item }) => <PeopleCard item={item} onEditPress={() => {
+                <FlatList data={data} keyExtractor={item => item.id} renderItem={({ item }) => <PeopleCard ref={ref => {
+                    if (ref && !rowRefs.get(item.id)) {
+                        rowRefs.set(item.id, ref)
+                    }
+                }} onSwipeableWillOpen={() => {
+                    [...rowRefs.entries()].forEach(([key, ref]) => {
+                        if (key !== item.id && ref) ref.close();
+                    });
+                }} item={item} onEditPress={() => {
                     setPerson(item)
                     setEditing(true)
                     setVisible(true)
