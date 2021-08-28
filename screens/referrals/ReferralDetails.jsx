@@ -1,5 +1,5 @@
 import React, { useContext, useState, useLayoutEffect, useEffect } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, TouchableWithoutFeedback, Modal, Keyboard,Animated } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, TouchableWithoutFeedback, Modal, Keyboard, Animated } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Loader from '../../components/Loader';
 import referralsContext from '../../context/referrals/referralContext';
@@ -15,17 +15,18 @@ import { scheduleMotification } from '../../hooks/scheduleNotification';
 
 
 const ReferralDetails = ({ route, navigation }) => {
-    
+    const heighY = useState(new Animated.Value(0))[0]
     const [showCommentModal, setShowCommentModal] = useState(false)
     const { updateReferral } = useContext(referralsContext)
     const { user } = useContext(authContext)
     const [updatedComment, setUpdateComment] = useState('')
+    const [reminderMessage, setReminderMessage] = useState('')
     const { referrals } = useContext(referralsContext)
-    const [show,setShow] = useState(false)
-    const [scheduleDate,setScheduleDate] = useState(new Date())
+    const [show, setShow] = useState(false)
+    const [scheduleDate, setScheduleDate] = useState(new Date())
 
     const referral = referrals.find(r => r.id === route.params.id)
-    console.log(scheduleDate)
+
     const inititalValues = {
         name: referral.name,
         address: referral.address,
@@ -49,17 +50,22 @@ const ReferralDetails = ({ route, navigation }) => {
     const line2 = line[1].trim() + ', ' + line[2]
     const line3 = line[2]
 
-    const onKeyBoardShow = e => {
-
-        setKeyH(e.endCoordinates.height)
-    }
-
-    const onKeyHide = () => {
-        setKeyH(0)
-    }
 
     const scheduleReminder = () => {
-        scheduleMotification('Reminder', 'call this person', {...referral}, scheduleDate)
+        if (reminderMessage === '') {
+            alert('Please tyoe a message');
+            return;
+        }
+        if (reminderMessage.length < 2) {
+            alert('Message is too short');
+            return;
+        }
+        scheduleMotification(reminderMessage, referral.name, { notificationType: 'referral', referralData: { name: 'ReferralStack', params: { screen: 'ReferralDetails', params: { id: referral.id } } } }, scheduleDate)
+        Animated.timing(heighY, {
+            toValue: - SIZES.height * 0.5,
+            duration: 600,
+            useNativeDriver: false
+        }).start()
     }
 
 
@@ -92,7 +98,7 @@ const ReferralDetails = ({ route, navigation }) => {
 
     };
 
-    
+
 
 
 
@@ -106,14 +112,15 @@ const ReferralDetails = ({ route, navigation }) => {
     }, [navigation])
 
     useEffect(() => {
-        
+        Animated.timing(heighY, {
+            toValue: -SIZES.height * 0.5,
+            duration: 1,
+            useNativeDriver: false
+        }).start()
         setUpdateComment(inititalValues.comment)
-        Keyboard.addListener('keyboardDidShow', onKeyBoardShow)
-        Keyboard.addListener('keyboardDidHide', onKeyHide)
-        return () => {
-            Keyboard.removeAllListeners('keyboardDidShow')
-            Keyboard.removeAllListeners('keyboardDidHide')
-        }
+
+
+
     }, [])
 
 
@@ -123,34 +130,57 @@ const ReferralDetails = ({ route, navigation }) => {
 
     return (
         <ScrollView style={[styles.view, { backgroundColor: referral.status.id === 'closed' ? COLORS.green : referral.status.id === 'not_sold' ? COLORS.red : COLORS.white }]}>
-            <Animated.View style={[{position:'absolute', height:100, width:'90%',top:10, alignSelf:'center', zIndex:100, backgroundColor:COLORS.lightGray}]}>
-                <Text>Hola Amigo</Text>
-                <View>
-                <DateTimePicker
-                                            timeZoneOffsetInSeconds={0}
-                                            style={{ width: '90%', marginRight: SIZES.padding * 0.5, height: '100%' }}
-                                            testID="dateTimePicker"
-                                            value={scheduleDate}
-                                            minimumDate={new Date(moment().subtract(1, 'year').format('YYYY-MM-DD'))}
-                                            mode='datetime'
-                                            is24Hour={true}
-                                            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                                            onChange={onDateChange}
-                                        />
+            <Animated.View style={[{ position: 'absolute', height: SIZES.height * 0.4, width: '90%', top: heighY, maxWidth: 500, alignSelf: 'center', zIndex: 100, backgroundColor: COLORS.card, borderRadius: SIZES.radius }]}>
 
-                        <TouchableOpacity onPress={scheduleReminder}>
-                            <Text>Set Reminder</Text>
-                        </TouchableOpacity>
+                <View style={{ height: '80%', borderRadius: SIZES.radius }}>
+                    <View style={{ paddingVertical: SIZES.padding, }}>
+                        <Text style={{ textAlign: 'center' }}>Message</Text>
+                        <InputTextField autoCapitalize='words' placeholder='A message for this reminder' onChangeText={text => setReminderMessage(text)} value={reminderMessage} style={{ backgroundColor: COLORS.white, width: '90%', alignSelf: 'center', borderRadius: SIZES.radius * 2, paddingVertical: 10 }} />
+                    </View>
+                    <View style={{ height: '30%' }}>
+                        <DateTimePicker
+                            timeZoneOffsetInSeconds={0}
+                            style={{ width: '90%', marginRight: SIZES.padding * 0.5, height: '100%' }}
+                            testID="dateTimePicker"
+                            value={scheduleDate}
+                            minimumDate={new Date().toISOString()}
+                            maximumDate={new Date(moment().add(3, 'months').format('YYYY-MM-DD'))}
+                            mode='datetime'
+                            is24Hour={true}
+                            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                            onChange={onDateChange}
+                        />
+                    </View>
+
+                    <TouchableOpacity style={{ shadowOffset: { width: 4, height: 7 }, marginTop: 20, shadowOpacity: 0.7, shadowRadius: 8, elevation: 7, borderRadius: SIZES.radius, paddingVertical: SIZES.padding * 0.5, paddingHorizontal: SIZES.padding, width: '60%', justifyContent: 'center', alignItems: 'center', alignSelf: 'center', shadowColor: COLORS.lightGray, backgroundColor: COLORS.primary, }} onPress={scheduleReminder}>
+                        <Text style={{ ...FONTS.h4 }}>Set Reminder</Text>
+                    </TouchableOpacity>
                 </View>
-                
-                
+
+
             </Animated.View>
             <View style={styles.customer}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', marginBottom: 15 }}>
                     <Text style={[styles.name, { ...FONTS.h2 }]}>{referral.name} </Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('Spark')}>
-                        <Ionicons name='mail-outline' size={26} color={COLORS.black} />
-                    </TouchableOpacity>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignSelf: 'flex-end', width: '20%', marginLeft: 30 }}>
+                        <TouchableOpacity onPress={() => {
+                            Animated.timing(heighY, {
+                                toValue: 10,
+                                duration: 600,
+                                useNativeDriver: false,
+                            }).start()
+
+                        }}>
+                            <Ionicons name='timer-outline' size={26} color={COLORS.black} />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => {
+
+                            navigation.navigate('Spark')
+                        }}>
+                            <Ionicons name='mail-outline' size={26} color={COLORS.black} />
+                        </TouchableOpacity>
+                    </View>
+
                 </View>
                 <Text style={styles.subText}>{line1} </Text>
                 <Text style={styles.subText}>{line2} </Text>
