@@ -26,7 +26,6 @@ exports.onReferralClosed = functions.firestore
 		const wasAlreadySent =
 			(await emailRef.get()).exists || (await emailRef.get().sent);
 		if (wasAlreadySent) return;
-		console.log('EVENT ID', eventId);
 		const referral = change.after.data();
 		const oldReferral = change.before.data();
 		try {

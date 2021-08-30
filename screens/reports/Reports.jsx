@@ -6,12 +6,13 @@ import { AntDesign } from '@expo/vector-icons'
 import AnimatedNumbers from 'react-native-animated-numbers';
 import { Divider, Switch } from 'react-native-elements'
 import { firstResponderDiscount } from '../../utils/firstResponderDiscount'
-
 import { mobilePlusHome } from '../../utils/mobilePlusHome'
+import planDetails from '../../planDetails'
 
 const ACTIVATION_FEE = 35;
 
 const Reports = () => {
+
     const [firstResponder, setFirstResponder] = useState(false)
     const [rewards, setRewards] = useState(false)
     const [show, setShow] = useState(false)
@@ -23,7 +24,10 @@ const Reports = () => {
     const [gm, setGm] = useState(0)
     const [jk, setJk] = useState(0)
     const [lines, setLines] = useState(0)
+    const [selectedPlan, setSelectedPlan] = useState(null)
+    const [showDetails, setShowDetails] = useState(false)
     const [autoPay, setAutoPay] = useState(10)
+
     const plans = [
         {
             id: 'start_unlimited',
@@ -200,59 +204,64 @@ const Reports = () => {
 
             {plans.map(p => {
                 return (
+                    <TouchableWithoutFeedback key={p.id} onLongPress={() => {
 
-                    <View key={p.id} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', paddingHorizontal: 10 }}>
-                        <View style={{ width: '40%' }}>
-                            <Text style={{ textAlign: 'left', ...FONTS.h4 }}>{p.name}</Text>
-                        </View>
-                        <View style={{ justifyContent: 'center', width: '35%' }}>
-                            <View style={{
-                                flexDirection: 'row',
-                                justifyContent: 'space-evenly',
-                                alignItems: 'center',
-                                height: 50,
-                                shadowRadius: 8,
-                                shadowOpacity: 0.7,
-                                shadowColor: COLORS.card,
-                                borderRadius: SIZES.radius * 3,
-                                shadowOffset: { width: 3, height: 5 },
-                                backgroundColor: COLORS.white,
-                                width: SIZES.width / 3,
-                                marginVertical: 5
-                            }} >
-
-                                <TouchableOpacity disabled={lines === 0 || p.line === 0} onPress={() => {
-                                    if (lines > 0) {
-                                        setLines(prev => prev - 1)
-                                        calculatePriceByLineMinus(p.id)
-                                    }
-                                }
-
-                                } style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-                                    <AntDesign name='minuscircleo' style={{ opacity: (lines === 0 || p.line === 0) ? 0.3 : 1 }} size={28} />
-                                </TouchableOpacity>
-                                <View>
-                                    <Text style={{ ...FONTS.h4 }}>{p.line}</Text>
-                                </View>
-                                <TouchableOpacity onPress={() => {
-                                    if (p.id === 'just_kids' && lines === 0) return
-                                    if (lines < 10) {
-                                        setLines(prev => prev + 1)
-                                        calculatePriceByLinePlus(p.id)
-                                    }
-                                }
-
-                                } style={{ width: '100%', justifyContent: 'center', alignItems: 'center', }}>
-                                    <AntDesign name='pluscircleo' size={28} />
-                                </TouchableOpacity>
+                        setSelectedPlan(p.id)
+                        setShowDetails(true)
+                    }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', paddingHorizontal: 10 }}>
+                            <View style={{ width: '40%' }}>
+                                <Text style={{ textAlign: 'left', ...FONTS.h4 }}>{p.name}</Text>
                             </View>
-                        </View>
-                        <View style={{ width: '25%', justifyContent: 'center', alignItems: 'flex-end', paddingRight: 30 }}>
-                            <AnimatedNumbers animationDuration={600} animateToNumber={`${p.price}`} fontStyle={{ ...FONTS.h3, }} />
+                            <View style={{ justifyContent: 'center', width: '35%' }}>
+                                <View style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-evenly',
+                                    alignItems: 'center',
+                                    height: 50,
+                                    shadowRadius: 8,
+                                    shadowOpacity: 0.7,
+                                    shadowColor: COLORS.card,
+                                    borderRadius: SIZES.radius * 3,
+                                    shadowOffset: { width: 3, height: 5 },
+                                    backgroundColor: COLORS.white,
+                                    width: SIZES.width / 3,
+                                    marginVertical: 5
+                                }} >
+
+                                    <TouchableOpacity disabled={lines === 0 || p.line === 0} onPress={() => {
+                                        if (lines > 0) {
+                                            setLines(prev => prev - 1)
+                                            calculatePriceByLineMinus(p.id)
+                                        }
+                                    }
+
+                                    } style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
+                                        <AntDesign name='minuscircleo' style={{ opacity: (lines === 0 || p.line === 0) ? 0.3 : 1 }} size={28} />
+                                    </TouchableOpacity>
+                                    <View>
+                                        <Text style={{ ...FONTS.h4 }}>{p.line}</Text>
+                                    </View>
+                                    <TouchableOpacity onPress={() => {
+                                        if (p.id === 'just_kids' && lines === 0) return
+                                        if (lines < 10) {
+                                            setLines(prev => prev + 1)
+                                            calculatePriceByLinePlus(p.id)
+                                        }
+                                    }
+
+                                    } style={{ width: '100%', justifyContent: 'center', alignItems: 'center', }}>
+                                        <AntDesign name='pluscircleo' size={28} />
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View style={{ width: '25%', justifyContent: 'center', alignItems: 'flex-end', paddingRight: 30 }}>
+                                <AnimatedNumbers animationDuration={600} animateToNumber={`${p.price}`} fontStyle={{ ...FONTS.h3, }} />
+
+                            </View>
 
                         </View>
-
-                    </View>
+                    </TouchableWithoutFeedback>
 
                 )
             })}
@@ -319,7 +328,13 @@ const Reports = () => {
                     )}
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 10 }}>
                         <Text style={autoPay === 0 ? { ...FONTS.body4 } : { ...FONTS.h4 }}>Is Home + Rewards Eligible ?</Text>
-                        <Switch disabled={lines === 0} style={{ marginLeft: 10 }} value={rewards} trackColor={COLORS.light} ios_backgroundColor={COLORS.light} thumbColor={COLORS.background} color={COLORS.light} onValueChange={v => setRewards(prev => !prev)} />
+                        <Switch disabled={lines === 0} style={{ marginLeft: 10 }} value={rewards} trackColor={COLORS.light} ios_backgroundColor={COLORS.light} thumbColor={COLORS.background} color={COLORS.light} onValueChange={v => {
+                            setRewards(prev => !prev)
+                            if (!rewards) {
+                                setCustomerType(null)
+                                setInternetSpeed(null)
+                            }
+                        }} />
                     </View>
 
 
@@ -387,7 +402,40 @@ const Reports = () => {
 
                 </View>
             </Modal>
+            <Modal animationType='slide' transparent visible={showDetails}>
+                <View style={{ height: SIZES.height * 0.7, backgroundColor: COLORS.background, shadowColor: COLORS.black, shadowOpacity: 0.7, shadowRadius: 10, elevation: 8, shadowOffset: { height: 6, width: 8 }, width: '100%', flex: 1, position: 'absolute', bottom: 0, borderTopRightRadius: 35, borderTopLeftRadius: 35 }}>
 
+
+                    {planDetails.map(plan => {
+                        if (plan.id === selectedPlan) {
+                            return <View style={{ padding: 10, width: '100%', alignItems: 'flex-start', justifyContent: 'center', flex: 1, marginTop: 10 }} key={plan.id}>
+                                <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 10 }}>
+                                    <Text style={{ ...FONTS.h4, textAlign: 'center' }}>{plan.name} Plan Details</Text>
+                                    <TouchableWithoutFeedback onPress={() => {
+                                        setShowDetails(false)
+                                        setSelectedPlan(null)
+                                    }}>
+                                        <AntDesign name='close' size={30} color={COLORS.black} />
+                                    </TouchableWithoutFeedback>
+                                </View>
+                                <ScrollView style={{ flex: 1, width: '100%' }}>
+
+
+                                    {plan.details.map((d, index) => {
+                                        return <View key={index.toString()} style={{ alignItems: 'center', width: '100%', flexDirection: 'row', marginLeft: 15, padding: SIZES.padding * 0.4, }}>
+                                            <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: COLORS.black, justifyContent: 'center', alignSelf: 'center', marginRight: 8, }} />
+                                            <Text style={{ ...FONTS.body4, }}>{d}</Text>
+                                        </View>
+                                    })}
+
+                                </ScrollView>
+                            </View>
+                        }
+                    })}
+
+
+                </View>
+            </Modal>
 
 
         </View>

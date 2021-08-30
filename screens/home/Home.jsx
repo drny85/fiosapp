@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useCallback } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { FlatList, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View, } from 'react-native'
 
 import { COLORS, FONTS, SIZES, TIER } from '../../constants/contantts'
@@ -8,7 +8,6 @@ import * as Animatable from 'react-native-animatable'
 import MiniInfoCard from '../../components/MiniInfoCard'
 import referralsContext from '../../context/referrals/referralContext'
 import ReferralCard from '../../components/ReferralCard'
-import { scheduleMotification } from '../../hooks/scheduleNotification'
 import useNotifications from '../../hooks/useNotifications'
 
 
@@ -72,28 +71,28 @@ const Home = ({ navigation }) => {
                     setData(todayUnits.data)
                     setvisible(true)
                     setTitle('TODAY UNITS')
-                }} title="Today's" subtitle={todayUnits.units} />
+                }} title="Today's" show={true} tv={todayUnits.units.tv} subtitle={todayUnits.units.internet} />
                 <MiniInfoCard onPress={() => {
                     if (wtdUnits.data.length === 0) return
                     setData(wtdUnits.data)
                     setvisible(true)
                     setTitle('WTD UNITS')
                 }
-                } title="WTD Units" subtitle={wtdUnits.units} />
+                } title="WTD Units" show={true} tv={wtdUnits.units.tv} subtitle={wtdUnits.units.internet} />
                 <MiniInfoCard onPress={() => {
                     if (mtdUnits.data.length === 0) return
                     setData(mtdUnits.data)
                     setvisible(true)
                     setTitle('MTD UNITS')
-                }} title="MTD Units" subtitle={mtdUnits.units} />
+                }} title="MTD Units" show={true} tv={mtdUnits.units.tv} subtitle={mtdUnits.units.internet} />
             </View>
             <Animatable.View animation='fadeInDown' duration={800} delay={1000}>
-                {wtdUnits.units < TIER.tier2 ? (
-                    <Animatable.Text animation='fadeIn' style={{ textAlign: 'center', ...FONTS.body4 }}>You are {(TIER.tier2 - wtdUnits.units) === 1 ? `${TIER.tier2 - wtdUnits.units} unit away from tier 2` : `${TIER.tier2 - wtdUnits.units} units away from tier 2`} </Animatable.Text>
-                ) : wtdUnits.units >= TIER.tier2 && wtdUnits.units < TIER.tier3 ? (
-                    <Text style={{ textAlign: 'center', ...FONTS.body4 }}>Congratulations!, You made it to tier 2. {TIER.tier3 - wtdUnits.units} more for tier 3</Text>
-                ) : (
-                            <Text style={{ textAlign: 'center', ...FONTS.body4 }}>Congratulations!, You made it to tier 3</Text>
+                {wtdUnits.units.internet < TIER.tier2 && wtdUnits.units.internet !== 0 ? (
+                    <Animatable.Text animation='fadeIn' numberOfLines={1} ellipsizeMode='tail' style={{ textAlign: 'center', ...FONTS.body4 }}>You are {(TIER.tier2 - wtdUnits.units) === 1 ? `${TIER.tier2 - wtdUnits.units.internet} unit away from tier 2. Go get them!` : `${TIER.tier2 - wtdUnits.units.internet} units away from tier 2. Go get them!`} </Animatable.Text>
+                ) : wtdUnits.units.internet >= TIER.tier2 && wtdUnits.units.internet < TIER.tier3 ? (
+                    <Animatable.Text numberOfLines={1} ellipsizeMode='tail' animation='fadeIn' style={{ textAlign: 'center', ...FONTS.body4 }}>Congratulations!, You made it to tier 2. {TIER.tier3 - wtdUnits.units.internet} more for tier 3</Animatable.Text>
+                ) : wtdUnits.units.internet === 0 ? ( <Animatable.Text numberOfLines={1} ellipsizeMode='tail' animation='fadeIn' style={{ textAlign: 'center', ...FONTS.h4, color: COLORS.red }}>You have not units for this week. Let's Go!</Animatable.Text>): (
+                            <Animatable.Text numberOfLines={1} ellipsizeMode='tail' animation='fadeIn' style={{ textAlign: 'center', ...FONTS.body4 }}>Congratulations!, You made it to tier 3</Animatable.Text>
                         )}
 
             </Animatable.View>

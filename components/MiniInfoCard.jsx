@@ -5,7 +5,7 @@ import AnimatedNumbers from 'react-native-animated-numbers';
 import ProgressCircle from 'react-native-progress-circle'
 
 
-const MiniInfoCard = ({ title, subtitle, onPress, style, percentage, color }) => {
+const MiniInfoCard = ({ title, subtitle, show = false, tv, onPress, style, percentage, color }) => {
 
     return (
         <TouchableOpacity style={[styles.view, style]} onPress={onPress}>
@@ -29,8 +29,21 @@ const MiniInfoCard = ({ title, subtitle, onPress, style, percentage, color }) =>
                 </ProgressCircle>
 
             )}
-            {!percentage && (
+            {!percentage && !show && (
                 <AnimatedNumbers animationDuration={600} animateToNumber={subtitle} fontStyle={{ ...FONTS.h3 }} />
+            )}
+            {!percentage && show && (
+                <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.background, paddingVertical: 3, paddingHorizontal: 6, borderRadius: 25 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={{ ...FONTS.body5 }}>Int: </Text>
+                        <AnimatedNumbers animationDuration={600} animateToNumber={subtitle} fontStyle={{ ...FONTS.h4 }} />
+                    </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={{ ...FONTS.body5 }}>TV: </Text>
+                        <AnimatedNumbers animationDuration={600} animateToNumber={tv} fontStyle={{ ...FONTS.h4 }} />
+                    </View>
+
+                </View>
             )}
 
         </TouchableOpacity>
@@ -42,7 +55,7 @@ export default MiniInfoCard
 const styles = StyleSheet.create({
     view: {
         maxWidth: SIZES.width / 3,
-        height: SIZES.width / 6,
+        height: SIZES.width / 5,
 
         shadowColor: COLORS.card,
         shadowOffset: {

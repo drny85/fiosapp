@@ -29,18 +29,25 @@ const useNotifications = () => {
 		notificationListener.current =
 			Notifications.addNotificationReceivedListener((notification) => {
 				const { data } = notification.request.content;
-				if (!data) return;
-				if (data?.notificationType === 'referral') {
-					const { name, params } = data.referralData;
-					naviagtion.navigate(name, params);
-				}
+				// if (!data) return;
+				// if (data?.notificationType === 'referral') {
+				// 	const { name, params } = data.referralData;
+				// 	naviagtion.navigate(name, params);
+				// }
 
 				//naviagtion.navigate(data?.screen, data?.params)
 			});
 
 		responseListener.current =
 			Notifications.addNotificationResponseReceivedListener((response) => {
-				console.log('RES', response);
+				const { content } = response.notification.request;
+				const { data } = content;
+				console.log('RES', data);
+				if (!data) return;
+				if (data?.notificationType === 'referral') {
+					const { name, params } = data.referralData;
+					naviagtion.navigate(name, params);
+				}
 			});
 
 		return () => {

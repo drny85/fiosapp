@@ -95,30 +95,40 @@ const ReferralsState = ({ children }) => {
 
     const calculateReferralUnits = data => {
         const todayU = data.filter(r => r.status.name === 'Closed' && moment(r.order_date).isAfter(moment().startOf('day')) && moment(r.order_date).isBefore(moment().endOf('day')))
-        const wtdU = data.filter(r => r.status.name === 'Closed' && moment(r.order_date).isAfter(moment().startOf('W').add(1, 'day')) && moment(r.order_date).isBefore(moment().endOf('day').add(1, 'day')))
+        const wtdU = data.filter(r => r.status.name === 'Closed' && moment(r.order_date).isAfter(moment().startOf('week').add(1, 'day')) && moment(r.order_date).isBefore(moment().endOf('day').add(1, 'day')))
         const mtdU = data.filter(r => r.status.name === 'Closed' && moment(r.order_date).isAfter(moment().startOf('month')) && moment(r.order_date).isBefore(moment().endOf('month')))
 
-        let todayUnit = 0;
-        let wtdUnit = 0;
-        let mtdUnit = 0;
+        let todayUnit = { internet: 0, tv: 0 };
+        let wtdUnit = { internet: 0, tv: 0 };
+        let mtdUnit = { internet: 0, tv: 0 };
 
         todayU.forEach(u => {
-            if (u.package.internet || u.package.tv) {
+            if (u.package.internet) {
 
-                todayUnit += 1;
+                todayUnit.internet += 1;
 
+            }
+            if (u.package.tv) {
+                todayUnit.tv += 1;
             }
         })
         wtdU.forEach(u => {
-            if (u.package.internet || u.package.tv) {
-                wtdUnit += 1;
+            if (u.package.internet) {
+                wtdUnit.internet += 1;
+            }
+            if (u.package.tv) {
+                wtdUnit.tv += 1;
             }
         })
         mtdU.forEach(u => {
-            if (u.package.internet || u.package.tv) {
-                mtdUnit += 1;
+            if (u.package.internet) {
+                mtdUnit.internet += 1;
+            }
+            if (u.package.tv) {
+                mtdUnit.tv += 1;
             }
         })
+
 
         dispatch({ type: TODAY_UNIT, payload: { units: todayUnit, data: [...todayU] } })
         dispatch({ type: WTD_UNIT, payload: { units: wtdUnit, data: [...wtdU] } })
