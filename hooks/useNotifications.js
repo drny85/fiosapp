@@ -8,11 +8,22 @@ import authContext from '../context/auth/authContext';
 import { db } from '../database';
 
 Notifications.setNotificationHandler({
-	handleNotification: async () => ({
-		shouldShowAlert: true,
-		shouldPlaySound: true,
-		shouldSetBadge: false,
-	}),
+	handleNotification: async (notification) => {
+		const { data } = notification.request.content;
+		if (data.notificationType === 'new_message') {
+			return {
+				shouldShowAlert: false,
+				shouldPlaySound: false,
+				shouldSetBadge: false,
+			};
+		} else {
+			return {
+				shouldShowAlert: true,
+				shouldPlaySound: false,
+				shouldSetBadge: false,
+			};
+		}
+	},
 });
 
 let pushToken = null;
@@ -42,11 +53,13 @@ const useNotifications = () => {
 			Notifications.addNotificationResponseReceivedListener((response) => {
 				const { content } = response.notification.request;
 				const { data } = content;
-				console.log('RES', data);
 				if (!data) return;
 				if (data?.notificationType === 'referral') {
 					const { name, params } = data.referralData;
 					naviagtion.navigate(name, params);
+				}
+				if (data?.notificationType === 'new_message') {
+					naviagtion.navigate('ProfileStack', { screen: 'Chat' });
 				}
 			});
 

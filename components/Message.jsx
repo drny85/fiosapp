@@ -7,10 +7,6 @@ import moment from 'moment'
 
 
 
-
-
-
-
 const Message = forwardRef(({ userId, onReply, onDelete, onClose, msgBody, onSwipeableWillOpen }, ref) => {
 
     const { isReplied, reply, body, sender, timestamp } = msgBody
@@ -79,18 +75,16 @@ const styles = StyleSheet.create({
         marginHorizontal: SIZES.padding,
         borderRadius: SIZES.radius * 2,
 
-
-
-
     },
     sender: {
         ...FONTS.h5,
         position: 'absolute',
         color: COLORS.lightGray,
-        top: -25,
+        top: -35,
         left: 0,
         paddingLeft: 10,
         textTransform: 'capitalize',
+        paddingVertical: 4,
         marginVertical: 6,
     },
     timeStamp: {

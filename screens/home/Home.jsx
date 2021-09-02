@@ -141,8 +141,8 @@ const Home = ({ navigation }) => {
             </View>
             {quote !== '' && (
                 <View style={styles.quote}>
-                    <Text style={{ ...FONTS.body4 }}>{quote.quote}</Text>
-                    <Text style={{ textAlign: 'right', ...FONTS.h5, marginTop: 5, }}> -{quote.author}</Text>
+                    <Text style={{ ...FONTS.body4, color: COLORS.lightText }}>{quote.quote}</Text>
+                    <Text style={{ textAlign: 'right', ...FONTS.h5, marginTop: 5,color: COLORS.lightText }}> -{quote.author}</Text>
                 </View>
             )}
 
@@ -242,11 +242,12 @@ const styles = StyleSheet.create({
             height: 6
         },
         // elevation: 8,
-        width: 'auto',
+        width: '95%',
         shadowColor: COLORS.ascent,
         backgroundColor: COLORS.card,
         padding: SIZES.padding * 0.5,
         marginHorizontal: SIZES.padding,
+        alignSelf:'center',
         borderRadius: SIZES.radius,
         marginTop: 10,
 

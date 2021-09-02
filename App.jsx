@@ -3,6 +3,7 @@ import React, { useEffect, useContext } from 'react';
 import { NavigationContainer } from "@react-navigation/native";
 import { AuthNavigator, TabNavigation } from './navigation';
 import { auth } from './database';
+import { View } from 'react-native'
 import { useFonts } from '@expo-google-fonts/montserrat';
 import ReferralsState from './context/referrals/referralsState';
 import referralsContext from './context/referrals/referralContext';
@@ -17,7 +18,7 @@ import refereesContext from './context/referee/refereesContext';
 import coachContext from './context/coach/coachContext';
 
 
-
+import LottieView from 'lottie-react-native';
 const App = () => {
 
   const [fontsLoaded, error] = useFonts({
@@ -34,16 +35,18 @@ const App = () => {
   const { getCoachs } = useContext(coachContext)
 
   useEffect(() => {
-    
+
     const listener = auth.onAuthStateChanged(u => {
 
       if (u) {
 
         if (u.emailVerified) {
-          setUser(u.uid)
+
           getReferrals(u.uid)
           getReferees(u.uid)
           getCoachs(u.uid)
+          setUser(u.uid)
+
         }
 
       }
@@ -55,7 +58,7 @@ const App = () => {
 
     return () => {
       listener && listener()
-     
+
     }
   }, [])
 

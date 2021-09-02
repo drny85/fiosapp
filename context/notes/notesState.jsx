@@ -48,6 +48,25 @@ const NotesState = ({ children }) => {
         }
     }
 
+    const deleteNote = async (note) => {
+        try {
+            await db.collection('notes').doc(note.userId).collection('notes').doc(note.id).delete()
+            return true
+        } catch (error) {
+            throw new Error(error.message)
+        }
+    }
+
+    const updateNote = async (note) => {
+        try {
+
+            await db.collection('notes').doc(note.userId).collection('notes').doc(note.id).update(note)
+            return true;
+        } catch (error) {
+            throw new Error(error.message)
+        }
+    }
+
 
 
     return <NotesContext.Provider value={{
@@ -56,6 +75,8 @@ const NotesState = ({ children }) => {
         loadingNotes: state.loadingNotes,
         error: state.error,
         addNote,
+        deleteNote,
+        updateNote,
         getNotes
     }}>
         {children}

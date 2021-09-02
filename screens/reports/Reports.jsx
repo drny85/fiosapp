@@ -185,14 +185,14 @@ const Reports = () => {
                 <TouchableWithoutFeedback onLongPress={handleResetAll}>
                     <>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={firstResponder === 0 ? { ...FONTS.body4 } : { ...FONTS.h4 }}>1st Responder</Text>
+                            <Text style={firstResponder === 0 ? { ...FONTS.body4, color: COLORS.lightText } : { ...FONTS.h4, color: COLORS.lightText }}>1st Responder</Text>
                             <Switch style={{ marginLeft: 10 }} value={firstResponder} trackColor={COLORS.light} thumbColor={COLORS.background} ios_backgroundColor={COLORS.light} color={COLORS.lightGray} onValueChange={v => setFirstResponder(prev => !prev)} />
                         </View>
                         <View style={{ paddingVertical: 4, paddingHorizontal: 8, backgroundColor: COLORS.background, borderRadius: SIZES.radius * 3 }}>
-                            <Text style={{ ...FONTS.h3 }}>{lines} {lines > 1 ? 'Lines' : 'Line'}</Text>
+                            <Text style={{ ...FONTS.h3, color: COLORS.black }}>{lines} {lines > 1 ? 'Lines' : 'Line'}</Text>
                         </View>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={autoPay === 0 ? { ...FONTS.body4 } : { ...FONTS.h4 }}>Auto Pay</Text>
+                            <Text style={autoPay === 0 ? { ...FONTS.body4, color: COLORS.lightText } : { ...FONTS.h4, color: COLORS.lightText }}>Auto Pay</Text>
                             <Switch style={{ marginLeft: 10 }} value={autoPay === 10} trackColor={COLORS.light} ios_backgroundColor={COLORS.light} thumbColor={COLORS.background} color={COLORS.light} onValueChange={v => setAutoPay(prev => prev === 0 ? 10 : 0)} />
                         </View>
                     </>
@@ -220,8 +220,8 @@ const Reports = () => {
                                     alignItems: 'center',
                                     height: 50,
                                     shadowRadius: 8,
-                                    shadowOpacity: 0.7,
-                                    shadowColor: COLORS.card,
+                                    shadowOpacity: 0.5,
+                                    shadowColor: COLORS.black,
                                     borderRadius: SIZES.radius * 3,
                                     shadowOffset: { width: 3, height: 5 },
                                     backgroundColor: COLORS.white,
@@ -423,8 +423,8 @@ const Reports = () => {
 
                                     {plan.details.map((d, index) => {
                                         return <View key={index.toString()} style={{ alignItems: 'center', width: '100%', flexDirection: 'row', marginLeft: 15, padding: SIZES.padding * 0.4, }}>
-                                            <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: COLORS.black, justifyContent: 'center', alignSelf: 'center', marginRight: 8, }} />
-                                            <Text style={{ ...FONTS.body4, }}>{d}</Text>
+                                            <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: COLORS.black, justifyContent: 'center', alignSelf: 'center', }} />
+                                            <Text style={{ ...FONTS.body4, paddingHorizontal: 10 }}>{d}</Text>
                                         </View>
                                     })}
 

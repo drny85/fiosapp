@@ -15,10 +15,11 @@ const Tabs = createBottomTabNavigator()
 
 const TabNavigation = () => {
     return (<Tabs.Navigator tabBarOptions={{
-        labelStyle: { color: COLORS.secondary, fontWeight: '600' },
+        labelStyle: { color: COLORS.card, fontWeight: '600' },
         inactiveTintColor: COLORS.secondary,
-        activeTintColor: COLORS.ascent,
-        activeBackgroundColor: COLORS.light
+        activeTintColor: COLORS.card,
+        activeBackgroundColor: COLORS.lightGray,
+
 
     }}>
         <Tabs.Screen name='HomeStack' options={({ route }) => {

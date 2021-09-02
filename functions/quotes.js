@@ -37,6 +37,23 @@ const quotes = [
 			'Success is the result of perfection, hard work, learning from failure, loyalty, and persistence.',
 		author: 'Colin Powell',
 	},
+	{
+		quote:
+			"Start by doing what's necessary; then do what's possible; and suddenly you are doing the impossible",
+		author: 'Francis of Assisi',
+	},
+	{
+		quote: 'It is always the simple that produces the marvelous.',
+		author: 'Amelia Barr',
+	},
+	{
+		quote: "It always seems impossible until it's done.",
+		author: 'Nelson Mandela',
+	},
+	{
+		quote: 'The best preparation for tomorrow is doing your best today.',
+		author: 'H. Jackson Brown, Jr.',
+	},
 ];
 
 module.exports = quotes;

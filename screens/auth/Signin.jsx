@@ -42,7 +42,8 @@ const Signin = ({ route }) => {
 
                 return
             } else if (user.emailVerified) {
-                setProcessing(true)
+                // setProcessing(true)
+                console.log('LOGGED IN')
 
             }
         } catch (error) {
@@ -72,13 +73,13 @@ const Signin = ({ route }) => {
                         </View>
                         <View style={{ width: '100%' }}>
                             <Input placeholder='Email Address' keyboardType='email-address' autoCorrect={false} autoCapitalize='none' value={email} onChangeText={text => setEmail(text.trim().toLowerCase())} />
-                            <Input rightIcon={<Feather name={!showPassword ? 'eye':'eye-off'} size={24} onPress={() => setShowPassword(!showPassword)} color="black" />} placeholder='Password' secureTextEntry={!showPassword} value={password} onChangeText={text => setPassword(text.trim())} />
+                            <Input rightIcon={<Feather name={!showPassword ? 'eye' : 'eye-off'} size={24} onPress={() => setShowPassword(!showPassword)} color="black" />} placeholder='Password' secureTextEntry={!showPassword} value={password} onChangeText={text => setPassword(text.trim())} />
                         </View>
                         <View style={{ marginTop: 30 }}>
                             <Button type='outline' buttonStyle={{ borderColor: COLORS.secondary, backgroundColor: COLORS.primary }} style={{ width: SIZES.width / 3, }} titleStyle={{ color: COLORS.secondary }} raised title='Sign In' onPress={singinHandler} />
                         </View>
 
-                        <View style={{ position: 'absolute', bottom: 30, left: 0, right: 0, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
+                        <View style={{ position: 'absolute', bottom: 100, left: 0, right: 0, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
                             <Text style={{ ...FONTS.body4 }}>Do not have an account??</Text>
 
                             <TouchableOpacity onPress={() => navigation.navigate('Signup')}>

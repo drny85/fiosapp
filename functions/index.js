@@ -3,6 +3,7 @@ require('dotenv').config();
 const moment = require('moment');
 const admin = require('firebase-admin');
 const Quotes = require('./quotes');
+const fetch = require('node-fetch');
 admin.initializeApp();
 // const sgMail = require('@sendgrid/mail');
 const nodemailer = require('nodemailer');
@@ -230,12 +231,43 @@ exports.onReferralClosed = functions.firestore
 		}
 	});
 
-function shouldSend(emailRef) {
-	return emailRef.get().then((emailDoc) => {
-		return !emailDoc.exists || !emailDoc.data().sent;
-	});
-}
+exports.onMessageSent = functions.firestore
+	.document('messages/{messageId}')
+	.onCreate(async (snap, context) => {
+		const data = snap.data();
+		const { id, name } = data.sender;
+		const { body } = data;
+		const ids = [];
+		try {
+			const users = await await admin.firestore().collection('users').get();
+			users.forEach((u) => {
+				if (u.exists) {
+					const token = u.data()?.pushToken;
+					if (token && id !== u.data().userId) {
+						ids.push(token);
+					}
+				}
+			});
 
-function markSent(emailRef) {
-	return emailRef.set({ sent: true });
-}
+			if (ids.length === 0) return;
+
+			return fetch('https://exp.host/--/api/v2/push/send', {
+				method: 'POST',
+				headers: {
+					host: 'exp.host',
+					accept: 'application/json',
+					'accept-encoding': 'gzip, deflate',
+					'content-type': 'application/json',
+				},
+				body: JSON.stringify({
+					to: ids,
+					title: `Message from ${name}`,
+					body: body,
+					data: { notificationType: 'new_message' },
+				}),
+			});
+		} catch (error) {
+			console.log(error.message);
+			return;
+		}
+	});

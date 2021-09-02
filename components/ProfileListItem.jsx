@@ -7,8 +7,8 @@ import { COLORS, FONTS, SIZES } from '../constants/contantts'
 const ProfileListItem = ({ tittle, onPress }) => {
     return (
         <TouchableOpacity onPress={onPress} style={styles.view}>
-            <Text style={{ ...FONTS.body3 }}>{tittle}</Text>
-            <Entypo name="chevron-right" size={28} color={COLORS.lightGray} />
+            <Text style={{ ...FONTS.h4, color: COLORS.lightText }}>{tittle}</Text>
+            <Entypo name="chevron-right" size={28} color={COLORS.lightText} />
         </TouchableOpacity>
     )
 }

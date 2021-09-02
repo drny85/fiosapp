@@ -40,27 +40,27 @@ const ReferralCard = forwardRef(({ referral, onPress, style, onDelete, onSwipeab
     return (
         <Swipeable ref={ref} overshootRight={false} onSwipeableWillOpen={onSwipeableWillOpen} renderRightActions={rightActions} >
             <TouchableOpacity onPress={onPress} style={[styles.view, { backgroundColor: referral.status.name === 'Closed' ? COLORS.green : referral.status.id === 'in_progress' ? COLORS.progress : referral.status.id === 'not_sold' ? COLORS.red : COLORS.card }, style]}>
-                <Text style={{ ...FONTS.h3, textAlign: 'center', marginBottom: 4 }}>{referral.name}</Text>
+                <Text style={{ ...FONTS.h3, textAlign: 'center', marginBottom: 4, color: COLORS.lightText }}>{referral.name}</Text>
                 <View style={{ alignItems: 'flex-start' }}>
                     <View>
-                        <Text style={{ ...FONTS.h4 }}>Address: <Text style={{ ...FONTS.body4 }}>{line1} {line2}</Text></Text>
-                        <Text style={{ ...FONTS.h4 }}>Phone: <Text style={{ ...FONTS.body4 }}>{referral.phone}</Text></Text>
-                        {(referral.email !== '' || referral.email !== null) && (<Text style={{ ...FONTS.h4 }}>Email: <Text style={{ ...FONTS.body4 }}>{referral.email ? referral.email : 'none'}</Text></Text>)}
+                        <Text style={{ ...FONTS.h4, color: COLORS.lightText }}>Address: <Text style={{ ...FONTS.body4, color: COLORS.lightText }}>{line1} {line2}</Text></Text>
+                        <Text style={{ ...FONTS.h4, color: COLORS.lightText }}>Phone: <Text style={{ ...FONTS.body4, color: COLORS.lightText }}>{referral.phone}</Text></Text>
+                        {(referral.email !== '' || referral.email !== null) && (<Text style={{ ...FONTS.h4, color: COLORS.lightText }}>Email: <Text style={{ ...FONTS.body4, color: COLORS.lightText }}>{referral.email ? referral.email : 'none'}</Text></Text>)}
 
                     </View>
                     <View style={{ justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row', width: '100%' }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', }}>
-                            <Text style={{ ...FONTS.h4, marginRight: 10, }}>Move In:</Text>
+                            <Text style={{ ...FONTS.h4, marginRight: 10, color: COLORS.lightText }}>Move In:</Text>
 
-                            <Text style={{ ...FONTS.body4 }}>{moment(referral.moveIn).format('ll')}</Text>
+                            <Text style={{ ...FONTS.body4, color: COLORS.lightText }}>{moment(referral.moveIn).format('ll')}</Text>
                         </View>
 
-                        <Text style={{ ...FONTS.body4 }}>{moment(referral.moveIn).fromNow()}</Text>
+                        <Text style={{ ...FONTS.body4, color: COLORS.lightText }}>{moment(referral.moveIn).fromNow()}</Text>
 
 
                     </View>
                     <View style={{ marginTop: 10, }}>
-                        <Text style={{ ...FONTS.h3 }}>Status: {referral.status.name}</Text>
+                        <Text style={{ ...FONTS.h3, color: COLORS.lightText }}>Status: {referral.status.name}</Text>
                     </View>
                 </View>
 

@@ -105,6 +105,7 @@ const Page = ({ index, inputRef, monRef, edit, moveIn, status, setStatus, intern
     const { width, height } = useWindowDimensions();
     const [loading, setLoading] = useState(false)
     const [showDue, setShowDue] = useState(false)
+    const [showOrderDate, setShowOrderDate] = useState(false)
     const [visible, setVisible] = useState(false)
     const [showPicker, setShowPicker] = useState(false)
     const [showAMs, setShowAms] = useState(false)
@@ -133,7 +134,6 @@ const Page = ({ index, inputRef, monRef, edit, moveIn, status, setStatus, intern
     const onChangeDueDate = (_, selectedDate) => {
         const currentDate = selectedDate;
         setShow(Platform.OS === 'ios');
-        setShowDue(false)
         if (currentDate) {
             setDueDate(currentDate);
         }
@@ -141,8 +141,6 @@ const Page = ({ index, inputRef, monRef, edit, moveIn, status, setStatus, intern
     };
     const onChangeOrderDate = (event, selectedDate) => {
         const currentDate = selectedDate;
-        //setShow(Platform.OS === 'ios');
-
         setShow(Platform.OS === 'ios')
         if (currentDate) {
             setOrderDate(currentDate);
@@ -155,7 +153,8 @@ const Page = ({ index, inputRef, monRef, edit, moveIn, status, setStatus, intern
         setReferralData({ ...referralData, address: formatted_address })
 
     }
-    
+
+
     useEffect(() => {
         managers.length === 0 && getManagers(user?.userId)
         referees.length === 0 && getReferees(user?.userId)
@@ -215,7 +214,8 @@ const Page = ({ index, inputRef, monRef, edit, moveIn, status, setStatus, intern
                                             style={{ width: '90%', marginRight: SIZES.padding * 0.5, height: '100%' }}
                                             testID="dateTimePicker"
                                             value={moveIn}
-                                            minimumDate={new Date(moment().subtract(1, 'year').format('YYYY-MM-DD'))}
+                                            minimumDate={new Date(moment().subtract(3, 'months').format('YYYY-MM-DD'))}
+                                            maximumDate={new Date(moment().add(6, 'months').format('YYYY-MM-DD'))}
                                             mode='date'
                                             is24Hour={true}
                                             display='spinner'
@@ -225,7 +225,7 @@ const Page = ({ index, inputRef, monRef, edit, moveIn, status, setStatus, intern
                                 </View>
                             </View>
                         </View>
-                        {Platform.OS === 'ios' && (
+                        {Platform.OS === 'ios' && show && (
                             <Modal transparent animationType='slide' visible={show}>
                                 <View style={{ backgroundColor: COLORS.background, position: 'absolute', left: 0, right: 0, height: SIZES.height / 2, bottom: 0, borderTopLeftRadius: SIZES.radius * 3, borderTopRightRadius: SIZES.radius * 3 }}>
                                     <View style={{ flexDirection: 'row', paddingVertical: SIZES.padding, justifyContent: 'space-between', marginHorizontal: SIZES.padding * 2 }}>
@@ -243,7 +243,8 @@ const Page = ({ index, inputRef, monRef, edit, moveIn, status, setStatus, intern
                                             style={{ width: '90%', marginRight: SIZES.padding * 0.5, height: '100%' }}
                                             testID="dateTimePicker"
                                             value={moveIn}
-                                            minimumDate={new Date(moment().subtract(1, 'year').format('YYYY-MM-DD'))}
+                                            minimumDate={new Date(moment().subtract(1, 'month').format('YYYY-MM-DD'))}
+                                            maximumDate={new Date(moment().add(6, 'months').format('YYYY-MM-DD'))}
                                             mode='date'
                                             is24Hour={true}
                                             display={Platform.OS === 'ios' ? 'spinner' : 'default'}
@@ -289,16 +290,17 @@ const Page = ({ index, inputRef, monRef, edit, moveIn, status, setStatus, intern
                                 <View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'space-evenly', marginBottom: 10 }}>
                                     <View style={{ flex: 1 }}>
                                         <Text style={{ ...FONTS.body3, marginHorizontal: SIZES.padding * 0.5 }}>Order Date:</Text>
-                                        <TouchableHighlight underlayColor='transparent' activeOpacity={0} onPress={() => setShow(true)} style={{ width: '95%', borderBottomColor: COLORS.light, borderBottomWidth: 0.5, paddingHorizontal: SIZES.padding * 0.5, paddingVertical: SIZES.padding * 0.7 }}>
+                                        <TouchableHighlight underlayColor='transparent' activeOpacity={0} onPress={() => setShowOrderDate(true)} style={{ width: '95%', borderBottomColor: COLORS.light, borderBottomWidth: 0.5, paddingHorizontal: SIZES.padding * 0.5, paddingVertical: SIZES.padding * 0.7 }}>
                                             <Text style={{ ...FONTS.body3 }}>{moment(orderDate).format('ll')}</Text>
                                         </TouchableHighlight>
-                                        {Platform.OS === 'android' && show && (
+                                        {Platform.OS === 'android' && showOrderDate && (
                                             <DateTimePicker
                                                 timeZoneOffsetInSeconds={0}
                                                 style={{ width: '90%', marginRight: SIZES.padding * 0.5, height: '100%' }}
                                                 testID="dateTimePicker"
                                                 value={orderDate}
-                                                minimumDate={new Date(moment().subtract(1, 'year').format('YYYY-MM-DD'))}
+                                                maximumDate={new Date(moment().format('YYYY-MM-DD'))}
+                                                minimumDate={new Date(moment().subtract(1, 'month').format('YYYY-MM-DD'))}
                                                 mode='date'
                                                 is24Hour={true}
                                                 display={Platform.OS === 'ios' ? 'spinner' : 'default'}
@@ -374,14 +376,14 @@ const Page = ({ index, inputRef, monRef, edit, moveIn, status, setStatus, intern
                         <InputTextField placeholder='Notes, Comments' numberOfLines={5} multiline={true} style={{ height: SIZES.height / 6, borderWidth: 0.3, borderRadius: 8, borderColor: COLORS.lightGray, marginBottom: 50, }} value={referralData.comment} onChangeText={text => setReferralData({ ...referralData, comment: text })} />
 
 
-                        {Platform.OS === 'ios' && (
-                            <Modal transparent animationType='slide' visible={show || showDue}>
+                        {Platform.OS === 'ios' && showOrderDate && (
+                            <Modal transparent animationType='slide' visible={showOrderDate}>
                                 <View style={{ backgroundColor: COLORS.background, position: 'absolute', left: 0, right: 0, height: SIZES.height / 2, bottom: 0, borderTopLeftRadius: SIZES.radius * 3, borderTopRightRadius: SIZES.radius * 3 }}>
                                     <View style={{ flexDirection: 'row', paddingVertical: SIZES.padding, justifyContent: 'space-between', marginHorizontal: SIZES.padding * 2 }}>
-                                        <TouchableHighlight activeOpacity={0} underlayColor={COLORS.light} onPress={() => showDue ? setShowDue(false) : setShow(false)}>
+                                        <TouchableHighlight activeOpacity={0} underlayColor={COLORS.light} onPress={() => setShowOrderDate(false)}>
                                             <Text style={{ ...FONTS.body3, color: COLORS.red }}>Cancel</Text>
                                         </TouchableHighlight>
-                                        <TouchableHighlight onPress={() => showDue ? setShowDue(false) : setShow(false)}>
+                                        <TouchableHighlight onPress={() => setShowOrderDate(false)}>
                                             <Text style={{ ...FONTS.h3, color: 'blue' }}>Done</Text>
                                         </TouchableHighlight>
                                     </View>
@@ -391,12 +393,42 @@ const Page = ({ index, inputRef, monRef, edit, moveIn, status, setStatus, intern
                                             timeZoneOffsetInSeconds={0}
                                             style={{ width: '90%', marginRight: SIZES.padding * 0.5, height: '100%' }}
                                             testID="dateTimePicker"
-                                            value={showDue ? dueDate : orderDate}
-                                            minimumDate={new Date(moment().subtract(1, 'year').format('YYYY-MM-DD'))}
+                                            value={orderDate}
+                                            minimumDate={new Date(moment().subtract(1, 'month').format('YYYY-MM-DD'))}
+                                            maximumDate={new Date(moment().add(1, 'day').format('YYYY-MM-DD'))}
                                             mode='date'
                                             is24Hour={true}
                                             display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                                            onChange={showDue ? onChangeDueDate : onChangeOrderDate}
+                                            onChange={onChangeOrderDate}
+                                        />
+                                    </View>
+                                </View>
+                            </Modal>
+                        )}
+                        {Platform.OS === 'ios' && showDue && (
+                            <Modal transparent animationType='slide' visible={show || showDue}>
+                                <View style={{ backgroundColor: COLORS.background, position: 'absolute', left: 0, right: 0, height: SIZES.height / 2, bottom: 0, borderTopLeftRadius: SIZES.radius * 3, borderTopRightRadius: SIZES.radius * 3 }}>
+                                    <View style={{ flexDirection: 'row', paddingVertical: SIZES.padding, justifyContent: 'space-between', marginHorizontal: SIZES.padding * 2 }}>
+                                        <TouchableHighlight activeOpacity={0} underlayColor={COLORS.light} onPress={() => setShowDue(false)}>
+                                            <Text style={{ ...FONTS.body3, color: COLORS.red }}>Cancel</Text>
+                                        </TouchableHighlight>
+                                        <TouchableHighlight onPress={() => setShowDue(false)}>
+                                            <Text style={{ ...FONTS.h3, color: 'blue' }}>Done</Text>
+                                        </TouchableHighlight>
+                                    </View>
+                                    <View style={{ flex: 1, marginBottom: 20, justifyContent: 'center', alignItems: 'center' }}>
+
+                                        <DateTimePicker
+                                            timeZoneOffsetInSeconds={0}
+                                            style={{ width: '90%', marginRight: SIZES.padding * 0.5, height: '100%' }}
+                                            testID="dateTimePicker"
+                                            value={dueDate}
+                                            minimumDate={new Date(moment().format('YYYY-MM-DD'))}
+                                            maximumDate={new Date(moment().add(3, 'months').format('YYYY-MM-DD'))}
+                                            mode='date'
+                                            is24Hour={true}
+                                            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                                            onChange={onChangeDueDate}
                                         />
                                     </View>
                                 </View>

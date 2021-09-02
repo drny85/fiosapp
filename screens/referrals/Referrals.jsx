@@ -5,8 +5,6 @@ import { COLORS, FONTS, SIZES } from '../../constants/contantts'
 import authContext from '../../context/auth/authContext'
 import referralsContext from '../../context/referrals/referralContext'
 import { AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import { Switch } from 'react-native-elements'
 import { db } from '../../database'
 
@@ -259,7 +257,7 @@ const styles = StyleSheet.create({
         width: SIZES.width,
         marginTop: 10,
         alignItems: 'center',
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.white,
 
 
 

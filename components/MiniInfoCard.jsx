@@ -9,7 +9,7 @@ const MiniInfoCard = ({ title, subtitle, show = false, tv, onPress, style, perce
 
     return (
         <TouchableOpacity style={[styles.view, style]} onPress={onPress}>
-            <Text style={{ ...FONTS.body5 }}>{title}</Text>
+            <Text style={{ ...FONTS.h4, color: COLORS.lightText }}>{title}</Text>
             {percentage && (
                 <ProgressCircle
                     containerStyle={{ justifyContent: 'center', alignItems: 'center' }}
@@ -22,22 +22,23 @@ const MiniInfoCard = ({ title, subtitle, show = false, tv, onPress, style, perce
 
                 >
                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                        <AnimatedNumbers animationDuration={600} animateToNumber={Math.ceil(percentage) || 0} fontStyle={{ ...FONTS.body5 }} />
-                        <Text>%</Text>
+                        <AnimatedNumbers animationDuration={600} animateToNumber={Math.ceil(percentage) || 0} fontStyle={{ ...FONTS.body5, color: COLORS.lightText }} />
+                        <Text style={{ color: COLORS.lightText }}>%</Text>
                     </View>
 
                 </ProgressCircle>
 
             )}
             {!percentage && !show && (
-                <AnimatedNumbers animationDuration={600} animateToNumber={subtitle} fontStyle={{ ...FONTS.h3 }} />
+                <AnimatedNumbers animationDuration={600} animateToNumber={subtitle} fontStyle={{ ...FONTS.h3, color: COLORS.lightText }} />
             )}
             {!percentage && show && (
-                <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.background, paddingVertical: 3, paddingHorizontal: 6, borderRadius: 25 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: COLORS.background, paddingVertical: 3, paddingHorizontal: 8, borderRadius: 25 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Text style={{ ...FONTS.body5 }}>Int: </Text>
-                        <AnimatedNumbers animationDuration={600} animateToNumber={subtitle} fontStyle={{ ...FONTS.h4 }} />
+                        <AnimatedNumbers animationDuration={600} animateToNumber={subtitle} fontStyle={{ ...FONTS.h4, color: COLORS.black }} />
                     </View>
+                    <View style={{ paddingHorizontal: 2 }} />
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Text style={{ ...FONTS.body5 }}>TV: </Text>
                         <AnimatedNumbers animationDuration={600} animateToNumber={tv} fontStyle={{ ...FONTS.h4 }} />
