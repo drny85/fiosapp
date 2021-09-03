@@ -61,39 +61,7 @@ const Managers = ({ navigation, route }) => {
         })
     }, [navigation])
 
-    // useEffect(() => {
-    //     switch (subject) {
-    //         case 'manager':
-    //             getManagers(user?.id)
-    //             break;
-    //         case 'referee':
-    //             getReferees(user?.id)
-    //             break;
-    //         case 'coach':
-    //             getCoachs(user?.id)
-    //             break;
 
-    //         default:
-    //             break;
-    //     }
-    // }, [subject, user])
-
-    // useEffect(() => {
-    //     switch (subject) {
-    //         case 'manager':
-    //             setData([...managers])
-    //             break;
-    //         case 'coach':
-    //             setData([...coachs])
-    //             break;
-    //         case 'referee':
-    //             setData([...referees])
-    //         default:
-    //             break;
-    //     }
-
-
-    // }, [subject, data.length])
 
     if (loadingReferees || loadingCoach || loadingManagers) return <Loader />
     return (
@@ -115,7 +83,7 @@ const Managers = ({ navigation, route }) => {
                 setVisible(true)
             }}
                 onDeletePress={() => handleDelete(item)}
-                onPress={() => console.log('Work on people profile page')} />} />
+                onPress={() => { navigation.navigate('PersonProfile', { person: item }) }} />} />
 
 
             <AddPersonModal visible={visible} person={person} editing={editing} setVisible={() => setVisible(false)} setEditing={setEditing} selected={subject} />

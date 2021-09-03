@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useLayoutEffect } from 'react'
-import { StyleSheet, Text, View, Alert, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Alert, TouchableOpacity, Image } from 'react-native'
 import ScreenView from '../ScreenView'
 import { COLORS, FONTS, SIZES } from '../../constants/contantts';
 
@@ -35,6 +35,7 @@ const Profile = ({ navigation }) => {
 
     useLayoutEffect(() => {
         navigation.setOptions({
+            title: `${user.name.split(' ')[0]}`,
             headerRight: () => (<TouchableOpacity onPress={logoutHandler} style={{ marginRight: 15, }}>
                 <Text style={{ ...FONTS.h4, color: COLORS.lightGray }}>Log Out</Text>
             </TouchableOpacity>)
@@ -46,15 +47,16 @@ const Profile = ({ navigation }) => {
     }, [navigation, user])
     return (
         <View style={styles.view}>
-            <View>
+            <View style={{ alignItems: 'center', justifyContent: 'center', width: 200, height: 200, borderRadius: 100, backgroundColor: 'red', alignSelf: 'center', marginVertical: 20 }}>
                 {/* Profile picture section */}
+                <Image resizeMode='cover' style={{ width: '100%', height: '100%', overflow: 'hidden', borderRadius: SIZES.width }} source={{ uri: user.imageUrl ? user.imageUrl : 'https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png' }} />
             </View>
-            <ScreenView>
+            <View style={{ flex: 2 }}>
                 <ProfileListItem tittle='Manage AMs' onPress={() => navigation.navigate('Managers', { subject: 'manager' })} />
                 <ProfileListItem tittle='Manage Coach' onPress={() => navigation.navigate('Managers', { subject: 'coach' })} />
                 <ProfileListItem tittle='Manage Referees' onPress={() => navigation.navigate('Managers', { subject: 'referee' })} />
                 <ProfileListItem tittle='Chat Screen' onPress={() => navigation.navigate('Chat')} />
-            </ScreenView>
+            </View>
         </View>
     )
 }
