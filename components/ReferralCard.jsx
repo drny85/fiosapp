@@ -76,15 +76,15 @@ const styles = StyleSheet.create({
         width: '95%',
         minHeight: 100,
         padding: SIZES.padding * 0.6,
-        shadowColor: COLORS.card,
+        shadowColor: COLORS.black,
         shadowOffset: {
             width: 8,
             height: 8,
 
         },
         elevation: 10,
-        shadowOpacity: 0.6,
-        shadowRadius: 10,
+        shadowOpacity: 0.5,
+        shadowRadius: 8,
         backgroundColor: COLORS.card,
         paddingVertical: SIZES.padding,
         marginVertical: 10,

@@ -1,12 +1,13 @@
 import React, { useContext, useRef, useState } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Platform, KeyboardAvoidingView, Keyboard } from 'react-native'
+import { StyleSheet, Text, View, Platform, KeyboardAvoidingView, Keyboard } from 'react-native'
 import ScreenView from '../ScreenView'
 
 import { Input, Button, Image } from 'react-native-elements'
 import { COLORS, SIZES, FONTS } from '../../constants/contantts'
 import { Feather } from '@expo/vector-icons'
 import authContext from '../../context/auth/authContext'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import DismissKeyboard from '../../components/DismissKeyboard'
 
 
 const Signup = ({ navigation }) => {
@@ -90,30 +91,33 @@ const Signup = ({ navigation }) => {
 
     return (
 
+        <DismissKeyboard>
+            <KeyboardAvoidingView style={styles.view} keyboardVerticalOffset={60} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+                <View style={{ width: '100%', height: 100, alignItems: 'center', justifyContent: 'center' }}>
+                    <Image source={require('../../assets/verizon-logo.png')} style={{ width: SIZES.width / 3, height: 100, resizeMode: 'cover' }} />
+                </View>
+                <View style={{ width: '100%' }}>
+                    <Input autoCapitalize='words' autoCompleteType='name' placeholder='Full Name' value={name} onChangeText={text => setName(text)} />
+                    <Input autoCapitalize='none' autoCompleteType='tel' keyboardType='numeric' placeholder='Work Phone' value={phone} onChangeText={text => setPhone(formatedPhone(text.trim()))} />
+                    <Input ref={emailRef} autoCapitalize='none' autoCompleteType='email' keyboardType='email-address' placeholder='Email Address' value={email} onChangeText={text => setEmail(text.trim().toLowerCase())} />
+                    <Input autoCapitalize='none' textContentType='password' autoCorrect={false} rightIcon={<Feather name={show ? 'eye' : 'eye-off'} onPress={() => setShow(show ? false : true)} size={24} color="black" />} placeholder='Password' secureTextEntry={show} value={password} onChangeText={text => setPassword(text.trim())} />
+                    <Input autoCapitalize='none' textContentType='password' rightIcon={<Feather name={show ? 'eye' : 'eye-off'} onPress={() => setShow(show ? false : true)} size={24} color="black" />} placeholder='Confirm Password' secureTextEntry={show} value={confirm} onChangeText={text => setConfirm(text.trim())} />
+                </View>
+                <View style={{ marginTop: 30 }}>
+                    <TouchableOpacity style={styles.btn} onPress={signupHandler}>
+                        <Text style={{ ...FONTS.h3, color: COLORS.lightText }}>Sign Up</Text>
+                    </TouchableOpacity>
+                </View>
 
-        <KeyboardAvoidingView style={styles.view} keyboardVerticalOffset={60} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            <View style={{ width: '100%', height: 100, alignItems: 'center', justifyContent: 'center' }}>
-                <Image source={require('../../assets/verizon-logo.png')} style={{ width: SIZES.width / 3, height: 100, resizeMode: 'cover' }} />
-            </View>
-            <View style={{ width: '100%' }}>
-                <Input autoCapitalize='words' autoCompleteType='name' placeholder='Full Name' value={name} onChangeText={text => setName(text)} />
-                <Input autoCapitalize='none' autoCompleteType='tel' keyboardType='numeric' placeholder='Work Phone' value={phone} onChangeText={text => setPhone(formatedPhone(text.trim()))} />
-                <Input ref={emailRef} autoCapitalize='none' autoCompleteType='email' keyboardType='email-address' placeholder='Email Address' value={email} onChangeText={text => setEmail(text.trim().toLowerCase())} />
-                <Input autoCapitalize='none' textContentType='password' autoCorrect={false} rightIcon={<Feather name={show ? 'eye' : 'eye-off'} onPress={() => setShow(show ? false : true)} size={24} color="black" />} placeholder='Password' secureTextEntry={show} value={password} onChangeText={text => setPassword(text.trim())} />
-                <Input autoCapitalize='none' textContentType='password' rightIcon={<Feather name={show ? 'eye' : 'eye-off'} onPress={() => setShow(show ? false : true)} size={24} color="black" />} placeholder='Confirm Password' secureTextEntry={show} value={confirm} onChangeText={text => setConfirm(text.trim())} />
-            </View>
-            <View style={{ marginTop: 30 }}>
-                <Button type='outline' buttonStyle={{ borderColor: COLORS.secondary, backgroundColor: COLORS.primary }} style={{ width: SIZES.width / 3, }} titleStyle={{ color: COLORS.secondary }} raised title='Sign Up' onPress={signupHandler} />
-            </View>
+                <View style={{ position: 'absolute', bottom: 100, left: 0, right: 0, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
+                    <Text style={{ ...FONTS.body4 }}>Have an account?</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                        <Text style={{ ...FONTS.h3, color: COLORS.secondary }}>Sign In!</Text>
+                    </TouchableOpacity>
+                </View>
 
-            <View style={{ position: 'absolute', bottom: 100, left: 0, right: 0, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
-                <Text style={{ ...FONTS.body4 }}>Have an account?</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                    <Text style={{ ...FONTS.h3, color: COLORS.secondary }}>Sign In!</Text>
-                </TouchableOpacity>
-            </View>
-
-        </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
+        </DismissKeyboard>
 
 
     )
@@ -131,5 +135,11 @@ const styles = StyleSheet.create({
         width: '100%',
         marginHorizontal: SIZES.padding * 0.5,
 
+    },
+    btn: {
+        backgroundColor: COLORS.card,
+        paddingHorizontal: SIZES.padding * 2,
+        paddingVertical: SIZES.padding * 0.5,
+        borderRadius: SIZES.radius,
     }
 })

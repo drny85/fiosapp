@@ -1,4 +1,4 @@
-import React, { useContext, useLayoutEffect } from 'react'
+import React, { useCallback, useContext, useLayoutEffect } from 'react'
 import { StyleSheet, Text, View, Alert, TouchableOpacity } from 'react-native'
 import ScreenView from '../ScreenView'
 import { COLORS, FONTS, SIZES } from '../../constants/contantts';
@@ -7,12 +7,14 @@ import authContext from '../../context/auth/authContext';
 import ProfileListItem from '../../components/ProfileListItem';
 import refereesContext from '../../context/referee/refereesContext';
 import managersContext from '../../context/manager/managersContext';
+import coachContext from '../../context/coach/coachContext';
 
 
 const Profile = ({ navigation }) => {
     const { logout, user } = useContext(authContext)
-    const { resetRefereeState } = useContext(refereesContext)
-    const { resetManagerState } = useContext(managersContext)
+    const { resetRefereeState, getReferees } = useContext(refereesContext)
+    const { resetManagerState, getManagers } = useContext(managersContext)
+    const { getCoachs, coachs } = useContext(coachContext)
 
     const logoutHandler = async () => {
         try {
@@ -37,7 +39,11 @@ const Profile = ({ navigation }) => {
                 <Text style={{ ...FONTS.h4, color: COLORS.lightGray }}>Log Out</Text>
             </TouchableOpacity>)
         })
-    }, [navigation])
+
+        getManagers(user.id)
+        getReferees(user.id)
+        getCoachs(user.id)
+    }, [navigation, user])
     return (
         <View style={styles.view}>
             <View>

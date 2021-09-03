@@ -20,7 +20,7 @@ const CoachsState = ({ children }) => {
             const partners = coachInfo.partners;
             const found = await (await db.collection('coachs').doc(coachInfo.userId).collection('coachs').get()).size
             if (found > 0) {
-                console.log('No tmore')
+                console.log('No more')
                 dispatch({ type: COACH_ERROR, payload: 'Only one coach allowed' })
                 setTimeout(() => {
                     dispatch({ type: "CLEAR" })
@@ -45,16 +45,18 @@ const CoachsState = ({ children }) => {
 
             if (!userId) return;
             setLoadingCoach()
-            const data = []
-            await db.collection('coachs').doc(userId).collection('coachs').onSnapshot(doc => {
-                return doc.forEach(ref => {
-                    if (ref.exists) {
-                        data.push({ id: ref.id, ...ref.data() })
+
+            db.collection('coachs').doc(userId).collection('coachs').onSnapshot(doc => {
+                const data = []
+                doc.docs.map(d => {
+                    if (d.exists) {
+                        data.push({ id: d.id, ...d.data() })
                     }
                 })
+                dispatch({ type: GET_COACHS, payload: data })
             })
 
-            dispatch({ type: GET_COACHS, payload: data })
+
         } catch (error) {
             console.log('Error @getCoachs', error)
             dispatch({ type: COACH_ERROR, payload: error.message })

@@ -2,6 +2,7 @@ import React, { useReducer } from "react"
 import notesReducer from "./notesReducer"
 import NotesContext from './notesContext'
 import { db } from "../../database"
+import moment from 'moment'
 import { ADD_NOTE, GET_NOTES, NOTE_ERROR } from "./notesTypes"
 
 const NotesState = ({ children }) => {
@@ -67,6 +68,22 @@ const NotesState = ({ children }) => {
         }
     }
 
+    const deleteOrderNotes = async (userId) => {
+        try {
+            console.log(userId)
+            // const ref = await db.collection('notes').doc(userId).collection('notes').get()
+            // ref.data().forEach(n => {
+            //     if (moment(n.addedOn).isBefore(moment().add(1, 'month'))) {
+            //         console.log(n.addedOn)
+            //     }
+            // })
+
+
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+
 
 
     return <NotesContext.Provider value={{
@@ -77,7 +94,8 @@ const NotesState = ({ children }) => {
         addNote,
         deleteNote,
         updateNote,
-        getNotes
+        getNotes,
+        deleteOrderNotes
     }}>
         {children}
     </NotesContext.Provider>

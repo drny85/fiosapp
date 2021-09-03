@@ -173,11 +173,12 @@ const Notes = () => {
                     <View style={{ width: SIZES.width * 0.95, alignSelf: 'center', marginTop: SIZES.padding * 3 }}>
                         <InputTextField multiline={true} autoCorrect={false} placeholder='Type your note' value={noteData} onChangeText={text => setNoteData(text)} />
                     </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginTop: SIZES.padding * 2 }}>
-                        <TouchableOpacity style={{ paddingHorizontal: 25, paddingVertical: 15, justifyContent: 'center', width: SIZES.width / 3, alignItems: 'center', borderRadius: SIZES.radius * 3, alignSelf: 'center', shadowOffset: { width: 4, height: 6 }, backgroundColor: COLORS.ascent }} onPress={() => setNoteData('')}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginTop: SIZES.padding * 2, width: '90%', alignSelf: 'center' }}>
+                        <TouchableOpacity style={{ paddingHorizontal: 35, paddingVertical: 15, justifyContent: 'center', alignItems: 'center', borderRadius: SIZES.radius * 3, alignSelf: 'center', shadowOffset: { width: 4, height: 6 }, backgroundColor: COLORS.ascent }} onPress={() => setNoteData('')}>
                             <Text style={{ ...FONTS.h4 }}>Clear</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{ paddingHorizontal: 25, paddingVertical: 15, justifyContent: 'center', alignItems: 'center', width: SIZES.width / 3, borderRadius: SIZES.radius * 3, alignSelf: 'center', shadowOffset: { width: 4, height: 6 }, backgroundColor: COLORS.card }} onPress={editing ? () => handleUpdateNote(noteToUpdate) : saveNote}>
+
+                        <TouchableOpacity style={{ paddingHorizontal: 25, paddingVertical: 15, justifyContent: 'center', alignItems: 'center', borderRadius: SIZES.radius * 3, alignSelf: 'center', shadowOffset: { width: 4, height: 6 }, backgroundColor: COLORS.card }} onPress={editing ? () => handleUpdateNote(noteToUpdate) : saveNote}>
                             <Text style={{ ...FONTS.h4, color: COLORS.lightText }}> {editing ? 'Update Note' : 'Save Note'}</Text>
                         </TouchableOpacity>
                     </View>

@@ -30,9 +30,7 @@ const App = () => {
 
   })
   const { getReferrals } = useContext(referralsContext)
-  const { setUser, user, logout, loading } = useContext(authContext)
-  const { getReferees } = useContext(refereesContext)
-  const { getCoachs } = useContext(coachContext)
+  const { setUser, user, loading } = useContext(authContext)
 
   useEffect(() => {
 
@@ -43,11 +41,10 @@ const App = () => {
         if (u.emailVerified) {
 
           getReferrals(u.uid)
-          getReferees(u.uid)
-          getCoachs(u.uid)
+
           setUser(u.uid)
 
-        }
+        } else return;
 
       }
     })
@@ -62,13 +59,22 @@ const App = () => {
     }
   }, [])
 
-  if (!fontsLoaded) return <Loader />
+
+  if (!fontsLoaded || loading) {
+    return (<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <LottieView loop={false} autoPlay={true} resizeMode='contain' source={require('./assets/animations/welcome.json')} onAnimationFinish={() => {
+
+      }} />
+    </View>)
+  }
+
+
 
 
   return (
 
     <NavigationContainer>
-      {loading ? <Loader /> : user && user.roles.active ? <TabNavigation /> : <AuthNavigator />}
+      {user && user.roles.active && !loading ? <TabNavigation /> : <AuthNavigator />}
     </NavigationContainer>
 
   )

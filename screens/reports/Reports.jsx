@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, View, ScrollView, TouchableWithoutFeedback, Alert, TouchableHighlight, Modal } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, Alert, TouchableHighlight, Modal } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { COLORS, FONTS, SIZES } from '../../constants/contantts'
 import { AntDesign } from '@expo/vector-icons'
@@ -7,6 +7,7 @@ import AnimatedNumbers from 'react-native-animated-numbers';
 import { Divider, Switch } from 'react-native-elements'
 import { firstResponderDiscount } from '../../utils/firstResponderDiscount'
 import { mobilePlusHome } from '../../utils/mobilePlusHome'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import planDetails from '../../planDetails'
 
 const ACTIVATION_FEE = 35;
@@ -182,7 +183,7 @@ const Reports = () => {
                 width: SIZES.width,
                 marginVertical: 5
             }}>
-                <TouchableWithoutFeedback onLongPress={handleResetAll}>
+                <TouchableWithoutFeedback style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly', width: '100%' }} onLongPress={handleResetAll}>
                     <>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Text style={firstResponder === 0 ? { ...FONTS.body4, color: COLORS.lightText } : { ...FONTS.h4, color: COLORS.lightText }}>1st Responder</Text>
@@ -214,20 +215,7 @@ const Reports = () => {
                                 <Text style={{ textAlign: 'left', ...FONTS.h4 }}>{p.name}</Text>
                             </View>
                             <View style={{ justifyContent: 'center', width: '35%' }}>
-                                <View style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-evenly',
-                                    alignItems: 'center',
-                                    height: 50,
-                                    shadowRadius: 8,
-                                    shadowOpacity: 0.5,
-                                    shadowColor: COLORS.black,
-                                    borderRadius: SIZES.radius * 3,
-                                    shadowOffset: { width: 3, height: 5 },
-                                    backgroundColor: COLORS.white,
-                                    width: SIZES.width / 3,
-                                    marginVertical: 5
-                                }} >
+                                <View style={styles.selector} >
 
                                     <TouchableOpacity disabled={lines === 0 || p.line === 0} onPress={() => {
                                         if (lines > 0) {
@@ -237,10 +225,10 @@ const Reports = () => {
                                     }
 
                                     } style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-                                        <AntDesign name='minuscircleo' style={{ opacity: (lines === 0 || p.line === 0) ? 0.3 : 1 }} size={28} />
+                                        <AntDesign name='minuscircleo' style={{ opacity: (lines === 0 || p.line === 0) ? 0.3 : 1 }} size={28} color={COLORS.lightText} />
                                     </TouchableOpacity>
                                     <View>
-                                        <Text style={{ ...FONTS.h4 }}>{p.line}</Text>
+                                        <Text style={{ ...FONTS.h3, color: COLORS.lightText }}>{p.line}</Text>
                                     </View>
                                     <TouchableOpacity onPress={() => {
                                         if (p.id === 'just_kids' && lines === 0) return
@@ -251,7 +239,7 @@ const Reports = () => {
                                     }
 
                                     } style={{ width: '100%', justifyContent: 'center', alignItems: 'center', }}>
-                                        <AntDesign name='pluscircleo' size={28} />
+                                        <AntDesign name='pluscircleo' size={28} color={COLORS.lightText} />
                                     </TouchableOpacity>
                                 </View>
                             </View>
@@ -452,5 +440,19 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.background,
         marginTop: SIZES.statusBarHeight
 
+    },
+    selector: {
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        height: 50,
+        shadowRadius: 8,
+        shadowOpacity: 0.5,
+        shadowColor: COLORS.black,
+        borderRadius: SIZES.radius * 3,
+        shadowOffset: { width: 3, height: 5 },
+        backgroundColor: COLORS.card,
+        width: SIZES.width / 3,
+        marginVertical: 5
     }
 })

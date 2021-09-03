@@ -48,7 +48,7 @@ const ManagersState = ({ children }) => {
     const deleteManager = async (manager) => {
         try {
 
-            const res = db.collection('maangers').doc(manager.userId).collection('managers').doc(manager.id).delete()
+            const res = db.collection('managers').doc(manager.userId).collection('managers').doc(manager.id).delete()
             return true
         } catch (error) {
             console.log('Error @deleteManager', error)
@@ -61,16 +61,19 @@ const ManagersState = ({ children }) => {
             console.log('Gettings AMs')
             if (!userId) return;
             setManagersLoading()
-            const data = []
-            await db.collection('managers').doc(userId).collection('managers').onSnapshot(doc => {
-                return doc.forEach(ref => {
-                    if (ref.exists) {
-                        data.push({ id: ref.id, ...ref.data() })
+
+            db.collection('managers').doc(userId).collection('managers').onSnapshot(doc => {
+
+                const data = []
+                doc.docs.map(d => {
+                    if (d.exists) {
+                        data.push({ id: d.id, ...d.data() })
                     }
                 })
+
+                dispatch({ type: GET_MANAGERS, payload: data })
             })
 
-            dispatch({ type: GET_MANAGERS, payload: data })
         } catch (error) {
             console.log('Error @getManagers', error)
             dispatch({ type: MANAGER_ERROR, payload: error.message })

@@ -16,12 +16,12 @@ import { isEmailValid } from '../../utils/isEmailValide'
 import { useNavigation } from '@react-navigation/native'
 
 
-const AppPersonModal = ({ visible, person, setVisible, selected, editing, setEditing, setData }) => {
+const AppPersonModal = ({ visible, person, setVisible, selected, editing, setEditing }) => {
     const navigation = useNavigation()
     const { addManager, updateManager, deleteManager } = useContext(managersContext)
     const { addReferee, updateReferee, deleteReferee } = useContext(refereesContext)
     const { addCoach, coachs, error } = useContext(coachContext)
-    const { user } = useContext(authContext)
+    const { user, setUser } = useContext(authContext)
     const [manager, setManager] = useState(false)
     const [phone, setPhone] = useState('')
     const [email, setEmail] = useState('')
@@ -65,7 +65,7 @@ const AppPersonModal = ({ visible, person, setVisible, selected, editing, setEdi
                 if (editing && person) {
                     data.id = person.id
                     res = await updateManager(data)
-                    setData([...managers])
+
                 } else {
                     res = await addManager(data)
                 }
@@ -73,7 +73,7 @@ const AppPersonModal = ({ visible, person, setVisible, selected, editing, setEdi
 
                     setEditing(false)
                     setVisible(false)
-                    navigation.navigate('ProfileStack')
+
                 }
             } else if (selected === 'referee' || referee) {
                 let res;
@@ -89,14 +89,13 @@ const AppPersonModal = ({ visible, person, setVisible, selected, editing, setEdi
 
                 if (res) {
                     setEditing(false)
-                    //setVisible(false)
-                    navigation.navigate('ProfileStack')
+                    setVisible(false)
+
                 }
             } else if (selected === 'coach' || coach) {
-                values.partners = { manager: user.manager, coach: user.coach };
+                // values.partners = { manager: user.manager, coach: user.coach };
 
                 const res = await addCoach(data)
-
                 if (error) {
                     alert(error)
                     setVisible(false)
@@ -112,6 +111,7 @@ const AppPersonModal = ({ visible, person, setVisible, selected, editing, setEdi
             console.log('Error @AppPersonModal/HandleSubmit', error.message)
         } finally {
             setBusy(false)
+            //setUser(user.id)
         }
 
 
@@ -173,7 +173,10 @@ const AppPersonModal = ({ visible, person, setVisible, selected, editing, setEdi
                         {referee && (<InputTextField name="property" value={property} onChangeText={text => setProperty(text)} placeholder="Property's Name - (optional)" />)}
 
                         <TouchableOpacity disabled={busy} style={[styles.button, { opacity: busy ? 0.4 : 1 }]} onPress={handleSubmit} >
-                            <Text style={{ ...FONTS.h4 }}>Add Referee</Text>
+                            <Text style={{ ...FONTS.h4, color: COLORS.lightText }}>
+                                {!editing ? 'SAVE' : 'UPDATE'}
+
+                            </Text>
                         </TouchableOpacity>
                     </View>
                 </KeyboardAvoidingView>
@@ -212,7 +215,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         paddingVertical: SIZES.padding * 0.5,
         paddingHorizontal: SIZES.padding * 2,
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.card,
         shadowColor: COLORS.ascent,
         shadowOffset: { width: 8, height: 6 },
         shadowOpacity: 0.7,

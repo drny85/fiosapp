@@ -4,10 +4,11 @@ import notesContext from '../context/notes/notesContext';
 import moment from 'moment';
 
 export const useTodayNotes = (startDate = new Date(), endDate = new Date()) => {
-	const { notes, getNotes } = useContext(notesContext);
+	const { notes, getNotes, deleteOlderNotes } = useContext(notesContext);
 	const { user } = useContext(authContext);
 
 	useEffect(() => {
+		//deleteOlderNotes(user?.id);
 		getNotes(user?.id);
 	}, [user, notes.length]);
 

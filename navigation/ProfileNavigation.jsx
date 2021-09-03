@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element'
+import { COLORS } from '../constants/contantts'
 import ChatScreen from '../screens/chat/ChatScreen'
 import Managers from '../screens/profile/Managers'
 

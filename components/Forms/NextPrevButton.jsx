@@ -2,7 +2,7 @@
 import React from 'react'
 import { TouchableOpacity, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'
-import { COLORS } from '../../constants/contantts';
+import { COLORS, FONTS } from '../../constants/contantts';
 
 const NextPrevButton = ({ onPress, title, containerStyle, iconPosition, iconName, disabled }) => {
 
@@ -13,7 +13,7 @@ const NextPrevButton = ({ onPress, title, containerStyle, iconPosition, iconName
             style={[
                 containerStyle,
                 {
-                    backgroundColor: disabled ? '#ebeff5' : '#FFFFFF',
+                    backgroundColor: disabled ? COLORS.backgroundDisabled : COLORS.card,
                     shadowColor: COLORS.ascent,
                     shadowOffset: { width: 3, height: 5 },
                     shadowOpacity: 0.6,
@@ -29,11 +29,11 @@ const NextPrevButton = ({ onPress, title, containerStyle, iconPosition, iconName
             onPress={onPress}
         >
             {iconPosition === 'left' && (
-                <Ionicons name={iconName ? iconName : "chevron-back"} size={24} color={COLORS.black} />
+                <Ionicons name={iconName ? iconName : "chevron-back"} size={24} color={COLORS.lightText} />
             )}
-            <Text style={{ textTransform: 'capitalize', marginHorizontal: 10 }}>{title}</Text>
+            <Text style={{ textTransform: 'capitalize', marginHorizontal: 10, color: COLORS.lightText, ...FONTS.h4 }}>{title}</Text>
             {iconPosition === 'right' && (
-                <Ionicons name={iconName ? iconName : "chevron-forward"} size={24} color={COLORS.black} />
+                <Ionicons name={iconName ? iconName : "chevron-forward"} size={24} color={COLORS.lightText} />
             )}
         </TouchableOpacity>
     );

@@ -41,10 +41,10 @@ const Message = forwardRef(({ userId, onReply, onDelete, onClose, msgBody, onSwi
 
     return (
         <Swipeable ref={ref} overshootRight={false} onSwipeableClose={onClose} onSwipeableWillOpen={onSwipeableWillOpen} renderRightActions={rightActions}>
-            <View style={[styles.message, { alignSelf: sender.id === userId ? 'flex-end' : 'flex-start', backgroundColor: sender.id === userId ? COLORS.green : COLORS.tile }]}>
+            <View style={[styles.message, { alignSelf: sender.id === userId ? 'flex-end' : 'flex-start', backgroundColor: sender.id === userId ? COLORS.card : COLORS.tile }]}>
                 {isReplied && (<Text style={{ ...FONTS.h5, color: COLORS.black, opacity: 0.6 }}>{reply.sender.name}</Text>)}
-                <Text style={styles.sender}>{sender.name}</Text>
-                <Text style={{ ...FONTS.body3, color: sender.id === userId ? COLORS.white : COLORS.text }}>{isReplied ? reply.body : body}</Text>
+                <Text style={styles.sender}>{sender.id === userId ? 'Me' : sender.name}</Text>
+                <Text style={{ ...FONTS.body3, color: sender.id === userId ? COLORS.lightText : COLORS.text }}>{isReplied ? reply.body : body}</Text>
                 <Text style={styles.timeStamp}>{moment(timestamp?.toDate()).fromNow()}</Text>
                 {isReplied && (
                     <View style={{ backgroundColor: COLORS.background, padding: 10, borderRadius: SIZES.radius, marginVertical: 8, }}>
@@ -79,10 +79,11 @@ const styles = StyleSheet.create({
     sender: {
         ...FONTS.h5,
         position: 'absolute',
-        color: COLORS.lightGray,
+        color: COLORS.black,
         top: -35,
         left: 0,
         paddingLeft: 10,
+        opacity: 0.7,
         textTransform: 'capitalize',
         paddingVertical: 4,
         marginVertical: 6,

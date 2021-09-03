@@ -92,6 +92,7 @@ const Referrals = ({ navigation }) => {
 
 
     const goToAddReferralScreen = () => {
+        console.log(user.coach)
         if (!user.coach || !user.manager) {
             Alert.alert('Incomplete', 'Please add a manager and coach', [{ text: 'Go to Profile', onPress: () => navigation.navigate('ProfileStack', { screen: "Profile" }) }, { text: 'Cancel', style: 'cancel' }])
             return;

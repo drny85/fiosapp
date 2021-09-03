@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { KeyboardAvoidingView, Platform, FlatList, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, Animated } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons';
 import { COLORS, FONTS, SIZES } from '../../constants/contantts'
@@ -13,14 +13,16 @@ import Message from '../../components/Message';
 const ChatScreen = () => {
     const { user } = useContext(authContext)
     const valueY = useState(new Animated.Value(0))[0]
+    const opacity = useState(new Animated.Value(0))[0]
     const viewRef = useRef()
     const inputRef = useRef()
     const ref = useRef()
     const [isReplying, setIsReplying] = useState(false)
     const [messages, setMessages] = useState([])
     const [message, setMessage] = useState('')
+    const [opened, setOpened] = useState(null)
     const [msg, setMsg] = useState({})
-    const sendMessage = () => {
+    const sendMessage = useCallback(() => {
         try {
             if (message === '') return
             const data = {
@@ -34,11 +36,12 @@ const ChatScreen = () => {
             db.collection('messages').add({ ...data })
             setMessage('')
             setIsReplying(false)
+            rowRefs.get(opened)?.close()
             //viewRef.current?.scrollToEnd({ animated: true })
         } catch (error) {
             alert(error.message)
         }
-    }
+    }, [])
 
     const onDeleteMessage = async (id, userId) => {
         try {
@@ -54,16 +57,23 @@ const ChatScreen = () => {
     }
 
 
-    const keyboardIsUp = ({ endCoordinates }) => {
+    const keyboardIsUp = useCallback(({ endCoordinates }) => {
         const { height } = endCoordinates;
 
         Animated.timing(valueY, {
-            toValue: height > 400 ? height + 30 : height,
-            duration: 600,
+            toValue: height > 400 ? height + 35 : height,
+            duration: 500,
             useNativeDriver: false
         }).start()
-    }
-    const keyboardIsDown = ({ endCoordinates }) => {
+        Animated.timing(opacity, {
+            toValue: 1,
+            delay: 400,
+            duration: 800,
+            useNativeDriver: false
+        }).start()
+
+    }, [valueY])
+    const keyboardIsDown = useCallback(({ endCoordinates }) => {
         const { screenX } = endCoordinates;
 
         Animated.timing(valueY, {
@@ -71,20 +81,23 @@ const ChatScreen = () => {
             duration: 600,
             useNativeDriver: false
         }).start()
-    }
+    }, [valueY])
 
     let rowRefs = new Map();
 
-    const onReply = (m) => {
+    const onReply = useCallback((m) => {
         setMsg(m)
         inputRef.current?.focus()
         setIsReplying(true)
 
-    }
-    const closeReply = () => {
+
+    }, [])
+
+    const closeReply = useCallback(() => {
         setIsReplying(false)
+        rowRefs.get(opened)?.close()
         Keyboard.dismiss()
-    }
+    }, [])
 
     useEffect(() => {
         const keyboardListener = Keyboard.addListener('keyboardWillShow', keyboardIsUp)
@@ -115,6 +128,7 @@ const ChatScreen = () => {
                             rowRefs.set(item.id, ref)
                         }
                     }} onSwipeableWillOpen={() => {
+                        setOpened(item.id);
                         [...rowRefs.entries()].forEach(([key, ref]) => {
                             if (key !== item.id && ref) ref.close();
                         });
@@ -130,19 +144,21 @@ const ChatScreen = () => {
 
                 <View style={styles.input}>
 
-                    <TextInput ref={inputRef} autoCorrect={false} multiline value={message} onChangeText={text => setMessage(text)} style={{ flex: 1, paddingLeft: 10, ...FONTS.body3, height: '90%', }} placeholder='Type your message' placeholderTextColor={COLORS.black} />
-                    <TouchableOpacity disabled={message.length < 2} onPress={sendMessage} style={{ paddingHorizontal: 5 }}>
-                        <MaterialIcons name="send" size={34} color={COLORS.blue} />
+                    <TextInput ref={inputRef} autoCorrect={false} multiline value={message} onChangeText={text => setMessage(text)} style={{ flex: 1, ...FONTS.body3, marginLeft: 10, height: '100%', justifyContent: 'center', alignSelf: 'center', paddingTop: SIZES.padding * 0.7, paddingVertical: 10 }} placeholder='Type your message' placeholderTextColor={COLORS.black} />
+
+                    <TouchableOpacity disabled={message.length < 2} onPress={sendMessage}>
+                        <MaterialIcons name="send" size={34} color={COLORS.card} />
                     </TouchableOpacity>
                 </View>
 
                 {isReplying && (
-                    <Animated.View style={[styles.reply, { position: 'absolute', bottom: valueY },]}>
+                    <Animated.View style={[styles.reply, { position: 'absolute', bottom: valueY, opacity: opacity },]}>
+                        <View style={{ width: 10, position: 'absolute', left: 1, backgroundColor: COLORS.green, bottom: 1, top: 1, }} />
                         <TouchableOpacity onPress={closeReply} style={styles.close}>
                             <MaterialIcons name='close' size={24} color={COLORS.black} />
                         </TouchableOpacity>
                         <Text style={styles.replyTo}>Reply to {msg?.sender.name}</Text>
-                        <Text style={{ ...FONTS.body4, color: COLORS.white, textAlign: 'left' }}>{msg.body}</Text>
+                        <Text style={{ ...FONTS.body4, color: COLORS.text, textAlign: 'left' }}>{msg.body}</Text>
                     </Animated.View>
                 )}
 
@@ -162,7 +178,7 @@ const styles = StyleSheet.create({
 
     input: {
 
-
+        flexDirection: 'row',
         borderRadius: SIZES.radius * 3,
         borderWidth: 0.5,
         borderColor: COLORS.background,
@@ -170,10 +186,9 @@ const styles = StyleSheet.create({
         marginVertical: SIZES.padding * 0.5,
         marginHorizontal: 10,
         backgroundColor: COLORS.background,
-        flexDirection: 'row',
+
         width: SIZES.width * 0.98,
         minHeight: 50,
-
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'center',
@@ -182,7 +197,7 @@ const styles = StyleSheet.create({
 
     },
     reply: {
-        backgroundColor: COLORS.green,
+        backgroundColor: COLORS.background,
         paddingHorizontal: SIZES.padding,
         paddingVertical: SIZES.padding * 0.5, width: '95%',
         alignSelf: 'center',
@@ -199,9 +214,11 @@ const styles = StyleSheet.create({
         top: -10,
     },
     replyTo: {
-        ...FONTS.body5,
+        ...FONTS.body4,
         position: 'absolute',
+
         left: 0,
+        color: COLORS.text,
         top: -25,
     }
 

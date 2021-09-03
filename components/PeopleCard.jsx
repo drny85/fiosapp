@@ -21,7 +21,7 @@ const PeopleCard = forwardRef(({ item, onPress, onEditPress, onDeletePress, onSw
 
 
         return (<Animated.View style={[styles.left, { transform: [{ scale }], opacity, alignSelf: 'center', paddingVertical: SIZES.padding }]}>
-            <TouchableOpacity onPress={onEditPress} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
+            <TouchableOpacity onPress={onEditPress} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
                 <Entypo name='edit' size={24} color={COLORS.blue} />
                 <Animated.Text style={{ ...FONTS.body3 }}>Edit</Animated.Text>
             </TouchableOpacity>
@@ -34,7 +34,7 @@ const PeopleCard = forwardRef(({ item, onPress, onEditPress, onDeletePress, onSw
     }
 
     return (
-        <Swipeable ref={ref} onSwipeableWillOpen={onSwipeableWillOpen} overshootLeft={false} renderRightActions={rightActions}>
+        <Swipeable ref={ref} onSwipeableWillOpen={onSwipeableWillOpen} overshootRight={false} renderRightActions={rightActions}>
             <TouchableOpacity
                 style={styles.item}
                 key={item.id}
@@ -44,7 +44,7 @@ const PeopleCard = forwardRef(({ item, onPress, onEditPress, onDeletePress, onSw
                     <Text style={{ ...FONTS.h3 }}> {(item.name.split(' ')[0][0])}{(item.name.split(' ')[1][0])}</Text>
                 </View>
                 <View>
-                    <Text style={{ ...FONTS.body3 }}>
+                    <Text style={{ ...FONTS.body3, color: COLORS.lightText }}>
                         {item.name}
                     </Text>
                 </View>
@@ -60,7 +60,8 @@ const styles = StyleSheet.create({
     item: {
         flexDirection: 'row',
         alignItems: 'center',
-        width: '100%',
+        width: '98%',
+        alignSelf: 'center',
         elevation: 10,
         shadowColor: COLORS.lightGray,
         shadowOffset: {
@@ -69,13 +70,13 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.7,
         shadowRadius: 8,
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.card,
         paddingVertical: SIZES.padding * 0.2,
         paddingHorizontal: SIZES.padding,
         marginVertical: 5,
     },
     icon: {
-        backgroundColor: COLORS.lightGray,
+        backgroundColor: COLORS.white,
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 30,

@@ -55,15 +55,14 @@ const RefereesState = ({ children }) => {
 
             if (!userId) return;
             setLoadingReferees()
-            await db.collection('referees').doc(userId).collection('referees').orderBy('name', 'asc').onSnapshot(doc => {
+            db.collection('referees').doc(userId).collection('referees').orderBy('name', 'asc').onSnapshot(doc => {
                 const data = []
-                return doc.forEach(ref => {
-                    if (ref.exists) {
-                        data.push({ id: ref.id, ...ref.data() })
+                doc.docs.map(d => {
+                    if (d.exists) {
+                        data.push({ id: d.id, ...d.data() })
                     }
-                    dispatch({ type: GET_REFEREES, payload: data })
                 })
-
+                dispatch({ type: GET_REFEREES, payload: data })
 
             })
 
