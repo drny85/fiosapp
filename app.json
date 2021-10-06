@@ -2,7 +2,7 @@
 	"expo": {
 		"name": "My Drasco",
 		"slug": "My_Drasco",
-		"version": "1.0.1",
+		"version": "1.0.2",
 		"orientation": "portrait",
 		"icon": "./assets/icon.png",
 		"splash": {
@@ -17,7 +17,7 @@
 		"ios": {
 			"supportsTablet": true,
 			"bundleIdentifier": "net.robertdev.melendez.fiosrewarddrasco",
-			"buildNumber": "1.0.1"
+			"buildNumber": "1.0.2"
 		},
 		"extra": {
 			"appId": "1:188462078951:web:0b59e22c794940dcaafb42"
@@ -27,7 +27,7 @@
 				"foregroundImage": "./assets/adaptive-icon.png",
 				"backgroundColor": "#FFFFFF"
 			},
-			"versionCode": 1,
+			"versionCode": 2,
 			"package": "net.robertdev.melendez.fiosrewarddrasco"
 		},
 		"web": {

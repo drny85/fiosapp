@@ -34,12 +34,8 @@ const TabNavigation = () => {
             return {
                 title: 'Referrals', tabBarIcon: ({ color, size, focused }) => <Feather name="list" size={size} color={focused ? COLORS.black : COLORS.white} />,
                 tabBarVisible: (routeName === 'AddReferralScreen' || routeName === 'ReferralDetails') ? false : true,
-
-
             }
-        }
-        }
-            component={ReferralsNavigation} />
+        }} component={ReferralsNavigation} />
 
         <Tabs.Screen name='NotesStack' options={{
             title: 'Notes',
@@ -56,8 +52,6 @@ const TabNavigation = () => {
             return {
                 title: 'Profile', tabBarIcon: ({ color, size, focused }) =>
                     <Feather name="user" size={size} color={focused ? COLORS.black : COLORS.white} />,
-
-
             }
 
         }} component={ProfileNavigation} />
