@@ -22,7 +22,11 @@
 			"release": {
 				"workflow": "managed",
 				"releaseChannel": "production",
-				"cache": { "key": "nocache", "disabled": true },
+				"cache": {
+					"key": "clear",
+					"disabled": true,
+					"cacheDefaultPaths": false
+				},
 				"env": {
 					"ENVIRONMENT": "production"
 				}
