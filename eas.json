@@ -3,7 +3,7 @@
 		"android": {
 			"release": {
 				"workflow": "managed",
-				"cache": { "key": "cahes", "disabled": true },
+				"cache": { "key": {}, "disabled": true },
 				"releaseChannel": "production",
 				"env": {
 					"ENVIRONMENT": "production"
@@ -13,14 +13,16 @@
 			"development": {
 				"workflow": "managed",
 				"buildType": "development-client",
-				"distribution": "internal"
+				"distribution": "internal",
+				"cache": { "key": {}, "disabled": true }
 			}
 		},
+
 		"ios": {
 			"release": {
 				"workflow": "managed",
 				"releaseChannel": "production",
-				"cache": { "key": "cahes", "disabled": true },
+				"cache": { "key": {}, "disabled": true },
 				"env": {
 					"ENVIRONMENT": "production"
 				}
@@ -29,7 +31,8 @@
 				"workflow": "managed",
 				"buildType": "development-client",
 				"distribution": "internal",
-				"releaseChannel": "staging"
+				"releaseChannel": "staging",
+				"cache": { "key": {}, "disabled": true }
 			}
 		}
 	}
