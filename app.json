@@ -19,6 +19,9 @@
 			"bundleIdentifier": "net.robertdev.melendez.fiosrewarddrasco",
 			"buildNumber": "1.0.2"
 		},
+		"cache": {
+			"key": {}
+		},
 		"extra": {
 			"appId": "1:188462078951:web:0b59e22c794940dcaafb42"
 		},
