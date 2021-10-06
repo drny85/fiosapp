@@ -14,7 +14,7 @@ export const COLORS = {
 	secondary: '#3d405b',
 	background: '#FFFFFF',
 	ascent: '#ffe8d6',
-	card: '#800f2f',
+	card: '#04395e',
 	placeHolderTextColor: '#808080',
 	green: '#005f73',
 	tile: '#ecf0f1',
@@ -23,7 +23,7 @@ export const COLORS = {
 	lightText: '#f8f9fa',
 	backgroundDisabled: '#61a5c2',
 	white: '#f7f7f7',
-	red: '#d00000',
+	red: '#c44536',
 	text: '#333333',
 	progress: '#c2c955',
 };

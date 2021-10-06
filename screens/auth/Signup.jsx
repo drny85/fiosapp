@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
         height: '100%',
         maxWidth: 600,
         alignSelf: 'center',
+
         width: '100%',
         marginHorizontal: SIZES.padding * 0.5,
 

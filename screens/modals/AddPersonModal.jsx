@@ -51,6 +51,7 @@ const AppPersonModal = ({ visible, person, setVisible, selected, editing, setEdi
                 property: property !== '' ? property : null,
                 userId: user.userId,
                 name: name,
+                email: email,
                 role: selected,
                 addedOn: new Date().toISOString(),
                 phone: phone,
@@ -111,7 +112,7 @@ const AppPersonModal = ({ visible, person, setVisible, selected, editing, setEdi
             console.log('Error @AppPersonModal/HandleSubmit', error.message)
         } finally {
             setBusy(false)
-            //setUser(user.id)
+            setUser(user.id)
         }
 
 
@@ -143,7 +144,7 @@ const AppPersonModal = ({ visible, person, setVisible, selected, editing, setEdi
             setPhone(person.phone)
             setProperty(person.property)
         }
-        console.log('REN')
+
         return () => setVisible(false)
 
     }, [selected, editing])

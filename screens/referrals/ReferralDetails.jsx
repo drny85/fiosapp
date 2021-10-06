@@ -23,6 +23,7 @@ const ReferralDetails = ({ route, navigation }) => {
     const [reminderMessage, setReminderMessage] = useState('')
     const { referrals } = useContext(referralsContext)
     const [show, setShow] = useState(false)
+    const [settingTimer, setSettingTimer] = useState(false)
     const [scheduleDate, setScheduleDate] = useState(new Date())
 
     const referral = referrals.find(r => r.id === route.params.id)
@@ -130,51 +131,60 @@ const ReferralDetails = ({ route, navigation }) => {
 
     return (
         <ScrollView style={[styles.view, { backgroundColor: referral.status.id === 'closed' ? COLORS.green : referral.status.id === 'not_sold' ? COLORS.red : COLORS.white }]}>
-            <Animated.View style={[{ position: 'absolute', height: SIZES.height * 0.4, width: '90%', top: heighY, maxWidth: 500, alignSelf: 'center', zIndex: 100, backgroundColor: COLORS.card, borderRadius: SIZES.radius }]}>
+            {settingTimer && (
+                <Animated.View style={[{ position: 'absolute', height: SIZES.height * 0.4, width: '90%', top: heighY, maxWidth: 500, alignSelf: 'center', zIndex: 100, backgroundColor: COLORS.lightGray, borderRadius: SIZES.radius }]}>
 
-                <View style={{ height: '80%', borderRadius: SIZES.radius }}>
-                    <View style={{ paddingVertical: SIZES.padding, }}>
-                        <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-evenly', alignItems: 'center' }}>
-                            <Text style={{ textAlign: 'center', ...FONTS.h3 }}>Schedule Task</Text>
-                            <TouchableOpacity onPress={() => {
-                                Animated.timing(heighY, {
-                                    toValue: - SIZES.height * 0.5,
-                                    duration: 600,
-                                    useNativeDriver: false
-                                }).start()
-                            }}>
-                                <Ionicons name='close-circle-outline' size={30} color={COLORS.black} />
-                            </TouchableOpacity>
+                    <View style={{ height: '80%', borderRadius: SIZES.radius }}>
+                        <View style={{ paddingVertical: SIZES.padding, }}>
+                            <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-evenly', alignItems: 'center' }}>
+                                <Text style={{ textAlign: 'center', ...FONTS.h3 }}>Schedule Task</Text>
+                                <TouchableOpacity onPress={() => {
+                                    setSettingTimer(false)
+                                    Animated.timing(heighY, {
+                                        toValue: - SIZES.height * 0.5,
+                                        duration: 600,
+                                        useNativeDriver: false
+                                    }).start()
+                                }}>
+                                    <Ionicons name='close-circle-outline' size={30} color={COLORS.black} />
+                                </TouchableOpacity>
+                            </View>
+                            <InputTextField autoCapitalize='words' placeholder='A message for this reminder' onChangeText={text => setReminderMessage(text)} value={reminderMessage} style={{ backgroundColor: COLORS.white, width: '90%', alignSelf: 'center', borderRadius: SIZES.radius * 2, paddingVertical: 10 }} />
                         </View>
-                        <InputTextField autoCapitalize='words' placeholder='A message for this reminder' onChangeText={text => setReminderMessage(text)} value={reminderMessage} style={{ backgroundColor: COLORS.white, width: '90%', alignSelf: 'center', borderRadius: SIZES.radius * 2, paddingVertical: 10 }} />
+                        <View style={{ height: '30%' }}>
+                            <DateTimePicker
+                                timeZoneOffsetInSeconds={0}
+                                style={{ width: '90%', marginRight: SIZES.padding * 0.5, height: '100%' }}
+                                testID="dateTimePicker"
+                                value={scheduleDate}
+                                minimumDate={new Date().toISOString()}
+                                maximumDate={new Date(moment().add(3, 'months').format('YYYY-MM-DD'))}
+                                mode='datetime'
+                                is24Hour={true}
+                                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                                onChange={onDateChange}
+                            />
+                        </View>
+
+                        <TouchableOpacity style={{ shadowOffset: { width: 4, height: 7 }, marginTop: 20, shadowOpacity: 0.7, shadowRadius: 8, elevation: 7, borderRadius: SIZES.radius, paddingVertical: SIZES.padding * 0.5, paddingHorizontal: SIZES.padding, width: '60%', justifyContent: 'center', alignItems: 'center', alignSelf: 'center', shadowColor: COLORS.lightGray, backgroundColor: COLORS.primary, }}
+                            onPress={() => {
+                                scheduleReminder()
+                                setSettingTimer(false)
+                            }}>
+                            <Text style={{ ...FONTS.h4 }}>Set Reminder</Text>
+                        </TouchableOpacity>
                     </View>
-                    <View style={{ height: '30%' }}>
-                        <DateTimePicker
-                            timeZoneOffsetInSeconds={0}
-                            style={{ width: '90%', marginRight: SIZES.padding * 0.5, height: '100%' }}
-                            testID="dateTimePicker"
-                            value={scheduleDate}
-                            minimumDate={new Date().toISOString()}
-                            maximumDate={new Date(moment().add(3, 'months').format('YYYY-MM-DD'))}
-                            mode='datetime'
-                            is24Hour={true}
-                            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                            onChange={onDateChange}
-                        />
-                    </View>
-
-                    <TouchableOpacity style={{ shadowOffset: { width: 4, height: 7 }, marginTop: 20, shadowOpacity: 0.7, shadowRadius: 8, elevation: 7, borderRadius: SIZES.radius, paddingVertical: SIZES.padding * 0.5, paddingHorizontal: SIZES.padding, width: '60%', justifyContent: 'center', alignItems: 'center', alignSelf: 'center', shadowColor: COLORS.lightGray, backgroundColor: COLORS.primary, }} onPress={scheduleReminder}>
-                        <Text style={{ ...FONTS.h4 }}>Set Reminder</Text>
-                    </TouchableOpacity>
-                </View>
 
 
-            </Animated.View>
+                </Animated.View>
+            )}
+
             <View style={styles.customer}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', marginBottom: 15 }}>
                     <Text style={[styles.name, { ...FONTS.h2 }]}>{referral.name} </Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignSelf: 'flex-end', width: '20%', marginLeft: 30 }}>
                         <TouchableOpacity onPress={() => {
+                            setSettingTimer(true)
                             Animated.timing(heighY, {
                                 toValue: 10,
                                 duration: 600,

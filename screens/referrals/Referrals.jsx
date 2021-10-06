@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react'
 import { StyleSheet, FlatList, Alert, View, Text, TouchableOpacity, TextInput, Modal } from 'react-native'
 import ReferralCard from '../../components/ReferralCard'
 import { COLORS, FONTS, SIZES } from '../../constants/contantts'
@@ -7,6 +7,7 @@ import referralsContext from '../../context/referrals/referralContext'
 import { AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Switch } from 'react-native-elements'
 import { db } from '../../database'
+import { Button } from 'react-native-elements/dist/buttons/Button'
 
 const defaltFilter = {
     new: false,
@@ -91,23 +92,15 @@ const Referrals = ({ navigation }) => {
     }
 
 
-    const goToAddReferralScreen = () => {
-        console.log(user.coach)
+    const goToAddReferralScreen = useCallback(() => {
+
         if (!user.coach || !user.manager) {
-            Alert.alert('Incomplete', 'Please add a manager and coach', [{ text: 'Go to Profile', onPress: () => navigation.navigate('ProfileStack', { screen: "Profile" }) }, { text: 'Cancel', style: 'cancel' }])
+            Alert.alert('Incomplete', 'Please add a Manager & Coach', [{ text: 'Go to Profile', onPress: () => navigation.navigate('ProfileStack', { screen: "Profile" }) }, { text: 'Cancel', style: 'cancel' }])
             return;
         }
         navigation.navigate('AddReferralScreen', { edit: false, referral: null })
-    }
+    }, [user])
 
-
-    const checkIfUserHasCoach = () => {
-        if (!user.coach || !user.manager) {
-            Alert.alert('Incomplete Profile', 'You must add at least a coach and a manager to add a referral', [{ text: 'Add Coach/Manager', onPress: () => navigation.navigate('ProfileStack', { screen: 'Profile' }) },
-            { text: 'Cancel', style: 'destructive' }])
-            return
-        }
-    }
 
     const items = ({ item }) => {
 
@@ -128,7 +121,7 @@ const Referrals = ({ navigation }) => {
         navigation.setOptions({
             title: referrals.length > 0 && <Text style={{ ...FONTS.h3, textTransform: 'capitalize' }}>{title}</Text>,
             headerRight: () => <TouchableOpacity style={{ marginRight: 20 }} onPress={goToAddReferralScreen}>
-                <AntDesign name='plus' color={COLORS.black} size={28} />
+                <AntDesign name='plus' color={COLORS.black} size={30} />
             </TouchableOpacity>
 
         })
@@ -137,9 +130,6 @@ const Referrals = ({ navigation }) => {
     useEffect(() => {
 
         setFilter({ ...defaltFilter, new: true })
-
-        checkIfUserHasCoach()
-
         setReferralCopy([...referrals])
         return () => {
             setSearchResult('')
@@ -149,6 +139,7 @@ const Referrals = ({ navigation }) => {
     if (referrals.length === 0) {
         return <View style={[styles.view, { alignItems: 'center', justifyContent: 'center', height: '100%' }]}>
             <Text>No Referrals</Text>
+            <Button title='Refresh' onPress={() => getReferrals(user?.id)} style={{ backgroundColor: COLORS.card, paddingHorizontal: 20, borderRadius: 20 }} containerStyle={{ marginVertical: 20, borderRadius: 20 }} raised titleStyle={{ color: COLORS.lightText }} />
         </View>
     }
 
@@ -191,6 +182,7 @@ const Referrals = ({ navigation }) => {
                 ) : (
                         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                             <Text style={{ ...FONTS.h4 }}>No Referrals</Text>
+
                         </View>
                     )
             }
@@ -257,6 +249,7 @@ const styles = StyleSheet.create({
     view: {
         width: SIZES.width,
         marginTop: 10,
+        flex: 1,
         alignItems: 'center',
         backgroundColor: COLORS.white,
 

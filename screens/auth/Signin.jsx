@@ -1,9 +1,9 @@
 import React, { useContext, useState } from 'react'
-import { StyleSheet, Text, View, KeyboardAvoidingView } from 'react-native'
+import { StyleSheet, Text, View, KeyboardAvoidingView, Pressable } from 'react-native'
 import ScreenView from '../ScreenView'
 
 import { Input, Button, Image } from 'react-native-elements'
-import { Platform } from 'react-native'
+import { Platform, Modal } from 'react-native'
 import { COLORS, FONTS, SIZES } from '../../constants/contantts'
 import { Feather } from '@expo/vector-icons'
 import { auth } from '../../database'
@@ -11,15 +11,22 @@ import { useNavigation } from '@react-navigation/native'
 import authContext from '../../context/auth/authContext'
 import Loader from '../../components/Loader'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import * as Animatable from 'react-native-animatable'
 
 import LottieView from 'lottie-react-native';
 import DismissKeyboard from '../../components/DismissKeyboard'
+import { AntDesign } from '@expo/vector-icons'
+import { TextInput } from 'react-native'
+import { isEmailValid } from '../../utils/isEmailValide'
 
 
 
 const Signin = ({ route }) => {
     const [email, setEmail] = useState('')
+    const [emailReset, setEmailReset] = useState('')
     const [password, setPassword] = useState('')
+    const [resetPassword, setResetPassword] = useState(false)
+    const [success, setSuccess] = useState(false)
     const { setUser, loading } = useContext(authContext)
     const [processing, setProcessing] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
@@ -59,6 +66,24 @@ const Signin = ({ route }) => {
         }
     }
 
+    const handleResetPassword = async () => {
+        try {
+            if (emailReset.length < 6) {
+                alert('Password must be at least 6 characters long')
+                return
+            }
+            if (!isEmailValid(emailReset)) {
+                alert('Invalid email')
+                return
+            }
+            await auth.sendPasswordResetEmail(emailReset)
+            setSuccess(true)
+            //setResetPassword(false)
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+
 
     if (loading) return <Loader />
 
@@ -80,6 +105,9 @@ const Signin = ({ route }) => {
                             <View style={{ width: '100%' }}>
                                 <Input placeholder='Email Address' keyboardType='email-address' autoCorrect={false} autoCapitalize='none' value={email} onChangeText={text => setEmail(text.trim().toLowerCase())} />
                                 <Input rightIcon={<Feather name={!showPassword ? 'eye' : 'eye-off'} size={24} onPress={() => setShowPassword(!showPassword)} color="black" />} placeholder='Password' secureTextEntry={!showPassword} value={password} onChangeText={text => setPassword(text.trim())} />
+                                <TouchableOpacity onPress={() => setResetPassword(true)} style={{ marginRight: 10 }}>
+                                    <Text style={{ textAlign: 'right', color: COLORS.blue }}>Forgot Password?</Text>
+                                </TouchableOpacity>
                             </View>
                             <View style={{ marginTop: 30 }}>
                                 <TouchableOpacity style={styles.btn} onPress={singinHandler}>
@@ -94,6 +122,42 @@ const Signin = ({ route }) => {
                                     <Text style={{ ...FONTS.h3, color: COLORS.secondary }}>Sign Up!</Text>
                                 </TouchableOpacity>
                             </View>
+                            <Modal visible={resetPassword} animationType='slide'>
+                                <View style={{ flex: 1, backgroundColor: COLORS.background }}>
+                                    <Pressable onPress={() => setResetPassword(false)} style={{ justifyContent: 'center', alignItems: 'center', position: 'absolute', right: 30, top: 80, zIndex: 999, width: 50, height: 50, elevation: 8, borderRadius: 25, backgroundColor: COLORS.light }}>
+                                        <AntDesign name='close' size={24} />
+                                    </Pressable>
+                                    {!success && (
+                                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                            <TextInput value={emailReset} placeholder='Email Address' onChangeText={text => setEmailReset(text.toLowerCase().trim())} keyboardType='email-address' autoCapitalize='none' autoCorrect={false} style={{ paddingHorizontal: 12, paddingVertical: 8, ...FONTS.body4, backgroundColor: COLORS.light, width: '90%', borderRadius: 25, height: 50 }} />
+                                            <Pressable onPress={handleResetPassword} style={{ marginVertical: 25, backgroundColor: COLORS.secondary, paddingVertical: 15, paddingHorizontal: 30, borderRadius: 25 }}>
+                                                <Text style={{ color: COLORS.white, ...FONTS.h4 }}>Reset Password</Text>
+                                            </Pressable>
+                                        </View>
+                                    )}
+                                    {success && (
+                                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                            <Animatable.Text animation='fadeInDown' duration={600} style={{ ...FONTS.h2, }}>
+                                                Success!
+                                            </Animatable.Text>
+                                            <Animatable.Text animation='slideInUp' duration={600} style={{ marginVertical: 30, ...FONTS.body3, lineHeight: 30 }}>
+                                                If an account with {emailReset} exists, please check your email.
+                                            </Animatable.Text>
+                                            <Pressable onPress={() => {
+                                                setEmailReset('')
+                                                setResetPassword(false)
+                                                setSuccess(false)
+
+                                            }} style={{ marginVertical: 25, backgroundColor: COLORS.secondary, paddingVertical: 15, paddingHorizontal: 35, borderRadius: 25 }}>
+                                                <Text style={{ color: COLORS.white, ...FONTS.h4 }}>Got It!</Text>
+                                            </Pressable>
+                                        </View>
+                                    )}
+
+
+                                </View>
+
+                            </Modal>
 
                         </KeyboardAvoidingView>
                     )}
@@ -111,6 +175,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: '100%',
         maxWidth: 600,
+        paddingHorizontal: 10,
         alignSelf: 'center',
         width: '100%',
         marginHorizontal: SIZES.padding * 0.5

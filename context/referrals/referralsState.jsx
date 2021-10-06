@@ -48,7 +48,7 @@ const ReferralsState = ({ children }) => {
 
     const getReferrals = async (userId) => {
         try {
-
+            console.log('Getting Referrals')
             if (!userId) return;
             setReferralLoading()
 
@@ -95,8 +95,13 @@ const ReferralsState = ({ children }) => {
 
     const calculateReferralUnits = data => {
         const todayU = data.filter(r => r.status.name === 'Closed' && moment(r.order_date).isAfter(moment().startOf('day')) && moment(r.order_date).isBefore(moment().endOf('day')))
-        const wtdU = data.filter(r => r.status.name === 'Closed' && moment(r.order_date).isAfter(moment().startOf('week').add(1, 'day')) && moment(r.order_date).isBefore(moment().endOf('day').add(1, 'day')))
+        let wtdU = data.filter(r => r.status.name === 'Closed' && moment(r.order_date).isAfter(moment().startOf('week').add(1, 'day')) && moment(r.order_date).isBefore(moment().endOf('week').add(1, 'day')))
+
         const mtdU = data.filter(r => r.status.name === 'Closed' && moment(r.order_date).isAfter(moment().startOf('month')) && moment(r.order_date).isBefore(moment().endOf('month')))
+        const isSunday = moment().day() === 0
+        if (isSunday) {
+            wtdU = data.filter(r => r.status.name === 'Closed' && moment(r.order_date).isAfter(moment(r.order_date).subtract(7, 'days')) && moment(r.order_date).isBefore(moment().endOf('day')))
+        }
 
         let todayUnit = { internet: 0, tv: 0 };
         let wtdUnit = { internet: 0, tv: 0 };
@@ -136,8 +141,8 @@ const ReferralsState = ({ children }) => {
     }
 
     const calculateMovingReferrals = data => {
-
-        const twoWeeks = data.filter(r => r.status.id !== 'closed' && r.status.id !== 'not_sold' && moment(new Date()).isAfter(moment().startOf('day')) && moment(r.moveIn).isBefore(moment().endOf('week').add(1, 'week')))
+        console.log()
+        const twoWeeks = data.filter(r => r.status.id !== 'closed' && r.status.id !== 'not_sold' && moment().isAfter(moment().startOf('day')) && moment(r.moveIn).isAfter(moment().startOf('day')) && moment(r.moveIn).isBefore(moment().add(2, 'weeks').endOf('day')))
         const today = data.filter(r => r.status.id !== 'closed' && r.status.id !== 'not_sold' && moment(r.moveIn).isAfter(moment().startOf('day')) && moment(r.moveIn).isBefore(moment().endOf('day')))
         const tomorrow = data.filter(r => r.status.id !== 'closed' && r.status.id !== 'not_sold' && moment(r.moveIn).isAfter(moment().startOf('day').add(1, 'day')) && moment(r.moveIn).isBefore(moment().endOf('day').add(1, 'day')))
         dispatch({ type: MOVING_IN_TWO_WEEKS, payload: { units: twoWeeks.length, data: [...twoWeeks] } })

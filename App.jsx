@@ -1,5 +1,5 @@
 
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { NavigationContainer } from "@react-navigation/native";
 import { AuthNavigator, TabNavigation } from './navigation';
 import { auth } from './database';
@@ -14,11 +14,9 @@ import ManagersState from './context/manager/managersState';
 import RefereesState from './context/referee/refereesState';
 import CoachsState from './context/coach/coachState';
 import NotesState from './context/notes/notesState';
-import refereesContext from './context/referee/refereesContext';
-import coachContext from './context/coach/coachContext';
 
-
-import LottieView from 'lottie-react-native';
+import { StatusBar } from 'expo-status-bar'
+import AppLoading from 'expo-app-loading';
 const App = () => {
 
   const [fontsLoaded, error] = useFonts({
@@ -39,19 +37,14 @@ const App = () => {
       if (u) {
 
         if (u.emailVerified) {
-
+          setUser(u.uid)
           getReferrals(u.uid)
 
-          setUser(u.uid)
 
         } else return;
 
       }
     })
-
-
-
-    //scheduleMotification('Hola', 'Welcome to yuor app', triger)
 
     return () => {
       listener && listener()
@@ -60,20 +53,12 @@ const App = () => {
   }, [])
 
 
-  if (!fontsLoaded || loading) {
-    return (<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <LottieView loop={false} autoPlay={true} resizeMode='contain' source={require('./assets/animations/welcome.json')} onAnimationFinish={() => {
 
-      }} />
-    </View>)
-  }
-
-
-
+  if (!fontsLoaded) return <AppLoading autoHideSplash={true} />
 
   return (
-
     <NavigationContainer>
+      <StatusBar style='auto' />
       {user && user.roles.active && !loading ? <TabNavigation /> : <AuthNavigator />}
     </NavigationContainer>
 

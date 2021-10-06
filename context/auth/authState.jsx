@@ -25,13 +25,13 @@ const AuthState = ({ children }) => {
     }
 
     const saveExpoPushToken = async (userId, token) => {
-		console.log("saving token");
-		try {
-			await db.collection("users").doc(userId).set({ pushToken: token },{merge:true});
-		} catch (error) {
-			console.log("ERROR SETIING TOKEN", error);
-		}
-	};
+        console.log("saving token");
+        try {
+            await db.collection("users").doc(userId).set({ pushToken: token }, { merge: true });
+        } catch (error) {
+            console.log("ERROR SETIING TOKEN", error);
+        }
+    };
 
     const logout = async () => {
         try {
@@ -52,6 +52,7 @@ const AuthState = ({ children }) => {
         } catch (error) {
             console.log('Error signing up', error.message)
             dispatch({ type: USER_ERROR, payload: error.message })
+            throw new Error(error.message)
         }
     }
 
@@ -76,7 +77,7 @@ const AuthState = ({ children }) => {
             const user = await db.collection('users').doc(userInfo.userId).set(userInfo)
 
             const res = await db.collection('users').doc(userInfo.userId).get();
-            await db.collection('referees').doc(userInfo.userId).collection('referees').add(userInfo)
+            await db.collection('referees').doc(userInfo.userId).collection('referees').add({ ...userInfo, role: 'referee' })
 
             return true
         } catch (error) {

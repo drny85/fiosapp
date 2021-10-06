@@ -90,7 +90,7 @@ const Home = ({ navigation }) => {
                 {wtdUnits.units.internet < TIER.tier2 && wtdUnits.units.internet !== 0 ? (
                     <Animatable.Text animation='fadeIn' numberOfLines={1} ellipsizeMode='tail' style={{ textAlign: 'center', ...FONTS.body4 }}>You are {(TIER.tier2 - wtdUnits.units) === 1 ? `${TIER.tier2 - wtdUnits.units.internet} unit away from tier 2. Go get them!` : `${TIER.tier2 - wtdUnits.units.internet} units away from tier 2. Go get them!`} </Animatable.Text>
                 ) : wtdUnits.units.internet >= TIER.tier2 && wtdUnits.units.internet < TIER.tier3 ? (
-                    <Animatable.Text numberOfLines={1} ellipsizeMode='tail' animation='fadeIn' style={{ textAlign: 'center', ...FONTS.body4 }}>Congratulations!, You made it to tier 2. {TIER.tier3 - wtdUnits.units.internet} more for tier 3</Animatable.Text>
+                    <Animatable.Text numberOfLines={1} ellipsizeMode='tail' animation='fadeIn' style={{ textAlign: 'center', ...FONTS.body4 }}>Congratulations!, You made it to tier 2. ( {TIER.tier3 - wtdUnits.units.internet} more for tier 3 )</Animatable.Text>
                 ) : wtdUnits.units.internet === 0 ? ( <Animatable.Text numberOfLines={1} ellipsizeMode='tail' animation='fadeIn' style={{ textAlign: 'center', ...FONTS.h4, color: COLORS.red }}>You have not units for this week. Let's Go!</Animatable.Text>): (
                             <Animatable.Text numberOfLines={1} ellipsizeMode='tail' animation='fadeIn' style={{ textAlign: 'center', ...FONTS.body4 }}>Congratulations!, You made it to tier 3</Animatable.Text>
                         )}
@@ -192,10 +192,14 @@ const Home = ({ navigation }) => {
                     backgroundColor: COLORS.white,
                     marginTop: SIZES.statusBarHeight + 10,
                 }}>
-                    <TouchableOpacity style={{ width: 40, height: 40, borderRadius: 20, position: 'absolute', top: 10, left: 25, elevation: 8, zIndex: 20, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.light, marginBottom: 20 }} onPress={() => setvisible(false)}>
+                    <View style={{height:40, justifyContent:'space-between', alignItems:'center', flexDirection:'row', marginTop:20, marginHorizontal:10,}}>
+                    <TouchableOpacity style={{ width: 40, height: 40, borderRadius: 20,   elevation: 8, zIndex: 99, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.light, marginBottom: 20 }} onPress={() => setvisible(false)}>
                         <Ionicons name='close' size={26} color={COLORS.black} />
                     </TouchableOpacity>
                     <Text style={{ ...FONTS.h3, textAlign: 'center', marginBottom: 20 }}>{title}</Text>
+                    <Text></Text>
+                    </View>
+                    
                     <FlatList contentContainerStyle={{ marginTop: 20 }} data={data.length > 0 && data} keyExtractor={item => item.id} renderItem={({ item }) => <ReferralCard onPress={() => {
                         setvisible(false)
                         navigation.navigate('Details', { id: item.id })

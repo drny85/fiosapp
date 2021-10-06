@@ -42,13 +42,13 @@ const Message = forwardRef(({ userId, onReply, onDelete, onClose, msgBody, onSwi
     return (
         <Swipeable ref={ref} overshootRight={false} onSwipeableClose={onClose} onSwipeableWillOpen={onSwipeableWillOpen} renderRightActions={rightActions}>
             <View style={[styles.message, { alignSelf: sender.id === userId ? 'flex-end' : 'flex-start', backgroundColor: sender.id === userId ? COLORS.card : COLORS.tile }]}>
-                {isReplied && (<Text style={{ ...FONTS.h5, color: COLORS.black, opacity: 0.6 }}>{reply.sender.name}</Text>)}
+                {isReplied && (<Text style={{ ...FONTS.h5, color: COLORS.white, opacity: 0.6 }}>{reply.sender.name}</Text>)}
                 <Text style={styles.sender}>{sender.id === userId ? 'Me' : sender.name}</Text>
                 <Text style={{ ...FONTS.body3, color: sender.id === userId ? COLORS.lightText : COLORS.text }}>{isReplied ? reply.body : body}</Text>
                 <Text style={styles.timeStamp}>{moment(timestamp?.toDate()).fromNow()}</Text>
                 {isReplied && (
                     <View style={{ backgroundColor: COLORS.background, padding: 10, borderRadius: SIZES.radius, marginVertical: 8, }}>
-                        <Text>{body}</Text>
+                        <Text style={{ ...FONTS.h4 }}>{body}</Text>
                     </View>
                 )}
             </View>

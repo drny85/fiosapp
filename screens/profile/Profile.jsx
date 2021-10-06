@@ -35,21 +35,25 @@ const Profile = ({ navigation }) => {
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            title: `${user.name.split(' ')[0]}`,
+            title: `${user ? user?.name.split(' ')[0] : ''}`,
             headerRight: () => (<TouchableOpacity onPress={logoutHandler} style={{ marginRight: 15, }}>
                 <Text style={{ ...FONTS.h4, color: COLORS.lightGray }}>Log Out</Text>
             </TouchableOpacity>)
         })
 
-        getManagers(user.id)
-        getReferees(user.id)
-        getCoachs(user.id)
+        if (user) {
+            getManagers(user.id)
+            getReferees(user.id)
+            getCoachs(user.id)
+        }
+
+
     }, [navigation, user])
     return (
         <View style={styles.view}>
-            <View style={{ alignItems: 'center', justifyContent: 'center', width: 200, height: 200, borderRadius: 100, backgroundColor: 'red', alignSelf: 'center', marginVertical: 20 }}>
+            <View style={{ alignItems: 'center', justifyContent: 'center', width: 200, height: 200, borderRadius: 100, backgroundColor: COLORS.light, alignSelf: 'center', marginVertical: 20 }}>
                 {/* Profile picture section */}
-                <Image resizeMode='cover' style={{ width: '100%', height: '100%', overflow: 'hidden', borderRadius: SIZES.width }} source={{ uri: user.imageUrl ? user.imageUrl : 'https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png' }} />
+                <Image resizeMode='cover' style={{ width: '100%', height: '100%', overflow: 'hidden', borderRadius: SIZES.width }} source={{ uri: user?.imageUrl ? user.imageUrl : 'https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png' }} />
             </View>
             <View style={{ flex: 2 }}>
                 <ProfileListItem tittle='Manage AMs' onPress={() => navigation.navigate('Managers', { subject: 'manager' })} />

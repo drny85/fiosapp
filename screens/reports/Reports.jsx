@@ -180,7 +180,7 @@ const Reports = () => {
                 borderRadius: SIZES.radius * 3,
                 shadowOffset: { width: 3, height: 5 },
                 backgroundColor: COLORS.card,
-                width: SIZES.width,
+                width: SIZES.width * .98,
                 marginVertical: 5
             }}>
                 <TouchableWithoutFeedback style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly', width: '100%' }} onLongPress={handleResetAll}>

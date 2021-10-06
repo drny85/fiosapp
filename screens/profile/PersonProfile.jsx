@@ -35,7 +35,7 @@ const PersonProfile = ({ route }) => {
                 <Text style={{ ...FONTS.body3, textTransform: 'capitalize', paddingVertical: 5 }}>{person.phone}</Text>
                 <Text style={{ ...FONTS.body3, paddingVertical: 5 }}>{person.email}</Text>
                 <Text style={{ ...FONTS.h4, textTransform: 'capitalize', paddingVertical: 5 }}>Role: <Text style={{ ...FONTS.body3 }}>{person.role}</Text></Text>
-                <Text style={{ ...FONTS.h4 }}>Referrals Total: <Text style={{ ...FONTS.body3 }}>{data.length}</Text></Text>
+                {person.role === 'referee' && (<Text style={{ ...FONTS.h4 }}>Referrals Total: <Text style={{ ...FONTS.body3 }}>{data.length}</Text></Text>)}
 
             </View>
             <View style={{ flex: 1, marginVertical: 10 }}>

@@ -34,10 +34,10 @@ const Picker = ({ data, onPress, showPicker, title, actionRigthButton }) => {
 							onPress={() => onPress(item)}
 						>
 							<View style={styles.icon}>
-								<Text style={{ ...FONTS.h3 }}> {item.id.length === 2 ? (item.id) : (item.name.split(' ')[0][0])}</Text>
+								<Text style={{ ...FONTS.h3, color: COLORS.text }}> {item.id.length === 2 ? (item.id) : (item.name.split(' ')[0][0])}</Text>
 							</View>
 							<View>
-								<Text style={{ ...FONTS.body3 }}>
+								<Text style={{ ...FONTS.body3, color: COLORS.lightText }}>
 									{item.name}
 								</Text>
 							</View>
@@ -69,13 +69,13 @@ const styles = StyleSheet.create({
 		},
 		shadowOpacity: 0.7,
 		shadowRadius: 8,
-		backgroundColor: COLORS.background,
+		backgroundColor: COLORS.card,
 		paddingVertical: SIZES.padding * 0.2,
 		paddingHorizontal: SIZES.padding,
 		marginVertical: 5,
 	},
 	icon: {
-		backgroundColor: COLORS.lightGray,
+		backgroundColor: COLORS.background,
 		alignItems: 'center',
 		justifyContent: 'center',
 		borderRadius: 30,

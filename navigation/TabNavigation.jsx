@@ -1,8 +1,6 @@
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-
 import { COLORS, FONTS } from '../constants/contantts'
-import { Text, View } from 'react-native'
 import HomeNavigator from './HomeNavigator'
 import ProfileNavigation from './ProfileNavigation'
 import { MaterialIcons, Feather, Foundation, Ionicons } from '@expo/vector-icons';
@@ -16,12 +14,11 @@ const Tabs = createBottomTabNavigator()
 
 const TabNavigation = () => {
     return (<Tabs.Navigator tabBarOptions={{
-        labelStyle: { color: COLORS.lightText, fontWeight: '600' },
-        inactiveTintColor: COLORS.white,
-        activeTintColor: COLORS.lightText,
-        activeBackgroundColor: COLORS.light,
-        style: { backgroundColor: COLORS.card }
 
+        inactiveTintColor: COLORS.white,
+        activeTintColor: COLORS.black,
+        activeBackgroundColor: COLORS.white,
+        style: { backgroundColor: COLORS.card },
 
     }}>
         <Tabs.Screen name='HomeStack' options={({ route }) => {
@@ -36,7 +33,8 @@ const TabNavigation = () => {
             const routeName = getFocusedRouteNameFromRoute(route)
             return {
                 title: 'Referrals', tabBarIcon: ({ color, size, focused }) => <Feather name="list" size={size} color={focused ? COLORS.black : COLORS.white} />,
-                tabBarVisible: (routeName === 'AddReferralScreen' || routeName === 'ReferralDetails') ? false : true
+                tabBarVisible: (routeName === 'AddReferralScreen' || routeName === 'ReferralDetails') ? false : true,
+
 
             }
         }
@@ -53,9 +51,14 @@ const TabNavigation = () => {
                 <Ionicons name="cellular" size={size} color={focused ? COLORS.black : COLORS.white} />
         }}
             component={ReportsNavigation} />
-        <Tabs.Screen name='ProfileStack' options={{
-            title: 'Profile', tabBarIcon: ({ color, size, focused }) =>
-                <Feather name="user" size={size} color={focused ? COLORS.black : COLORS.white} />
+        <Tabs.Screen name='ProfileStack' options={({ route }) => {
+
+            return {
+                title: 'Profile', tabBarIcon: ({ color, size, focused }) =>
+                    <Feather name="user" size={size} color={focused ? COLORS.black : COLORS.white} />,
+
+
+            }
 
         }} component={ProfileNavigation} />
     </Tabs.Navigator>

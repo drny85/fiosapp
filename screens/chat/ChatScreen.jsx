@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { KeyboardAvoidingView, Platform, FlatList, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, Animated } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons';
 import { COLORS, FONTS, SIZES } from '../../constants/contantts'
@@ -22,7 +22,9 @@ const ChatScreen = () => {
     const [message, setMessage] = useState('')
     const [opened, setOpened] = useState(null)
     const [msg, setMsg] = useState({})
-    const sendMessage = useCallback(() => {
+    let rowRefs = new Map();
+
+    const sendMessage = () => {
         try {
             if (message === '') return
             const data = {
@@ -41,7 +43,7 @@ const ChatScreen = () => {
         } catch (error) {
             alert(error.message)
         }
-    }, [])
+    }
 
     const onDeleteMessage = async (id, userId) => {
         try {
@@ -83,7 +85,7 @@ const ChatScreen = () => {
         }).start()
     }, [valueY])
 
-    let rowRefs = new Map();
+
 
     const onReply = useCallback((m) => {
         setMsg(m)

@@ -19,7 +19,7 @@ const Managers = ({ navigation, route }) => {
     const [person, setPerson] = useState(null)
     const { referees, loadingReferees } = useContext(refereesContext)
     const { managers, loadingManagers, deleteManager } = useContext(managersContext)
-    const { coachs, getCoachs, loadingCoach } = useContext(coachContext)
+    const { coachs, loadingCoach } = useContext(coachContext)
 
 
     let rowRefs = new Map();
@@ -55,7 +55,7 @@ const Managers = ({ navigation, route }) => {
             title: title(),
             headerRight: () => (
                 <TouchableOpacity style={{ marginRight: SIZES.padding * 0.5 }} onPress={() => setVisible(true)}>
-                    <AntDesign name="plus" size={28} color={COLORS.secondary} />
+                    <AntDesign name="plus" size={30} color={COLORS.black} />
                 </TouchableOpacity>
             )
         })

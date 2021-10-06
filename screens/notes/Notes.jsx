@@ -171,7 +171,7 @@ const Notes = () => {
                         <Ionicons name='close' size={30} color={COLORS.black} />
                     </TouchableOpacity>
                     <View style={{ width: SIZES.width * 0.95, alignSelf: 'center', marginTop: SIZES.padding * 3 }}>
-                        <InputTextField multiline={true} autoCorrect={false} placeholder='Type your note' value={noteData} onChangeText={text => setNoteData(text)} />
+                        <InputTextField multiline={true} autoCorrect={false} placeholder='Type your note' value={noteData} autoFocus={true} onChangeText={text => setNoteData(text)} />
                     </View>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginTop: SIZES.padding * 2, width: '90%', alignSelf: 'center' }}>
                         <TouchableOpacity style={{ paddingHorizontal: 35, paddingVertical: 15, justifyContent: 'center', alignItems: 'center', borderRadius: SIZES.radius * 3, alignSelf: 'center', shadowOffset: { width: 4, height: 6 }, backgroundColor: COLORS.ascent }} onPress={() => setNoteData('')}>

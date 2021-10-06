@@ -13,10 +13,12 @@ import {
     SafeAreaView,
     TouchableHighlight,
     ScrollView,
+    TextInput,
     TouchableOpacity,
     KeyboardAvoidingView,
     TouchableWithoutFeedback
 } from 'react-native';
+
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { COLORS, FONTS, SIZES } from '../../constants/contantts';
 import referralsContext from '../../context/referrals/referralContext';
@@ -39,6 +41,10 @@ import AddPersonModal from '../modals/AddPersonModal';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { GOOGLE_MAPS_KEY, EMAIL_URL } from '@env'
 import { Modal } from 'react-native';
+import { ref } from 'yup';
+import { Pressable } from 'react-native';
+
+
 
 
 
@@ -80,7 +86,7 @@ const Paginator = ({ data, scrollX }) => {
                             width: dotWidth,
                             borderRadius: 5,
                             marginHorizontal: 8,
-                            backgroundColor: '#E85B05',
+                            backgroundColor: COLORS.card,
                             opacity,
                         }}
                     />
@@ -98,7 +104,7 @@ const Step = ({ children }) => {
             </ScrollView>
         </KeyboardAvoidingView>
     );
-};
+}
 
 const Page = ({ index, inputRef, monRef, edit, moveIn, status, setStatus, internet, setInternet, mon, setMon, wireless, setWireless, home, setHome, tv, setTv, setMoveIn, referralData, setReferralData, orderDate, setOrderDate, dueDate, setDueDate }) => {
 
@@ -110,12 +116,12 @@ const Page = ({ index, inputRef, monRef, edit, moveIn, status, setStatus, intern
     const [showPicker, setShowPicker] = useState(false)
     const [showAMs, setShowAms] = useState(false)
     const [showRE, setShowReferee] = useState(false)
+    const [showCommentField, setShowCommentField] = useState(false)
     const { user } = useContext(authContext)
     const { managers, getManagers } = useContext(managersContext)
     const { referees, getReferees } = useContext(refereesContext)
     const [pickStatus, setPickStatus] = useState(false);
     const [show, setShow] = useState(false);
-
     const [showInternetPicker, setShowInternetPicker] = useState(false)
     const [showTvPicker, setShowTvPicker] = useState(false)
     const [showWirelessPicker, setShowWirelessPicker] = useState(false)
@@ -218,7 +224,7 @@ const Page = ({ index, inputRef, monRef, edit, moveIn, status, setStatus, intern
                                             maximumDate={new Date(moment().add(6, 'months').format('YYYY-MM-DD'))}
                                             mode='date'
                                             is24Hour={true}
-                                            display='spinner'
+                                            display={Platform.OS === 'ios' ? 'inline' : 'default'}
                                             onChange={onChange}
                                         />
                                     )}
@@ -236,18 +242,19 @@ const Page = ({ index, inputRef, monRef, edit, moveIn, status, setStatus, intern
                                             <Text style={{ ...FONTS.h3, color: 'blue' }}>Done</Text>
                                         </TouchableHighlight>
                                     </View>
-                                    <View style={{ flex: 1, marginBottom: 20, justifyContent: 'center', alignItems: 'center' }}>
+                                    <View style={{ flex: 1, marginBottom: 20, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.card }}>
 
                                         <DateTimePicker
+
                                             timeZoneOffsetInSeconds={0}
-                                            style={{ width: '90%', marginRight: SIZES.padding * 0.5, height: '100%' }}
+                                            style={{ width: '90%', marginRight: SIZES.padding * 0.5, height: '100%', borderRadius: 35, alignSelf: 'center' }}
                                             testID="dateTimePicker"
                                             value={moveIn}
                                             minimumDate={new Date(moment().subtract(1, 'month').format('YYYY-MM-DD'))}
                                             maximumDate={new Date(moment().add(6, 'months').format('YYYY-MM-DD'))}
                                             mode='date'
                                             is24Hour={true}
-                                            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                                            display={Platform.OS === 'ios' ? 'inline' : 'default'}
                                             onChange={onChange}
                                         />
                                     </View>
@@ -262,11 +269,14 @@ const Page = ({ index, inputRef, monRef, edit, moveIn, status, setStatus, intern
                         <View style={{ padding: SIZES.padding * 0.5 }}>
                             <Text style={styles.title}>Property's Info</Text>
 
-                            <GooglePlacesAutocomplete nearbyPlacesAPI='GooglePlacesSearch' fetchDetails={true} ref={inputRef} query={{ key: GOOGLE_MAPS_KEY, language: 'en', components: 'country:us' }} enablePoweredByContainer={false} onPress={getAddress} placeholder='Type Address' pla styles={{ container: { flex: 0 }, textInput: { ...FONTS.body4, borderBottomWidth: 0.5, borderBottomColor: COLORS.light } }} />
+                            <GooglePlacesAutocomplete nearbyPlacesAPI='GooglePlacesSearch' fetchDetails={true} ref={inputRef} query={{ key: GOOGLE_MAPS_KEY, language: 'en', components: 'country:us' }} enablePoweredByContainer={false}
+                                onPress={getAddress} placeholder='Type Address'
+                                styles={{ container: { flex: 0 }, textInput: { ...FONTS.body3, borderBottomWidth: 0.5, borderBottomColor: COLORS.light, borderRadius: SIZES.radius * 3, height: 50, paddingHorizontal: 15 } }} />
                             {referralData.address.length > 5 && (
-                                <InputTextField
-                                    style={{ marginTop: 50, }}
+                                <TextInput
+                                    style={{ marginTop: 50, backgroundColor: '#fff', ...FONTS.body3, borderRadius: SIZES.radius * 3, paddingHorizontal: 20, borderBottomWidth: 0.5, paddingVertical: 15, borderBottomColor: COLORS.light, }}
                                     placeholder="Apt, Unit, Suit, Floor" value={referralData.apt}
+                                    placeholderTextColor={COLORS.placeHolderTextColor}
                                     onChangeText={text => setReferralData({ ...referralData, apt: text.toUpperCase() })} />
                             )}
 
@@ -277,6 +287,7 @@ const Page = ({ index, inputRef, monRef, edit, moveIn, status, setStatus, intern
 
                 )}
                 {index === 2 && (
+
                     <Step>
 
                         <Text style={styles.title}>Addiotional Info</Text>
@@ -303,7 +314,7 @@ const Page = ({ index, inputRef, monRef, edit, moveIn, status, setStatus, intern
                                                 minimumDate={new Date(moment().subtract(1, 'month').format('YYYY-MM-DD'))}
                                                 mode='date'
                                                 is24Hour={true}
-                                                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                                                display={Platform.OS === 'ios' ? 'inline' : 'default'}
                                                 onChange={onChangeOrderDate}
                                             />)
                                         }
@@ -323,7 +334,7 @@ const Page = ({ index, inputRef, monRef, edit, moveIn, status, setStatus, intern
                                                 minimumDate={new Date(moment().subtract(1, 'year').format('YYYY-MM-DD'))}
                                                 mode='date'
                                                 is24Hour={true}
-                                                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                                                display={Platform.OS === 'ios' ? 'inline' : 'default'}
                                                 onChange={onChangeDueDate}
                                             />)
                                         }
@@ -373,7 +384,40 @@ const Page = ({ index, inputRef, monRef, edit, moveIn, status, setStatus, intern
                                 </View>
                             </View>
                         )}
-                        <InputTextField placeholder='Notes, Comments' numberOfLines={5} multiline={true} style={{ height: SIZES.height / 6, borderWidth: 0.3, borderRadius: 8, borderColor: COLORS.lightGray, marginBottom: 50, }} value={referralData.comment} onChangeText={text => setReferralData({ ...referralData, comment: text })} />
+                        <TouchableOpacity onPress={() => setShowCommentField(true)}>
+                            <>
+                                <Text style={{ ...FONTS.h5 }}>
+                                    Note or Comment
+                            </Text>
+                                <View style={{ borderRadius: 10, borderWidth: 0.4, borderColor: COLORS.lightGray }}>
+                                    <Text style={{ ...FONTS.body5, padding: 10 }}>{referralData.comment || 'Comment or Note'}</Text>
+                                </View>
+                            </>
+                        </TouchableOpacity>
+                        <Modal visible={showCommentField} animationType='slide' transparent style={{ backgroundColor: COLORS.light, flex: 1 }}>
+                            <View style={{
+                                position: 'absolute', width: '90%', alignSelf: 'center', top: SIZES.statusBarHeight + 60, justifyContent: 'center', alignItems: 'center', height: SIZES.height / 2.5, backgroundColor: COLORS.card,
+                                borderRadius: 35,
+                            }}>
+                                <TextInput multiline numberOfLines={5} onChangeText={text => setReferralData({ ...referralData, comment: text })} style={{
+                                    width: '90%', marginVertical: 10, height: '70%',
+                                    backgroundColor: COLORS.white, ...FONTS.body4, borderRadius: 35, paddingHorizontal: 15, paddingVertical: 20
+                                }} placeholder='Comment or Note' value={referralData.comment} placeholderTextColor={COLORS.light} />
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', width: '90%' }}>
+                                    <Pressable onPress={() => {
+                                        setReferralData({ ...referralData, comment: referralData.comment })
+                                        setShowCommentField(false)
+                                    }} style={{ paddingVertical: 10, paddingHorizontal: 25, backgroundColor: COLORS.ascent, borderRadius: 35 }}>
+                                        <Text style={{ ...FONTS.body5 }}>Cancel</Text>
+                                    </Pressable>
+                                    <Pressable onPress={() => setShowCommentField(false)} style={{ paddingVertical: 10, paddingHorizontal: 25, backgroundColor: COLORS.white, borderRadius: 35 }}>
+                                        <Text style={{ ...FONTS.h5 }}>Update</Text>
+                                    </Pressable>
+                                </View>
+                            </View>
+
+                        </Modal>
+
 
 
                         {Platform.OS === 'ios' && showOrderDate && (
@@ -387,18 +431,18 @@ const Page = ({ index, inputRef, monRef, edit, moveIn, status, setStatus, intern
                                             <Text style={{ ...FONTS.h3, color: 'blue' }}>Done</Text>
                                         </TouchableHighlight>
                                     </View>
-                                    <View style={{ flex: 1, marginBottom: 20, justifyContent: 'center', alignItems: 'center' }}>
+                                    <View style={{ flex: 1, marginBottom: 20, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.card }}>
 
                                         <DateTimePicker
                                             timeZoneOffsetInSeconds={0}
-                                            style={{ width: '90%', marginRight: SIZES.padding * 0.5, height: '100%' }}
+                                            style={{ width: '90%', marginRight: SIZES.padding * 0.5, height: '90%' }}
                                             testID="dateTimePicker"
                                             value={orderDate}
                                             minimumDate={new Date(moment().subtract(1, 'month').format('YYYY-MM-DD'))}
                                             maximumDate={new Date(moment().add(1, 'day').format('YYYY-MM-DD'))}
                                             mode='date'
                                             is24Hour={true}
-                                            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                                            display={Platform.OS === 'ios' ? 'inline' : 'default'}
                                             onChange={onChangeOrderDate}
                                         />
                                     </View>
@@ -416,26 +460,27 @@ const Page = ({ index, inputRef, monRef, edit, moveIn, status, setStatus, intern
                                             <Text style={{ ...FONTS.h3, color: 'blue' }}>Done</Text>
                                         </TouchableHighlight>
                                     </View>
-                                    <View style={{ flex: 1, marginBottom: 20, justifyContent: 'center', alignItems: 'center' }}>
+                                    <View style={{ flex: 1, marginBottom: 20, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.card }}>
 
                                         <DateTimePicker
                                             timeZoneOffsetInSeconds={0}
-                                            style={{ width: '90%', marginRight: SIZES.padding * 0.5, height: '100%' }}
+                                            style={{ width: '90%', marginRight: SIZES.padding * 0.5, height: '90%' }}
                                             testID="dateTimePicker"
                                             value={dueDate}
                                             minimumDate={new Date(moment().format('YYYY-MM-DD'))}
                                             maximumDate={new Date(moment().add(3, 'months').format('YYYY-MM-DD'))}
                                             mode='date'
                                             is24Hour={true}
-                                            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                                            display={Platform.OS === 'ios' ? 'inline' : 'default'}
                                             onChange={onChangeDueDate}
                                         />
                                     </View>
                                 </View>
                             </Modal>
                         )}
-
                     </Step>
+
+
                 )}
 
 
@@ -507,7 +552,7 @@ export default function MultiForm({ navigation, route }) {
     const inputRef = useRef();
     const monRef = useRef();
     const [canContinue, setCanContinue] = useState(false)
-    const { addReferral, updateReferral } = useContext(referralsContext)
+    const { addReferral, updateReferral, getReferrals } = useContext(referralsContext)
     const [moveIn, setMoveIn] = useState(new Date())
     const [dueDate, setDueDate] = useState(new Date())
     const [orderDate, setOrderDate] = useState(new Date())
@@ -577,7 +622,7 @@ export default function MultiForm({ navigation, route }) {
                 slideRef.current.scrollToIndex({ index: 0 })
                 return
             }
-            setSubmitting(true)
+
             setReferralData({ ...referralData, moveIn: new Date(referralData.moveIn).toISOString() })
 
             if (edit && referral) {
@@ -597,28 +642,32 @@ export default function MultiForm({ navigation, route }) {
                         return;
                     }
                 }
-
+                setSubmitting(true)
                 const updated = await updateReferral(referralCopy)
                 if (updated) {
+                    //setSubmitting(false)
                     if (referralCopy.status.name.toLowerCase() === 'closed') {
                         setSuccess(true)
                         if (wasClosed) {
+                            //setSubmitting(false)
                             navigation.pop()
                         }
                         // const sent = await sendEmail({ referral: referralCopy })
                         // console.log('EMAIL SENT', sent)
                     } else {
+                        // setSubmitting(false)
                         navigation.pop()
                     }
 
                 }
 
             } else {
+                setSubmitting(true)
 
                 const added = await addReferral(referralData)
 
                 if (added) {
-
+                    //setSubmitting(false)
                     navigation.navigate('Referrals')
                 } else return;
             }
@@ -627,6 +676,7 @@ export default function MultiForm({ navigation, route }) {
             console.log(error)
         } finally {
             setSubmitting(false)
+            getReferrals(user.id)
         }
     }
 
@@ -694,6 +744,7 @@ export default function MultiForm({ navigation, route }) {
 
 
     }, [edit, referral])
+
 
     if (success && !wasClosed) return <View style={{ flex: 1, marginTop: SIZES.statusBarHeight }}>
         <LottieView style={{ flex: 1, }} resizeMode='contain' source={require('../../assets/animations/congratulations.json')} autoPlay />
