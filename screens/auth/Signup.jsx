@@ -1,13 +1,14 @@
 import React, { useContext, useRef, useState } from 'react'
-import { StyleSheet, Text, View, Platform, KeyboardAvoidingView, Keyboard } from 'react-native'
-import ScreenView from '../ScreenView'
+import { StyleSheet, Text, View, Platform, KeyboardAvoidingView } from 'react-native'
 
-import { Input, Button, Image } from 'react-native-elements'
+
+import { Input, Image } from 'react-native-elements'
 import { COLORS, SIZES, FONTS } from '../../constants/contantts'
 import { Feather } from '@expo/vector-icons'
 import authContext from '../../context/auth/authContext'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import DismissKeyboard from '../../components/DismissKeyboard'
+import { isADrascoEmail } from '../../utils/isEmailValide'
 
 
 const Signup = ({ navigation }) => {
@@ -64,6 +65,12 @@ const Signup = ({ navigation }) => {
                 return
             }
 
+            const isValid = isADrascoEmail(email)
+            if (!isValid) {
+                alert('Invalid domain. Only drascosales.com emails')
+                return
+            }
+
             const data = await signup(email, password)
             if (!data) return
 
@@ -91,17 +98,24 @@ const Signup = ({ navigation }) => {
 
     return (
 
-        <DismissKeyboard>
+        <DismissKeyboard style={{ backgroundColor: '#fff' }}>
             <KeyboardAvoidingView style={styles.view} keyboardVerticalOffset={60} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-                <View style={{ width: '100%', height: 100, alignItems: 'center', justifyContent: 'center' }}>
-                    <Image source={require('../../assets/verizon-logo.png')} style={{ width: SIZES.width / 3, height: 100, resizeMode: 'cover' }} />
+                <View style={{ width: '100%', height: 100, alignItems: 'center', justifyContent: 'center', marginBottom: 20, }}>
+                    <Image source={{ uri: 'http://www.drascosales.com/Drasco_Logo.jpg' }} style={{ width: SIZES.width * 0.7, height: 100, resizeMode: 'cover' }} />
                 </View>
                 <View style={{ width: '100%' }}>
                     <Input autoCapitalize='words' autoCompleteType='name' placeholder='Full Name' value={name} onChangeText={text => setName(text)} />
                     <Input autoCapitalize='none' autoCompleteType='tel' keyboardType='numeric' placeholder='Work Phone' value={phone} onChangeText={text => setPhone(formatedPhone(text.trim()))} />
                     <Input ref={emailRef} autoCapitalize='none' autoCompleteType='email' keyboardType='email-address' placeholder='Email Address' value={email} onChangeText={text => setEmail(text.trim().toLowerCase())} />
-                    <Input autoCapitalize='none' textContentType='password' autoCorrect={false} rightIcon={<Feather name={show ? 'eye' : 'eye-off'} onPress={() => setShow(show ? false : true)} size={24} color="black" />} placeholder='Password' secureTextEntry={show} value={password} onChangeText={text => setPassword(text.trim())} />
-                    <Input autoCapitalize='none' textContentType='password' rightIcon={<Feather name={show ? 'eye' : 'eye-off'} onPress={() => setShow(show ? false : true)} size={24} color="black" />} placeholder='Confirm Password' secureTextEntry={show} value={confirm} onChangeText={text => setConfirm(text.trim())} />
+                    <Input autoCapitalize='none' textContentType='password' autoCorrect={false} rightIcon={<TouchableWithoutFeedback onPress={() => {
+                        setShow(prev => !prev)
+
+                    }}>
+                        <Feather name={show ? 'eye' : 'eye-off'} size={24} color="black" />
+                    </TouchableWithoutFeedback>} placeholder='Password' secureTextEntry={show} value={password} onChangeText={text => setPassword(text.trim())} />
+                    <Input autoCapitalize='none' textContentType='password' rightIcon={<TouchableWithoutFeedback onPress={() => setShow(show ? false : true)}>
+                        <Feather name={show ? 'eye' : 'eye-off'} size={24} color="black" />
+                    </TouchableWithoutFeedback>} placeholder='Confirm Password' secureTextEntry={show} value={confirm} onChangeText={text => setConfirm(text.trim())} />
                 </View>
                 <View style={{ marginTop: 30 }}>
                     <TouchableOpacity style={styles.btn} onPress={signupHandler}>
@@ -132,6 +146,7 @@ const styles = StyleSheet.create({
         height: '100%',
         maxWidth: 600,
         alignSelf: 'center',
+        backgroundColor: '#fff',
 
         width: '100%',
         marginHorizontal: SIZES.padding * 0.5,

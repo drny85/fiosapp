@@ -10,7 +10,7 @@ import { auth } from '../../database'
 import { useNavigation } from '@react-navigation/native'
 import authContext from '../../context/auth/authContext'
 import Loader from '../../components/Loader'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import * as Animatable from 'react-native-animatable'
 
 import LottieView from 'lottie-react-native';
@@ -100,11 +100,13 @@ const Signin = ({ route }) => {
                 ) : (
                         <KeyboardAvoidingView style={styles.view} behavior={Platform.OS === 'ios' ? 'padding' : null}>
                             <View style={{ width: '100%', height: 100, alignItems: 'center', justifyContent: 'center' }}>
-                                <Image source={require('../../assets/verizon-logo.png')} style={{ width: SIZES.width / 3, height: 100, resizeMode: 'cover', marginBottom: 120 }} />
+                                <Image source={{ uri: 'http://www.drascosales.com/Drasco_Logo.jpg' }} style={{ width: SIZES.width * 0.7, height: 100, resizeMode: 'cover', marginBottom: 120 }} />
                             </View>
                             <View style={{ width: '100%' }}>
                                 <Input placeholder='Email Address' keyboardType='email-address' autoCorrect={false} autoCapitalize='none' value={email} onChangeText={text => setEmail(text.trim().toLowerCase())} />
-                                <Input rightIcon={<Feather name={!showPassword ? 'eye' : 'eye-off'} size={24} onPress={() => setShowPassword(!showPassword)} color="black" />} placeholder='Password' secureTextEntry={!showPassword} value={password} onChangeText={text => setPassword(text.trim())} />
+                                <Input rightIcon={<TouchableWithoutFeedback onPress={() => setShowPassword(!showPassword)}>
+                                    <Feather name={!showPassword ? 'eye' : 'eye-off'} size={24} color="black" />
+                                </TouchableWithoutFeedback>} placeholder='Password' secureTextEntry={!showPassword} value={password} onChangeText={text => setPassword(text.trim())} />
                                 <TouchableOpacity onPress={() => setResetPassword(true)} style={{ marginRight: 10 }}>
                                     <Text style={{ textAlign: 'right', color: COLORS.blue }}>Forgot Password?</Text>
                                 </TouchableOpacity>

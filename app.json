@@ -1,8 +1,8 @@
 {
 	"expo": {
-		"name": "My Fios Referrals",
-		"slug": "My_FIOS_REFERRALS",
-		"version": "1.0.1",
+		"name": "EM Referrals",
+		"slug": "MY_EM",
+		"version": "1.0.0",
 		"orientation": "portrait",
 		"icon": "./assets/icon.png",
 		"splash": {
@@ -16,8 +16,8 @@
 		"assetBundlePatterns": ["**/*"],
 		"ios": {
 			"supportsTablet": true,
-			"bundleIdentifier": "net.robertdev.melendez.fiosrewards2021",
-			"buildNumber": "1.0.1"
+			"bundleIdentifier": "net.robertdev.melendez.fiosrewards.em",
+			"buildNumber": "1.0.0"
 		},
 
 		"android": {
@@ -26,7 +26,7 @@
 				"backgroundColor": "#FFFFFF"
 			},
 			"versionCode": 1,
-			"package": "net.robertdev.melendez.fiosrewards2021"
+			"package": "net.robertdev.melendez.fiosrewards.em"
 		},
 		"web": {
 			"favicon": "./assets/favicon.png"
